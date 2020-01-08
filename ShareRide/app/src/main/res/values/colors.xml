@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#42A5F6</color>
+    <color name="colorPrimaryDark">#1990EE</color>
+    <color name="colorAccent">#FFFFFF</color>
+    <color name="colorText">#FFFFFF</color>
+    <color name="colorEditTextBackground">#86C5FA</color>
+    <color name="colorButtonApplyRipple">#DADADA</color>
+    <color name="colorButtonCancelText">#C6403F</color>
+    <color name="colorButtonCancelRipple">#FEA8A7</color>
+</resources>
