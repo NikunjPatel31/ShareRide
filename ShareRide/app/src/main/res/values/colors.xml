@@ -8,4 +8,5 @@
     <color name="colorButtonApplyRipple">#DADADA</color>
     <color name="colorButtonCancelText">#C6403F</color>
     <color name="colorButtonCancelRipple">#FEA8A7</color>
+    <color name="colorTextBlack">#000000</color>
 </resources>

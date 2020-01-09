@@ -30,4 +30,7 @@ dependencies {
     implementation 'com.google.android.material:material:1.0.0'
     //dependency for circular image view
     implementation 'de.hdodenhof:circleimageview:3.0.1'
+    //Lottie animation dependency
+    implementation 'com.airbnb.android:lottie:3.3.1'
+
 }

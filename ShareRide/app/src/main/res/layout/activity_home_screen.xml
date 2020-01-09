@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -7,23 +7,49 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".HomeScreenActivity">
 
-    <com.google.android.material.bottomappbar.BottomAppBar
-        android:id="@+id/bottom_action_bar"
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/lottieAnimationView"
         android:layout_width="match_parent"
-        android:layout_height="55dp"
+        android:layout_height="match_parent"
+        app:lottie_rawRes="@raw/blue_car_green"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/coordinatorLayout"
+        android:layout_width="match_parent"
+        android:layout_height="90dp"
         android:layout_gravity="bottom"
-        android:backgroundTint="@color/colorPrimary"
-        app:fabCradleRoundedCornerRadius="32dp"
-        app:fabAlignmentMode="center"
-        android:padding="15dp"
-        app:navigationIcon="@drawable/ic_menu_24dp" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0">
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_anchor="@id/bottom_action_bar"
-        android:backgroundTint="@color/colorPrimary"
-        android:src="@drawable/ic_add_24dp"
-        android:onClick="check"/>
+        <com.google.android.material.bottomappbar.BottomAppBar
+            android:id="@+id/bottom_action_bar"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_gravity="bottom"
+            android:backgroundTint="@color/colorPrimary"
+            android:padding="15dp"
+            app:fabAlignmentMode="center"
+            app:fabCradleRoundedCornerRadius="32dp"
+            app:navigationIcon="@drawable/ic_menu_24dp" />
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/colorPrimary"
+            android:onClick="check"
+            android:src="@drawable/ic_add_24dp"
+            app:layout_anchor="@id/bottom_action_bar" />
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

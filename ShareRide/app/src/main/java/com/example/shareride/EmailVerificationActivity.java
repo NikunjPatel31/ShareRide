@@ -13,6 +13,11 @@ public class EmailVerificationActivity extends AppCompatActivity {
         startActivity(new Intent(EmailVerificationActivity.this,SignInActivity.class));
     }
 
+    public void goToLoginActivity(View view)
+    {
+        startActivity(new Intent(EmailVerificationActivity.this,LoginActivity.class));
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

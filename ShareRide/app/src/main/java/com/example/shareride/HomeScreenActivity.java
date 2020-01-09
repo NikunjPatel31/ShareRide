@@ -15,7 +15,7 @@ public class HomeScreenActivity extends AppCompatActivity {
 
     public void check(View view)
     {
-        startActivity(new Intent(HomeScreenActivity.this,EmailVerificationActivity.class));
+        startActivity(new Intent(HomeScreenActivity.this,LoginActivity.class));
     }
 
     @Override
