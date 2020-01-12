@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".SignInActivity">
+    tools:context=".Add_Car_Activity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -15,7 +15,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="50dp"
-            android:text="Sign In"
+            android:text="Add Car"
             android:textAlignment="center"
             android:textColor="@color/colorText"
             android:textSize="36sp"
@@ -28,7 +28,7 @@
             android:id="@+id/sign_in_description_textview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Create a new account"
+            android:text="Enter your new car"
             android:textAlignment="center"
             android:textColor="@color/colorText"
             android:textSize="20sp"
@@ -54,7 +54,7 @@
             android:layout_height="47dp"
             android:background="@drawable/background_edit_text"
             android:elevation="5dp"
-            android:hint="First Name"
+            android:hint="Car name"
             android:inputType="text"
             android:layout_marginStart="20dp"
             android:layout_marginEnd="20dp"
@@ -83,7 +83,7 @@
             android:layout_marginEnd="20dp"
             android:background="@drawable/background_edit_text"
             android:elevation="5dp"
-            android:hint="Last Name"
+            android:hint="Model Year"
             android:inputType="text"
             android:paddingStart="10dp"
             android:paddingLeft="10dp"
@@ -102,7 +102,7 @@
             app:layout_constraintVertical_bias="0.0" />
 
         <Spinner
-            android:id="@+id/gender_spinner"
+            android:id="@+id/air_conditioner_spinner"
             android:layout_width="match_parent"
             android:layout_height="47dp"
             android:layout_marginStart="20dp"
@@ -117,7 +117,7 @@
             app:layout_constraintVertical_bias="0.0" />
 
         <TextView
-            android:id="@+id/gender_textview"
+            android:id="@+id/air_conditioner_textview"
             android:layout_width="match_parent"
             android:layout_height="47dp"
             android:layout_marginStart="20dp"
@@ -140,8 +140,23 @@
             app:layout_constraintTop_toBottomOf="@+id/last_name_edittext"
             app:layout_constraintVertical_bias="0.0" />
 
-        <EditText
-            android:id="@+id/year_of_birth_edittext"
+        <Spinner
+            android:id="@+id/fuel_spinner"
+            android:layout_width="match_parent"
+            android:layout_height="47dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="20dp"
+            android:spinnerMode="dialog"
+            android:background="@drawable/background_edit_text"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/air_conditioner_textview"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <TextView
+            android:id="@+id/fuel_textview"
             android:layout_width="match_parent"
             android:layout_height="47dp"
             android:layout_marginStart="20dp"
@@ -149,26 +164,23 @@
             android:layout_marginEnd="20dp"
             android:background="@drawable/background_edit_text"
             android:elevation="5dp"
-            android:hint="Year of birth"
-            android:inputType="number"
             android:paddingStart="10dp"
             android:paddingLeft="10dp"
-            android:paddingTop="5dp"
+            android:paddingTop="8dp"
             android:paddingEnd="10dp"
             android:paddingRight="10dp"
             android:paddingBottom="5dp"
             android:textColor="@color/colorText"
-            android:textColorHint="@color/colorText"
             android:textSize="20sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/gender_textview"
+            app:layout_constraintTop_toBottomOf="@+id/air_conditioner_textview"
             app:layout_constraintVertical_bias="0.0" />
 
         <EditText
-            android:id="@+id/contact_edittext"
+            android:id="@+id/vehicle_number_edittext"
             android:layout_width="match_parent"
             android:layout_height="47dp"
             android:layout_marginStart="20dp"
@@ -176,8 +188,7 @@
             android:layout_marginEnd="20dp"
             android:background="@drawable/background_edit_text"
             android:elevation="5dp"
-            android:hint="Contact"
-            android:maxLength="10"
+            android:hint="Vehicle number"
             android:inputType="phone"
             android:paddingStart="10dp"
             android:paddingLeft="10dp"
@@ -192,61 +203,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/year_of_birth_edittext"
-            app:layout_constraintVertical_bias="0.0" />
-
-        <EditText
-            android:id="@+id/city_edittext"
-            android:layout_width="match_parent"
-            android:layout_height="47dp"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="20dp"
-            android:background="@drawable/background_edit_text"
-            android:elevation="5dp"
-            android:hint="City"
-            android:inputType="text"
-            android:paddingStart="10dp"
-            android:paddingLeft="10dp"
-            android:paddingTop="5dp"
-            android:paddingEnd="10dp"
-            android:paddingRight="10dp"
-            android:paddingBottom="5dp"
-            android:textColor="@color/colorText"
-            android:textColorHint="@color/colorText"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/contact_edittext"
-            app:layout_constraintVertical_bias="0.0" />
-
-        <EditText
-            android:id="@+id/pincode_edittext"
-            android:layout_width="match_parent"
-            android:layout_height="47dp"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="20dp"
-            android:background="@drawable/background_edit_text"
-            android:elevation="5dp"
-            android:hint="pincode"
-            android:inputType="numberDecimal"
-            android:paddingStart="10dp"
-            android:paddingLeft="10dp"
-            android:paddingTop="5dp"
-            android:paddingEnd="10dp"
-            android:paddingRight="10dp"
-            android:paddingBottom="5dp"
-            android:textColor="@color/colorText"
-            android:textColorHint="@color/colorText"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/city_edittext"
+            app:layout_constraintTop_toBottomOf="@+id/fuel_textview"
             app:layout_constraintVertical_bias="0.0" />
 
         <Button
@@ -255,14 +212,30 @@
             android:layout_marginTop="32dp"
             android:layout_marginBottom="32dp"
             android:background="@drawable/background_ripple_button_apply"
-            android:text="Sign In"
+            android:text="Add"
             android:textSize="18sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.22"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/pincode_edittext"
-            app:layout_constraintVertical_bias="0.42000002"
-            android:onClick="apply"/>
+            app:layout_constraintTop_toBottomOf="@+id/vehicle_number_edittext"
+            app:layout_constraintVertical_bias="0.42000002" />
+
+        <Button
+            android:layout_width="100dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="32dp"
+            android:layout_marginBottom="32dp"
+            android:background="@drawable/background_ripple_button_cancel"
+            android:text="Cancel"
+            android:textColor="@color/colorButtonCancelText"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.72"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/vehicle_number_edittext"
+            app:layout_constraintVertical_bias="0.42000002" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

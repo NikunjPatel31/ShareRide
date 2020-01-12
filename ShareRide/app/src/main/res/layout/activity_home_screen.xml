@@ -5,19 +5,22 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="#7DBCE8"
     tools:context=".HomeScreenActivity">
 
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/lottieAnimationView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:lottie_rawRes="@raw/blue_car_green"
-        app:lottie_autoPlay="true"
-        app:lottie_loop="true"
+        android:layout_marginTop="50dp"
+        android:background="#7DBCE8"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"
+        app:lottie_rawRes="@raw/sheep_drive_car" />
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/coordinatorLayout"
@@ -39,13 +42,15 @@
             android:padding="15dp"
             app:fabAlignmentMode="center"
             app:fabCradleRoundedCornerRadius="32dp"
-            app:navigationIcon="@drawable/ic_menu_24dp" />
+            app:navigationIcon="@drawable/ic_menu_24dp"
+            android:elevation="80dp"/>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:backgroundTint="@color/colorPrimary"
             android:onClick="check"
+            app:borderWidth="0dp"
             android:src="@drawable/ic_add_24dp"
             app:layout_anchor="@id/bottom_action_bar" />
 

@@ -1,0 +1,56 @@
+{
+  "project_info": {
+    "project_number": "549063913641",
+    "firebase_url": "https://share-ride-8e227.firebaseio.com",
+    "project_id": "share-ride-8e227",
+    "storage_bucket": "share-ride-8e227.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:549063913641:android:6a74d4f3d08c0bc7df79b8",
+        "android_client_info": {
+          "package_name": "com.example.shareride"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "549063913641-ghv9e44p5u01qnu6o1mori61bg7ab1t9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.shareride",
+            "certificate_hash": "6f9f4697ccf196f223995018efd6af75887969ed"
+          }
+        },
+        {
+          "client_id": "549063913641-i7irjtm93lilhmht95tm0t0itlivsufk.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.shareride",
+            "certificate_hash": "e24e736cb47d58ad923ed5be79efb88e23ece830"
+          }
+        },
+        {
+          "client_id": "549063913641-l9145c9lp4prtr776dmg5o0rcd78gnnf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBCjLn9WSteucl3Z6lkYpVVS8H0Cl_iSS8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "549063913641-l9145c9lp4prtr776dmg5o0rcd78gnnf.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

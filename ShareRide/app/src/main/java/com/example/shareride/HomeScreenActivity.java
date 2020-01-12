@@ -15,7 +15,7 @@ public class HomeScreenActivity extends AppCompatActivity {
 
     public void check(View view)
     {
-        startActivity(new Intent(HomeScreenActivity.this,LoginActivity.class));
+        startActivity(new Intent(HomeScreenActivity.this,Edit_Car_Activity.class));
     }
 
     @Override
