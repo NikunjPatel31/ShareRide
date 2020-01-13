@@ -1,7 +1,12 @@
 package com.example.shareride;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -14,6 +19,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -29,6 +37,9 @@ public class SignInActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private DatabaseReference databaseReference;
 
+    private AlertDialog.Builder builder;
+    private AlertDialog alertDialog;
+    private ProgressDialog progressDialog;
     private CircleImageView profilePicIV;
     private EditText firstNameET, lastNameET, pincodeET, cityET, contactET, yearOfBirthET;
     private Spinner genderSpinner;
@@ -46,6 +57,15 @@ public class SignInActivity extends AppCompatActivity {
             if(EmailVerifed())
             {
                 sendUserData();
+                Toast.makeText(SignInActivity.this, "Sending data.", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(SignInActivity.this, HomeScreenActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+                finish();
+            }
+            else
+            {
+                dialog();
             }
         }
         else
@@ -178,5 +198,63 @@ public class SignInActivity extends AppCompatActivity {
                 return false;
             }
         }
+    }
+
+    private void dialog()
+    {
+        builder = new AlertDialog.Builder(this);
+        builder.setTitle("Email Verification")
+                .setMessage("Email is not verified. Please verify it.")
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Log.d(TAG, "onClick: button clicked on alert dialog.");
+
+                    }
+                });
+        alertDialog = builder.create();
+        alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface dialog) {
+                alertDialog.getButton(DialogInterface.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorPrimary));
+            }
+        });
+        alertDialog.show();
+    }
+
+    private void deleteUser()
+    {
+        if(mAuth.getCurrentUser() != null)
+        {
+            Log.d(TAG, "deleteUser: deleting the user.");
+            mAuth.getCurrentUser().delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    if(task.isSuccessful())
+                    {
+                        Log.d(TAG, "onComplete: user deleted successfully.");
+                    }
+                    else
+                    {
+                        Log.d(TAG, "onComplete: unsuccessful to delete user.");
+                    }
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Log.d(TAG, "onFailure: user deletion failure Exception: "+e.getLocalizedMessage());
+                }
+            });
+        }
+        else
+        {
+            Log.d(TAG, "deleteUser: there is not user.");
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        deleteUser();
     }
 }

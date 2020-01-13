@@ -12,7 +12,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Edit_Car_Activity"></activity>
+        <activity android:name=".Account_Activity"></activity>
+        <activity android:name=".Edit_Profile_Activity" />
+        <activity android:name=".Edit_Car_Activity" />
         <activity android:name=".Add_Car_Activity" />
         <activity android:name=".HomeScreenActivity" />
         <activity android:name=".LoginActivity" />

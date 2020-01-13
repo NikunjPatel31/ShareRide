@@ -9,4 +9,5 @@
     <color name="colorButtonCancelText">#C6403F</color>
     <color name="colorButtonCancelRipple">#FEA8A7</color>
     <color name="colorTextBlack">#000000</color>
+    <color name="colorGrey">#D3D3D3</color>
 </resources>

@@ -32,7 +32,7 @@ public class StartingActivity extends AppCompatActivity {
                 if(mAuth.getCurrentUser() != null)
                 {
                     Log.d(TAG, "run: user is not null");
-                    Intent intent = new Intent(StartingActivity.this, SignInActivity.class);
+                    Intent intent = new Intent(StartingActivity.this, HomeScreenActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(intent);
                     finish();
