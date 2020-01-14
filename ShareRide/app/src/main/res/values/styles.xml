@@ -17,4 +17,9 @@
         <item name="android:textStyle">bold</item>
     </style>
 
+    <style name="customRatingBar">
+        <item name="android:colorControlActivated">@color/colorRatingBar</item>
+        <item name="colorControlNormal">@android:color/darker_gray</item>
+    </style>
+
 </resources>

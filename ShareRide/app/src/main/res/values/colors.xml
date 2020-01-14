@@ -10,4 +10,5 @@
     <color name="colorButtonCancelRipple">#FEA8A7</color>
     <color name="colorTextBlack">#000000</color>
     <color name="colorGrey">#D3D3D3</color>
+    <color name="colorRatingBar">#ffcc00</color>
 </resources>
