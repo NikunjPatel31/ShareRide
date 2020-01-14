@@ -29,7 +29,6 @@ public class Account_Activity extends AppCompatActivity {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 viewPager.setCurrentItem(tab.getPosition());
-                Toast.makeText(Account_Activity.this, "inside the onTabSelected.", Toast.LENGTH_SHORT).show();
             }
 
             @Override
