@@ -31,7 +31,7 @@
 
 
             <TextView
-                android:id="@+id/EditDetailsTextView"
+                android:id="@+id/edit_details_textview"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:background="?android:attr/selectableItemBackground"
@@ -55,7 +55,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/EditDetailsTextView"
+                app:layout_constraintTop_toBottomOf="@+id/edit_details_textview"
                 app:layout_constraintVertical_bias="0.0" />
 
             <TextView
@@ -73,7 +73,7 @@
                 app:layout_constraintVertical_bias="0.0" />
 
             <TextView
-                android:id="@+id/addCarTextView"
+                android:id="@+id/add_car_textview"
                 android:layout_width="match_parent"
                 android:layout_height="45dp"
                 android:layout_marginBottom="1dp"
@@ -91,7 +91,7 @@
                 app:layout_constraintVertical_bias="0.0" />
 
             <TextView
-                android:id="@+id/deleteMyCarTextView"
+                android:id="@+id/delete_my_car_textview"
                 android:layout_width="match_parent"
                 android:layout_height="45dp"
                 android:background="?android:attr/selectableItemBackground"
@@ -104,11 +104,11 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/addCarTextView"
+                app:layout_constraintTop_toBottomOf="@+id/add_car_textview"
                 app:layout_constraintVertical_bias="0.0" />
 
             <TextView
-                android:id="@+id/viewMyCarTextView"
+                android:id="@+id/view_my_car_textview"
                 android:layout_width="match_parent"
                 android:layout_height="45dp"
                 android:background="?android:attr/selectableItemBackground"
@@ -121,7 +121,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/deleteMyCarTextView"
+                app:layout_constraintTop_toBottomOf="@+id/delete_my_car_textview"
                 app:layout_constraintVertical_bias="0.0" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
