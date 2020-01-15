@@ -191,7 +191,7 @@ public class EmailVerificationActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         Log.d(TAG, "onClick: button clicked on alert dialog.");
                         Intent intent = new Intent(EmailVerificationActivity.this, SignInActivity.class);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
                         startActivity(intent);
                         finish();
                     }
@@ -213,4 +213,40 @@ public class EmailVerificationActivity extends AppCompatActivity {
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         progressDialog.setIndeterminate(true);
     }
+
+    private void deleteUser()
+    {
+        if(mAuth.getCurrentUser() != null)
+        {
+            Log.d(TAG, "deleteUser: deleting the user.");
+            mAuth.getCurrentUser().delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    if(task.isSuccessful())
+                    {
+                        Log.d(TAG, "onComplete: user deleted successfully.");
+                    }
+                    else
+                    {
+                        Log.d(TAG, "onComplete: unsuccessful to delete user.");
+                    }
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Log.d(TAG, "onFailure: user deletion failure Exception: "+e.getLocalizedMessage());
+                }
+            });
+        }
+        else
+        {
+            Log.d(TAG, "deleteUser: there is not user.");
+        }
+    }
+
+    /*@Override
+    protected void onDestroy() {
+        super.onDestroy();
+        deleteUser();
+    }*/
 }

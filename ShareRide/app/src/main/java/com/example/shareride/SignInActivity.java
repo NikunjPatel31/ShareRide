@@ -1,12 +1,19 @@
 package com.example.shareride;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
+import android.Manifest;
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -25,6 +32,11 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageMetadata;
+import com.google.firebase.storage.StorageReference;
+import com.theartofdev.edmodo.cropper.CropImage;
+import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.util.ArrayList;
 
@@ -36,7 +48,9 @@ public class SignInActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
     private DatabaseReference databaseReference;
+    private StorageReference storageReference;
 
+    private Uri imageUri;
     private AlertDialog.Builder builder;
     private AlertDialog alertDialog;
     private ProgressDialog progressDialog;
@@ -47,6 +61,8 @@ public class SignInActivity extends AppCompatActivity {
     private ArrayList<String> genderArrayList;
 
     private String firstName, lastName, pincode, city, contact, yearOfBirth;
+    private int GALLERY_REQUEST_CODE = 1, READ_EXTERNAL_STORAGE_REQUSET_CODE = 2;
+    private boolean storagePermission = false;
 
     public void apply(View view)
     {
@@ -82,14 +98,20 @@ public class SignInActivity extends AppCompatActivity {
 
         initializeFirebaseInstance();
         initializeWidgets();
+        storagePermissions();
         spinnerArrayAdapter();
         spinnerListener();
+        if(storagePermission)
+        {
+            imageSelect();
+        }
     }
 
     private void initializeFirebaseInstance()
     {
         mAuth = FirebaseAuth.getInstance();
         databaseReference = FirebaseDatabase.getInstance().getReference();
+        storageReference = FirebaseStorage.getInstance().getReference();
     }
 
     private void initializeWidgets()
@@ -252,9 +274,66 @@ public class SignInActivity extends AppCompatActivity {
         }
     }
 
+    private void imageSelect()
+    {
+        profilePicIV.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG, "onClick: profile image clicked.");
+                Intent intent = new Intent(Intent.ACTION_PICK);
+                intent.setType("image/*");
+                startActivityForResult(intent,GALLERY_REQUEST_CODE);
+            }
+        });
+    }
+
     @Override
-    protected void onStop() {
-        super.onStop();
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(requestCode == GALLERY_REQUEST_CODE && resultCode == RESULT_OK)
+        {
+            Log.d(TAG, "onActivityResult: image from the device is selected.");
+            imageUri = data.getData();
+
+            CropImage.activity(imageUri)
+                    .setGuidelines(CropImageView.Guidelines.ON)
+                    .setAspectRatio(1,1)
+                    .start(this);
+        }
+        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+            if (resultCode == RESULT_OK) {
+                Uri resultUri = result.getUri();
+                profilePicIV.setImageURI(resultUri);
+                Log.d(TAG, "onActivityResult: sending selected image to database.");
+
+                String UID = mAuth.getUid();
+                StorageReference mChildST = storageReference.child("Profile Picture").child(UID);
+                mChildST.putFile(resultUri);
+            } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+                Exception error = result.getError();
+            }
+        }
+    }
+
+    private void storagePermissions()
+    {
+        Log.d(TAG, "storagePermissions: requesting storage permission.");
+        if(ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
+        {
+            ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.READ_EXTERNAL_STORAGE},READ_EXTERNAL_STORAGE_REQUSET_CODE);
+            storagePermission = true;
+        }
+        else
+        {
+            storagePermission = true;
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
         deleteUser();
     }
 }

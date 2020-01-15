@@ -43,12 +43,28 @@
                     android:id="@+id/profilePicImageView"
                     android:layout_width="120dp"
                     android:layout_height="120dp"
+                    android:layout_marginTop="20dp"
                     android:background="@color/colorPrimary"
                     android:src="@drawable/account"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/profile_textview" />
+                    app:layout_constraintTop_toBottomOf="@+id/profile_textview"
+                    app:layout_constraintVertical_bias="0.0" />
+
+                <TextView
+                    android:id="@+id/user_name_textview"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="User Name"
+                    android:textSize="25sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/colorText"
+                    android:textAlignment="center"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/profilePicImageView"/>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
