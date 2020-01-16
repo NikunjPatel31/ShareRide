@@ -108,7 +108,7 @@ public class Account_Activity extends AppCompatActivity {
                 String lastName = dataSnapshot.child("Last Name").getValue().toString();
                 String userName = firstName + " " + lastName;
                 String profilePicPath = dataSnapshot.child("Profile Picture").getValue().toString();
-                if(profilePicPath != null)
+                if(!profilePicPath.equals("null"))
                 {
                     Log.d(TAG, "onDataChange: image is there.");
                     Uri imageUri = Uri.parse(profilePicPath);

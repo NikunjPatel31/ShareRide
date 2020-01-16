@@ -73,7 +73,7 @@ public class SignInActivity extends AppCompatActivity {
         Toast.makeText(this, "Button pressed", Toast.LENGTH_SHORT).show();
         if(fieldsValidation())
         {
-            if(!EmailVerifed())
+            if(EmailVerifed())
             {
                 sendUserData();
                 Toast.makeText(SignInActivity.this, "Sending data.", Toast.LENGTH_SHORT).show();
@@ -199,6 +199,14 @@ public class SignInActivity extends AppCompatActivity {
         mChildDB.child("Contact").setValue(contact);
         mChildDB.child("City").setValue(city);
         mChildDB.child("Pincode").setValue(pincode);
+        if(genderSpinner.getSelectedItem().equals("Male"))
+        {
+            mChildDB.child("Gender").setValue("Male");
+        }
+        else
+        {
+            mChildDB.child("Gender").setValue("Female");
+        }
         if(uploadUri != null)
         {
             StorageReference mChildST = storageReference.child("Profile Picture").child(UID);
