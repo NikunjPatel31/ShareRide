@@ -28,6 +28,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
@@ -35,6 +36,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
@@ -50,7 +52,7 @@ public class SignInActivity extends AppCompatActivity {
     private DatabaseReference databaseReference;
     private StorageReference storageReference;
 
-    private Uri imageUri;
+    private Uri imageUri, uploadUri;
     private AlertDialog.Builder builder;
     private AlertDialog alertDialog;
     private ProgressDialog progressDialog;
@@ -63,6 +65,7 @@ public class SignInActivity extends AppCompatActivity {
     private String firstName, lastName, pincode, city, contact, yearOfBirth;
     private int GALLERY_REQUEST_CODE = 1, READ_EXTERNAL_STORAGE_REQUSET_CODE = 2;
     private boolean storagePermission = false;
+    private boolean userCreated = false;
 
     public void apply(View view)
     {
@@ -70,14 +73,14 @@ public class SignInActivity extends AppCompatActivity {
         Toast.makeText(this, "Button pressed", Toast.LENGTH_SHORT).show();
         if(fieldsValidation())
         {
-            if(EmailVerifed())
+            if(!EmailVerifed())
             {
                 sendUserData();
                 Toast.makeText(SignInActivity.this, "Sending data.", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(SignInActivity.this, HomeScreenActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
-                finish();
+                userCreated = true;
             }
             else
             {
@@ -189,13 +192,52 @@ public class SignInActivity extends AppCompatActivity {
     {
         Log.d(TAG, "sendUserData: sending user details to database.");
         String UID = mAuth.getUid();
-        DatabaseReference mChildDB = databaseReference.child("Users").child(UID);
+        final DatabaseReference mChildDB = databaseReference.child("Users").child(UID);
         mChildDB.child("First Name").setValue(firstName);
         mChildDB.child("Last Name").setValue(lastName);
         mChildDB.child("DOB").setValue(yearOfBirth);
         mChildDB.child("Contact").setValue(contact);
         mChildDB.child("City").setValue(city);
         mChildDB.child("Pincode").setValue(pincode);
+        if(uploadUri != null)
+        {
+            StorageReference mChildST = storageReference.child("Profile Picture").child(UID);
+            mChildST.putFile(uploadUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+
+
+                    Task<Uri> task = taskSnapshot.getMetadata().getReference().getDownloadUrl();
+                    task.addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            String path = uri.toString();
+
+                            Log.d(TAG, "sendUserData: sending profile uri URI: "+path);
+                            mChildDB.child("Profile Picture").setValue(path);
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.d(TAG, "onFailure: Exception: "+e.getLocalizedMessage());
+                        }
+                    });
+
+
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Log.d(TAG, "onFailure: Exception: "+e.getLocalizedMessage());
+                }
+            });
+        }
+        else
+        {
+            Log.d(TAG, "sendUserData: upload uri is empty.");
+            mChildDB.child("Profile Picture").setValue("null");
+        }
+        Log.d(TAG, "sendUserData: image uri send successfully.");
     }
 
     private boolean EmailVerifed()
@@ -308,9 +350,9 @@ public class SignInActivity extends AppCompatActivity {
                 profilePicIV.setImageURI(resultUri);
                 Log.d(TAG, "onActivityResult: sending selected image to database.");
 
-                String UID = mAuth.getUid();
-                StorageReference mChildST = storageReference.child("Profile Picture").child(UID);
-                mChildST.putFile(resultUri);
+
+                uploadUri = resultUri;
+                Log.d(TAG, "onActivityResult: URI: "+uploadUri);
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                 Exception error = result.getError();
             }
@@ -334,6 +376,9 @@ public class SignInActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        deleteUser();
+        if(!userCreated)
+        {
+            deleteUser();
+        }
     }
 }

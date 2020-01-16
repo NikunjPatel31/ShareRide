@@ -1,5 +1,6 @@
 package com.example.shareride;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.storage.StorageManager;
 import android.util.Log;
@@ -19,6 +20,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -105,7 +107,19 @@ public class Account_Activity extends AppCompatActivity {
                 String firstName = dataSnapshot.child("First Name").getValue().toString();
                 String lastName = dataSnapshot.child("Last Name").getValue().toString();
                 String userName = firstName + " " + lastName;
-                userNameTV.setText(userName);
+                String profilePicPath = dataSnapshot.child("Profile Picture").getValue().toString();
+                if(profilePicPath != null)
+                {
+                    Log.d(TAG, "onDataChange: image is there.");
+                    Uri imageUri = Uri.parse(profilePicPath);
+                    Picasso.get().load(imageUri).into(profileImageIV);
+                    //profileImageIV.setImageURI(imageUri);
+                    userNameTV.setText(userName);
+                }
+                else
+                {
+                    Log.d(TAG, "onDataChange: there is no image.");
+                }
             }
 
             @Override

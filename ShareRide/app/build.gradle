@@ -43,6 +43,8 @@ dependencies {
     implementation 'com.google.firebase:firebase-analytics:17.2.1'
     //dependency for image crop
     api 'com.theartofdev.edmodo:android-image-cropper:2.8.0'
+    //dependency for picaso
+    implementation 'com.squareup.picasso:picasso:2.71828'
 
 }
 apply plugin: 'com.android.application'
