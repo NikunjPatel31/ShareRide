@@ -68,7 +68,7 @@ public class Profile_Fragment extends Fragment{
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "onClick: deleteCarTV pressed.");
-                Toast.makeText(getActivity(), "Delete Car Pressed.", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(getActivity(),View_My_Cars_Activity.class));
             }
         });
 

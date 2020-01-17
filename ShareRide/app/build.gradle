@@ -45,6 +45,10 @@ dependencies {
     api 'com.theartofdev.edmodo:android-image-cropper:2.8.0'
     //dependency for picaso
     implementation 'com.squareup.picasso:picasso:2.71828'
+    // FirebaseUI for Firebase Realtime Database
+    implementation 'com.firebaseui:firebase-ui-database:6.2.0'
+    //recyclerview dependency
+    implementation 'com.android.support:recyclerview-v7:28.0.0'
 
 }
 apply plugin: 'com.android.application'
