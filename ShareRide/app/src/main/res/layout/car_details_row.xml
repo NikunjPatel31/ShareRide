@@ -114,7 +114,7 @@
                 android:text="Petrol"
                 android:textSize="19sp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="@+id/air_conditioner_textview"
+                app:layout_constraintEnd_toStartOf="@+id/air_conditioner_textview"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toEndOf="@id/fuel_title_textview"
                 app:layout_constraintTop_toBottomOf="@id/vehicle_number_textview"
@@ -125,7 +125,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_marginTop="8dp"
-                android:layout_marginEnd="70dp"
+                android:layout_marginEnd="75dp"
                 android:text="AC"
                 android:textSize="19sp"
                 android:textStyle="bold"
@@ -149,6 +149,35 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/fuel_title_textview"
                 app:layout_constraintVertical_bias="0.0" />
+
+            <TextView
+                android:id="@+id/model_year_textview"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="8dp"
+                android:text="2014"
+                android:textSize="19sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/edit_button"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toEndOf="@id/model_title_textview"
+                app:layout_constraintTop_toBottomOf="@id/fuel_textview"
+                app:layout_constraintVertical_bias="0.0" />
+
+            <Button
+                android:id="@+id/edit_button"
+                android:layout_width="100dp"
+                android:layout_height="30dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/background_ripple_edit_button"
+                android:text="Edit"
+                android:textColor="@color/colorPrimary"
+                android:textSize="15sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/model_year_textview"
+                app:layout_constraintTop_toBottomOf="@id/air_conditioner_textview" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
