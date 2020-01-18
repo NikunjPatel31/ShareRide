@@ -21,9 +21,9 @@ public class HomeScreenActivity extends AppCompatActivity {
     BottomAppBar bottomAppBar;
     FirebaseAuth mAuth;
 
-    public void check(View view)
+    public void add(View view)
     {
-        startActivity(new Intent(HomeScreenActivity.this, Account_Activity.class));
+        startActivity(new Intent(HomeScreenActivity.this, Source_Location_Activity.class));
     }
 
     @Override

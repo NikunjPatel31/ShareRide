@@ -49,7 +49,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:backgroundTint="@color/colorPrimary"
-            android:onClick="check"
+            android:onClick="add"
             app:borderWidth="0dp"
             android:src="@drawable/ic_add_24dp"
             app:layout_anchor="@id/bottom_action_bar" />
