@@ -6,13 +6,16 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
@@ -94,12 +97,22 @@ public class View_My_Cars_Activity extends AppCompatActivity {
             @Override
             protected void onBindViewHolder(@NonNull CarDetailsViewHolder holder, int position, @NonNull CarDetails model) {
                 Log.d(TAG, "onBindViewHolder: populating the recycler view.");
+                final String car_id = getRef(position).getKey();
                 holder.setCarName(model.getCar_Name());
                 holder.setVehicleNumber(model.getVehicle_Number());
                 holder.setFuel(model.getModel_Year());
                 holder.setAirConditioner(model.getAir_Conditioner());
                 holder.setCarModelYear(model.getModel_Year());
                 holder.setCarImage(getApplicationContext(),model.getCar_Image());
+
+                holder.editBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(getApplicationContext(),Edit_Car_Activity.class);
+                        intent.putExtra("Car_id",car_id);
+                        startActivity(intent);
+                    }
+                });
             }
 
             @NonNull
@@ -118,9 +131,11 @@ public class View_My_Cars_Activity extends AppCompatActivity {
     public static class CarDetailsViewHolder extends RecyclerView.ViewHolder
     {
         View mView;
+        Button editBtn;
         public CarDetailsViewHolder(@NonNull View itemView) {
             super(itemView);
             mView = itemView;
+            editBtn = (Button) mView.findViewById(R.id.edit_button);
         }
 
         public void setAirConditioner(String airConditioner)

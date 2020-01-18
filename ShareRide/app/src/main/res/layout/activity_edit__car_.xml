@@ -25,7 +25,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/profile_image"
+            android:id="@+id/car_image"
             android:layout_width="120dp"
             android:layout_height="120dp"
             android:src="@drawable/account"
@@ -36,7 +36,7 @@
             app:layout_constraintVertical_bias="0.06"/>
 
         <EditText
-            android:id="@+id/first_name_edittext"
+            android:id="@+id/car_name_edittext"
             android:layout_width="match_parent"
             android:layout_height="47dp"
             android:background="@drawable/background_edit_text"
@@ -58,11 +58,11 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/profile_image"
+            app:layout_constraintTop_toBottomOf="@+id/car_image"
             app:layout_constraintVertical_bias="0.07999998" />
 
         <EditText
-            android:id="@+id/last_name_edittext"
+            android:id="@+id/model_year_edittext"
             android:layout_width="match_parent"
             android:layout_height="47dp"
             android:layout_marginStart="20dp"
@@ -85,7 +85,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/first_name_edittext"
+            app:layout_constraintTop_toBottomOf="@+id/car_name_edittext"
             app:layout_constraintVertical_bias="0.0" />
 
         <Spinner
@@ -100,7 +100,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/last_name_edittext"
+            app:layout_constraintTop_toBottomOf="@+id/model_year_edittext"
             app:layout_constraintVertical_bias="0.0" />
 
         <TextView
@@ -124,7 +124,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/last_name_edittext"
+            app:layout_constraintTop_toBottomOf="@+id/model_year_edittext"
             app:layout_constraintVertical_bias="0.0" />
 
         <Spinner
@@ -206,7 +206,8 @@
             app:layout_constraintHorizontal_bias="0.22"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/vehicle_number_edittext"
-            app:layout_constraintVertical_bias="0.42000002" />
+            app:layout_constraintVertical_bias="0.42000002"
+            android:onClick="apply"/>
 
         <Button
             android:layout_width="100dp"
@@ -222,7 +223,8 @@
             app:layout_constraintHorizontal_bias="0.72"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/vehicle_number_edittext"
-            app:layout_constraintVertical_bias="0.42000002" />
+            app:layout_constraintVertical_bias="0.42000002"
+            android:onClick="cancel"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -60,7 +60,7 @@ public class Add_Car_Activity extends AppCompatActivity {
     private int GALLERY_REQUEST_CODE = 1, READ_EXTERNAL_STORAGE_REQUSET_CODE = 2;
     private boolean storagePermission = false;
 
-    public void add(View view)
+    public void apply(View view)
     {
         if(fieldsValidation())
         {
@@ -71,6 +71,7 @@ public class Add_Car_Activity extends AppCompatActivity {
             finish();
         }
     }
+
 
     public void cancel(View view)
     {
@@ -261,7 +262,15 @@ public class Add_Car_Activity extends AppCompatActivity {
         }
         else
         {
-            return true;
+            if(uploadUri == null)
+            {
+                Toast.makeText(this, "Please select car image.", Toast.LENGTH_SHORT).show();
+                return false;
+            }
+            else
+            {
+                return true;
+            }
         }
     }
 
