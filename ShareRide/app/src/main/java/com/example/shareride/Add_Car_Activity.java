@@ -13,7 +13,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
-import android.util.Pair;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -65,7 +64,7 @@ public class Add_Car_Activity extends AppCompatActivity {
     {
         if(fieldsValidation())
         {
-            sendUserData();
+            sendCarData();
             Intent intent = new Intent(Add_Car_Activity.this, Account_Activity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
@@ -102,7 +101,7 @@ public class Add_Car_Activity extends AppCompatActivity {
         airConditionerTV = (TextView) findViewById(R.id.air_conditioner_textview);
         fuelTV = (TextView) findViewById(R.id.fuel_textview);
         carIV = (CircleImageView) findViewById(R.id.car_image);
-        carNameET = (EditText) findViewById(R.id.car_name_edittext);
+        carNameET = (EditText) findViewById(R.id.car_name_textview);
         modelYearET = (EditText) findViewById(R.id.model_year_edittext);
         vechileNumberET = (EditText) findViewById(R.id.vehicle_number_edittext);
     }
@@ -266,21 +265,21 @@ public class Add_Car_Activity extends AppCompatActivity {
         }
     }
 
-    private void sendUserData()
+    private void sendCarData()
     {
         Log.d(TAG, "sendUserData: sending user details to database.");
         String UID = mAuth.getUid();
         final DatabaseReference mChildDB = databaseReference.child("Cars").child(UID).push();
-        mChildDB.child("Car Name").setValue(carName);
-        mChildDB.child("Model Year").setValue(modelYear);
-        mChildDB.child("Vehicle Number").setValue(vechicleNumber);
+        mChildDB.child("Car_Name").setValue(carName);
+        mChildDB.child("Model_Year").setValue(modelYear);
+        mChildDB.child("Vehicle_Number").setValue(vechicleNumber);
         if(airConditionerSpinner.getSelectedItem().equals("AC"))
         {
-            mChildDB.child("Air Conditioner").setValue("AC");
+            mChildDB.child("Air_Conditioner").setValue("AC");
         }
         else
         {
-            mChildDB.child("Air Conditioner").setValue("NON - AC");
+            mChildDB.child("Air_Conditioner").setValue("NON - AC");
         }
         if(fuelSpinner.getSelectedItem().equals("Petrol"))
         {
@@ -297,7 +296,7 @@ public class Add_Car_Activity extends AppCompatActivity {
         DatabaseReference d = mChildDB;
         if(uploadUri != null)
         {
-            StorageReference mChildST = storageReference.child("Car Image").child(UID).child(d.getKey());
+            StorageReference mChildST = storageReference.child("Car_Image").child(UID).child(d.getKey());
             mChildST.putFile(uploadUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
@@ -310,7 +309,7 @@ public class Add_Car_Activity extends AppCompatActivity {
                             String path = uri.toString();
 
                             Log.d(TAG, "sendUserData: sending car image uri URI: "+path);
-                            mChildDB.child("Car Image").setValue(path);
+                            mChildDB.child("Car_Image").setValue(path);
                         }
                     }).addOnFailureListener(new OnFailureListener() {
                         @Override
@@ -331,7 +330,7 @@ public class Add_Car_Activity extends AppCompatActivity {
         else
         {
             Log.d(TAG, "sendUserData: upload uri is empty.");
-            mChildDB.child("Car Image").setValue("null");
+            mChildDB.child("Car_Image").setValue("null");
         }
 
     }

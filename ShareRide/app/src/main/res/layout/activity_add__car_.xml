@@ -49,7 +49,7 @@
             app:layout_constraintVertical_bias="0.06"/>
 
         <EditText
-            android:id="@+id/car_name_edittext"
+            android:id="@+id/car_name_textview"
             android:layout_width="match_parent"
             android:layout_height="47dp"
             android:background="@drawable/background_edit_text"
@@ -84,7 +84,7 @@
             android:background="@drawable/background_edit_text"
             android:elevation="5dp"
             android:hint="Model Year"
-            android:inputType="text"
+            android:inputType="numberDecimal"
             android:paddingStart="10dp"
             android:paddingLeft="10dp"
             android:paddingTop="5dp"
@@ -98,7 +98,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/car_name_edittext"
+            app:layout_constraintTop_toBottomOf="@+id/car_name_textview"
             app:layout_constraintVertical_bias="0.0" />
 
         <Spinner
@@ -189,7 +189,7 @@
             android:background="@drawable/background_edit_text"
             android:elevation="5dp"
             android:hint="Vehicle number"
-            android:inputType="phone"
+            android:inputType="text"
             android:paddingStart="10dp"
             android:paddingLeft="10dp"
             android:paddingTop="5dp"
