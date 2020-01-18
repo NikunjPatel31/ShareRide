@@ -68,6 +68,9 @@ public class Profile_Fragment extends Fragment{
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "onClick: deleteCarTV pressed.");
+                Intent intent = new Intent(getActivity(), View_My_Cars_Activity.class);
+                intent.putExtra("Activity","Delete");
+                startActivity(intent);
 
             }
         });
@@ -76,7 +79,9 @@ public class Profile_Fragment extends Fragment{
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "onClick: viewCarTV pressed.");
-                startActivity(new Intent(getActivity(),View_My_Cars_Activity.class));
+                Intent intent = new Intent(getActivity(),View_My_Cars_Activity.class);
+                intent.putExtra("Activity","View");
+                startActivity(intent);
             }
         });
     }

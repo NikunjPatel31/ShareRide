@@ -19,6 +19,9 @@ import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -105,6 +108,17 @@ public class View_My_Cars_Activity extends AppCompatActivity {
                 holder.setCarModelYear(model.getModel_Year());
                 holder.setCarImage(getApplicationContext(),model.getCar_Image());
 
+                if(getIntent().getStringExtra("Activity").equals("View"))
+                {
+                    holder.editBtn.setVisibility(View.VISIBLE);
+                    holder.deleteBtn.setVisibility(View.INVISIBLE);
+                }
+                else
+                {
+                    holder.editBtn.setVisibility(View.INVISIBLE);
+                    holder.deleteBtn.setVisibility(View.VISIBLE);
+                }
+
                 holder.editBtn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -113,6 +127,31 @@ public class View_My_Cars_Activity extends AppCompatActivity {
                         startActivity(intent);
                     }
                 });
+
+                holder.deleteBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        databaseReference.child(car_id).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if(task.isSuccessful())
+                                {
+                                    Toast.makeText(View_My_Cars_Activity.this, "Car deleted successfully.", Toast.LENGTH_SHORT).show();
+                                }
+                                {
+                                    Toast.makeText(View_My_Cars_Activity.this, "error in deleting car.", Toast.LENGTH_SHORT).show();
+                                    Log.d(TAG, "onComplete: task Error: "+task.getException());
+                                }
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.d(TAG, "onFailure: Exception: "+e.getLocalizedMessage());
+                            }
+                        });
+                    }
+                });
+
             }
 
             @NonNull
@@ -131,11 +170,12 @@ public class View_My_Cars_Activity extends AppCompatActivity {
     public static class CarDetailsViewHolder extends RecyclerView.ViewHolder
     {
         View mView;
-        Button editBtn;
+        Button editBtn, deleteBtn;
         public CarDetailsViewHolder(@NonNull View itemView) {
             super(itemView);
             mView = itemView;
             editBtn = (Button) mView.findViewById(R.id.edit_button);
+            deleteBtn = (Button) mView.findViewById(R.id.delete_button);
         }
 
         public void setAirConditioner(String airConditioner)
