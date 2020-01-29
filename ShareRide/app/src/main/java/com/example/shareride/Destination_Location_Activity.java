@@ -23,52 +23,47 @@ import android.widget.Toast;
 import com.airbnb.lottie.L;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Source_Location_Activity extends FragmentActivity implements OnMapReadyCallback {
+public class Destination_Location_Activity extends FragmentActivity implements OnMapReadyCallback {
 
-    private static final String TAG = "Source_Location_Activit";
+    private static final String TAG = "Destination_Location_Ac";
 
     private EditText searchSourceET;
+
+    private LatLng centerScreenLatlng;
+
     private GoogleMap mMap;
 
     private FusedLocationProviderClient mfusedLocationProviderClient;
-    private LatLng centerScreenLatlng;
 
-    private boolean location_permission = false;
-    private final float DEFAULT_ZOOM = 15f;
     private final int ACCESS_FINE_LOCATION = 1;
+    private final float DEFAULT_ZOOM = 15f;
+    private boolean location_permission = false;
 
     public void next(View view)
     {
         Toast.makeText(this, "Under development.", Toast.LENGTH_SHORT).show();
         centerScreenLatlng = mMap.getCameraPosition().target;
         Log.d(TAG, "next: lat: "+centerScreenLatlng.latitude+" long: "+centerScreenLatlng.longitude);
-        startActivity(new Intent(Source_Location_Activity.this, Destination_Location_Activity.class));
-    }
-
-    public void centerOnMyLocation(View view)
-    {
-        //Toast.makeText(this, "Under development.", Toast.LENGTH_SHORT).show();
-        getDeviceLocation();
+        //startActivity(new Intent(Destination_Location_Activity.this, Destination_Location_Activity.class));
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_source__location_);
+        setContentView(R.layout.activity_destination__location_);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -76,7 +71,22 @@ public class Source_Location_Activity extends FragmentActivity implements OnMapR
 
         initializingWidgets();
         getLocationPermission();
-        searchLocation();
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
+
+        if(location_permission)
+        {
+            getDeviceLocation();
+            mMap.setMyLocationEnabled(true);
+            searchLocation();
+        }
+        else
+        {
+            getLocationPermission();
+        }
     }
 
     private void initializingWidgets()
@@ -85,64 +95,17 @@ public class Source_Location_Activity extends FragmentActivity implements OnMapR
         searchSourceET = (EditText) findViewById(R.id.search_source_location_edittext);
     }
 
-    private void getDeviceLocation()
-    {
-        if(location_permission)
-        {
-            Log.d(TAG, "getDeviceLocation: getting device location.");
-            mfusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
-            Task<Location> task = mfusedLocationProviderClient.getLastLocation();
-            task.addOnCompleteListener(new OnCompleteListener<Location>() {
-                @Override
-                public void onComplete(@NonNull Task<Location> task) {
-                    Location location = task.getResult();
-                    if (location != null)
-                    {
-                        Log.d(TAG, "getDeviceLocation: location: " + location.getLongitude() + " Lat: " + location.getLatitude());
-                        mMap.setMyLocationEnabled(true);
-                        addMarker(new LatLng(location.getLatitude(), location.getLongitude()),DEFAULT_ZOOM);
-                    }
-                    else
-                    {
-                        Log.d(TAG, "onComplete: unable to access location.");
-                    }
-                }
-            });
-        }
-    }
-
     private void getLocationPermission()
     {
         Log.d(TAG, "getLocationPermission: getting location permission.");
         if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED)
         {
-            Log.d(TAG, "getLocationPermission: permissions are not given.");
             ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.ACCESS_FINE_LOCATION},ACCESS_FINE_LOCATION);
-        }
-        else
-        {
-            Log.d(TAG, "getLocationPermission: permissions are given.");
             location_permission = true;
         }
-    }
-
-    private void addMarker(LatLng latLng,float zoom)
-    {
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,zoom));
-    }
-
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
-        if(location_permission)
-        {
-            getDeviceLocation();
-            Log.d(TAG, "onMapReady: permission: "+location_permission);
-            mMap.setMyLocationEnabled(true);
-        }
         else
         {
-            getLocationPermission();
+            location_permission = true;
         }
     }
 
@@ -152,12 +115,48 @@ public class Source_Location_Activity extends FragmentActivity implements OnMapR
 
         if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
         {
-            if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
-            {
-                location_permission = true;
-                getDeviceLocation();
-            }
+            location_permission = true;
         }
+        else
+        {
+            location_permission = false;
+        }
+    }
+
+    private void getDeviceLocation()
+    {
+        Log.d(TAG, "getDeviceLocation: getting device location.");
+        mfusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+        Task<Location> task = mfusedLocationProviderClient.getLastLocation();
+
+        task.addOnCompleteListener(new OnCompleteListener<Location>() {
+            @Override
+            public void onComplete(@NonNull Task<Location> task) {
+                if(task.isSuccessful())
+                {
+                    Location location = task.getResult();
+                    if(location != null)
+                    {
+                        Log.d(TAG, "onComplete: lat: "+location.getLatitude()+" Long: "+location.getLongitude());
+                    }
+                    else
+                    {
+                        Log.d(TAG, "onComplete: unable to access location.");
+                    }
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.d(TAG, "onFailure: Exception: "+e.getLocalizedMessage());
+                Toast.makeText(Destination_Location_Activity.this, "Problem in getting location.", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void addMarker(LatLng latLng,float zoom)
+    {
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,zoom));
     }
 
     private void searchLocation()
@@ -167,20 +166,19 @@ public class Source_Location_Activity extends FragmentActivity implements OnMapR
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if(actionId == EditorInfo.IME_ACTION_DONE)
                 {
-                    geoLocate();
+                    geocode();
                 }
                 return false;
             }
         });
     }
 
-    private void geoLocate()
+    private void geocode()
     {
-        Log.d(TAG, "geoLocate: geolocating to the specified location.");
-
+        Log.d(TAG, "geocode: geolocation...");
         String searchString = searchSourceET.getText().toString();
 
-        Geocoder geocoder = new Geocoder(Source_Location_Activity.this);
+        Geocoder geocoder = new Geocoder(this);
         List<Address> list = new ArrayList<>();
 
         try
@@ -189,7 +187,7 @@ public class Source_Location_Activity extends FragmentActivity implements OnMapR
         }
         catch (Exception e)
         {
-            Log.d(TAG, "geoLocate: Exception: "+e.getLocalizedMessage());
+            Log.d(TAG, "geocode: Exception: "+e.getLocalizedMessage());
         }
         Address address = list.get(0);
         LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());

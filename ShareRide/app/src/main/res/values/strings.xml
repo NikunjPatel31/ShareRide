@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Share Ride</string>
     <string name="title_activity_source__location_">Map</string>
+    <string name="title_activity_destination__location_">Map</string>
 
     <!-- TODO: Remove or change this placeholder text -->
 </resources>
