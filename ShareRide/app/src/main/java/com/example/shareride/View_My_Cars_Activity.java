@@ -139,7 +139,6 @@ public class View_My_Cars_Activity extends AppCompatActivity {
                                     Toast.makeText(View_My_Cars_Activity.this, "Car deleted successfully.", Toast.LENGTH_SHORT).show();
                                 }
                                 {
-                                    Toast.makeText(View_My_Cars_Activity.this, "error in deleting car.", Toast.LENGTH_SHORT).show();
                                     Log.d(TAG, "onComplete: task Error: "+task.getException());
                                 }
                             }

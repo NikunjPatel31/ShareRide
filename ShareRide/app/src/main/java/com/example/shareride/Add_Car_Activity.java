@@ -60,15 +60,20 @@ public class Add_Car_Activity extends AppCompatActivity {
     private int GALLERY_REQUEST_CODE = 1, READ_EXTERNAL_STORAGE_REQUSET_CODE = 2;
     private boolean storagePermission = false;
 
-    public void apply(View view)
+    public void add(View view)
     {
         if(fieldsValidation())
         {
+            Log.d(TAG, "apply: fields validation returned true.");
             sendCarData();
-            Intent intent = new Intent(Add_Car_Activity.this, Account_Activity.class);
+            /*Intent intent = new Intent(Add_Car_Activity.this, Account_Activity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
-            finish();
+            finish();*/
+        }
+        else
+        {
+            Log.d(TAG, "apply: fields validation returned false.");
         }
     }
 
@@ -277,7 +282,8 @@ public class Add_Car_Activity extends AppCompatActivity {
     private void sendCarData()
     {
         Log.d(TAG, "sendUserData: sending user details to database.");
-        String UID = mAuth.getUid();
+        UID = mAuth.getUid();
+        Log.d(TAG, "sendCarData: UId: "+UID);
         final DatabaseReference mChildDB = databaseReference.child("Cars").child(UID).push();
         mChildDB.child("Car_Name").setValue(carName);
         mChildDB.child("Model_Year").setValue(modelYear);
