@@ -53,10 +53,11 @@ public class Source_Location_Activity extends FragmentActivity implements OnMapR
 
     public void next(View view)
     {
-        Toast.makeText(this, "Under development.", Toast.LENGTH_SHORT).show();
         centerScreenLatlng = mMap.getCameraPosition().target;
         Log.d(TAG, "next: lat: "+centerScreenLatlng.latitude+" long: "+centerScreenLatlng.longitude);
-        startActivity(new Intent(Source_Location_Activity.this, Destination_Location_Activity.class));
+        Intent intent = new Intent(Source_Location_Activity.this, Destination_Location_Activity.class);
+        intent.putExtra("Source Location",centerScreenLatlng);
+        startActivity(intent);
     }
 
     public void centerOnMyLocation(View view)

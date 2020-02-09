@@ -43,6 +43,7 @@ public class Destination_Location_Activity extends FragmentActivity implements O
     private EditText searchSourceET;
 
     private LatLng centerScreenLatlng;
+    private LatLng sourceLocation;
 
     private GoogleMap mMap;
 
@@ -54,10 +55,17 @@ public class Destination_Location_Activity extends FragmentActivity implements O
 
     public void next(View view)
     {
-        Toast.makeText(this, "Under development.", Toast.LENGTH_SHORT).show();
         centerScreenLatlng = mMap.getCameraPosition().target;
         Log.d(TAG, "next: lat: "+centerScreenLatlng.latitude+" long: "+centerScreenLatlng.longitude);
-        //startActivity(new Intent(Destination_Location_Activity.this, Destination_Location_Activity.class));
+        Intent intent = new Intent(Destination_Location_Activity.this, Offer_ride_one_Activity.class);
+        intent.putExtra("Destination Location",centerScreenLatlng);
+        intent.putExtra("Source Location",sourceLocation);
+        startActivity(intent);
+    }
+
+    public void centerOnMyLocation(View view)
+    {
+        getDeviceLocation();
     }
 
     @Override
@@ -68,6 +76,9 @@ public class Destination_Location_Activity extends FragmentActivity implements O
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        sourceLocation = getIntent().getExtras().getParcelable("Source Location");
+        Log.d(TAG, "onCreate: source Location - Lat: "+sourceLocation.latitude+" Long: "+sourceLocation.longitude);
 
         initializingWidgets();
         getLocationPermission();
@@ -138,6 +149,7 @@ public class Destination_Location_Activity extends FragmentActivity implements O
                     if(location != null)
                     {
                         Log.d(TAG, "onComplete: lat: "+location.getLatitude()+" Long: "+location.getLongitude());
+                        addMarker(new LatLng(location.getLatitude(), location.getLongitude()), DEFAULT_ZOOM);
                     }
                     else
                     {
