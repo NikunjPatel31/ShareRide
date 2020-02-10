@@ -141,11 +141,13 @@ public class View_My_Cars_Activity extends AppCompatActivity {
                     {
                         holder.editBtn.setVisibility(View.VISIBLE);
                         holder.deleteBtn.setVisibility(View.INVISIBLE);
+                        holder.selectBtn.setVisibility(View.INVISIBLE);
                     }
                     else
                     {
                         holder.editBtn.setVisibility(View.INVISIBLE);
                         holder.deleteBtn.setVisibility(View.VISIBLE);
+                        holder.selectBtn.setVisibility(View.INVISIBLE);
                     }
 
                     holder.editBtn.setOnClickListener(new View.OnClickListener() {
