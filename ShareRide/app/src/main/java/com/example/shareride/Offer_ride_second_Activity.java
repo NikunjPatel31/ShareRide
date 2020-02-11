@@ -2,6 +2,7 @@ package com.example.shareride;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -136,5 +137,10 @@ public class Offer_ride_second_Activity extends AppCompatActivity {
         mChildDB.child("Date").setValue(date);
         mChildDB.child("Num_Seats").setValue(totalSeats);
         mChildDB.child("Cost_Per_Seat").setValue(costPerSeat);
+
+        Intent intent = new Intent(Offer_ride_second_Activity.this, Offered_Ride_Activity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+        finish();
     }
 }
