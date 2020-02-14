@@ -15,12 +15,17 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.airbnb.lottie.L;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -34,7 +39,6 @@ public class Offered_Ride_Activity extends AppCompatActivity {
     private static final String TAG = "Offered_Ride_Activity";
 
     private RecyclerView recyclerView;
-
     private FirebaseAuth mAtuh;
     private DatabaseReference mdatabaseReference;
     private FirebaseRecyclerOptions<OfferedRideDetails> options;
@@ -56,13 +60,6 @@ public class Offered_Ride_Activity extends AppCompatActivity {
 
         initalizingFirebaseRecyclerAdapter();
     }
-
-//    protected void onStart() {
-//        super.onStart();
-//
-//        initalizingFirebaseRecyclerAdapter();
-//
-//    }
 
     private void initializeWidgets()
     {
@@ -94,12 +91,42 @@ public class Offered_Ride_Activity extends AppCompatActivity {
             @Override
             protected void onBindViewHolder(@NonNull OfferedRideDetailsViewHolder holder, int position, @NonNull OfferedRideDetails model) {
                 Log.d(TAG, "onBindViewHolder: binding data into the recycler view.");
+                final String ride_id = getRef(position).getKey();
                 holder.setSourceLocation(getApplicationContext(),model.getSource_Location());
                 holder.setDestinationLocation(getApplicationContext(),model.getDestination_Location());
                 holder.setTime(model.getTime());
                 holder.setDate(model.getDate());
                 holder.setCost(model.getCost_Per_Seat());
                 holder.setSeats(model.getNum_Seats());
+
+                holder.infoBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(Offered_Ride_Activity.this, Info_Offered_Ride.class);
+                        intent.putExtra("Ride_id",ride_id);
+                        startActivity(intent);
+                    }
+                });
+
+                holder.cancelBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        mdatabaseReference.child(ride_id).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if(task.isSuccessful())
+                                {
+                                    Log.d(TAG, "onComplete: Ride_id:"+ride_id+" Removed successfully.");
+                                }
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.d(TAG, "onFailure: Ride_id: "+ride_id+" Exception: "+e.getLocalizedMessage());
+                            }
+                        });
+                    }
+                });
             }
 
             @NonNull
@@ -118,10 +145,13 @@ public class Offered_Ride_Activity extends AppCompatActivity {
     public static class OfferedRideDetailsViewHolder extends RecyclerView.ViewHolder
     {
         View mView;
+        Button infoBtn, cancelBtn;
 
         public OfferedRideDetailsViewHolder(@NonNull View itemView) {
             super(itemView);
             mView = itemView;
+            infoBtn = (Button) mView.findViewById(R.id.info_button);
+            cancelBtn = (Button) mView.findViewById(R.id.cancel_button);
         }
 
         public void setSourceLocation(Context context,String sourceLocation)
@@ -147,6 +177,7 @@ public class Offered_Ride_Activity extends AppCompatActivity {
         public void setCost(String cost)
         {
             TextView costTV = (TextView) mView.findViewById(R.id.cost_per_seat_textview);
+            cost = cost + " Rs / seat";
             costTV.setText(cost);
         }
         public void setSeats(String seats)
