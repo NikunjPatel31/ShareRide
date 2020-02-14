@@ -16,10 +16,15 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class Info_Offered_Ride extends AppCompatActivity {
 
@@ -27,12 +32,16 @@ public class Info_Offered_Ride extends AppCompatActivity {
 
     private TextView sourceLocationTV, destinationLocationTV, availableSeatsValueTV, costPerSeatTV
             , dateValueTV, timeValueTV;
+    private TextView carNameTV, modelTV, fuelTV, airConditionerTV, vechileNumberTV;
+    private CircleImageView carImageCV;
 
     private FirebaseAuth mAuth;
     private DatabaseReference mdatabaseReference;
-    private String UID, ride_id;
+    private StorageReference mStorageReference;
+    private String UID, ride_id, car_id;
 
     private String sourceLocation, destinationLocation, availableSeats, costPerSeats, date, time;
+    private String carName, model, fuel, airConditioner, vechileNumber, carImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +63,12 @@ public class Info_Offered_Ride extends AppCompatActivity {
         costPerSeatTV = (TextView) findViewById(R.id.cost_per_seat_value_textview);
         dateValueTV = (TextView) findViewById(R.id.date_value_textview);
         timeValueTV = (TextView) findViewById(R.id.time_value_textview);
+        carNameTV = (TextView) findViewById(R.id.car_name_textview);
+        modelTV = (TextView) findViewById(R.id.model_year_textview);
+        fuelTV = (TextView) findViewById(R.id.fuel_textview);
+        airConditionerTV = (TextView) findViewById(R.id.air_conditioner_textview);
+        vechileNumberTV = (TextView) findViewById(R.id.vehicle_number_textview);
+        carImageCV = (CircleImageView) findViewById(R.id.car_image);
     }
 
     private void initializeFirebaseInstances()
@@ -62,25 +77,19 @@ public class Info_Offered_Ride extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         UID = mAuth.getUid();
         ride_id = getIntent().getStringExtra("Ride_id");
-        mdatabaseReference = FirebaseDatabase.getInstance().getReference().child("Offer_Ride").child(UID).child(ride_id);
+        mdatabaseReference = FirebaseDatabase.getInstance().getReference();
+        mStorageReference = FirebaseStorage.getInstance().getReference();
         Log.d(TAG, "initializeFirebaseInstances: UID: "+UID);
     }
 
     private void getRideDetailsFromDatabase()
     {
-        DatabaseReference mChildDB = mdatabaseReference;
+        DatabaseReference mChildDB = mdatabaseReference.child("Offer_Ride").child(UID).child(ride_id);;
         mChildDB.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                String tem = dataSnapshot.child("Source_Location").getValue().toString();
-                sourceLocation = geocode(getApplicationContext(), tem);
-                tem = dataSnapshot.child("Destination_Location").getValue().toString();
-                destinationLocation = geocode(getApplicationContext(), tem);
-                availableSeats = dataSnapshot.child("Num_Seats").getValue().toString();
-                costPerSeats = dataSnapshot.child("Cost_Per_Seat").getValue().toString();
-                date = dataSnapshot.child("Date").getValue().toString();
-                time = dataSnapshot.child("Time").getValue().toString();
-                populateWidgets();
+                getDataForCardview1(dataSnapshot);
+                getDataForCardview2();
             }
 
             @Override
@@ -89,15 +98,65 @@ public class Info_Offered_Ride extends AppCompatActivity {
             }
         });
     }
-    private void populateWidgets()
+
+    private void getDataForCardview1(DataSnapshot dataSnapshot)
     {
-        Log.d(TAG, "populateWidgets: populating widgets.");
+        Log.d(TAG, "getDataForCardview1: getting data for cardview 1.");
+        String tem = dataSnapshot.child("Source_Location").getValue().toString();
+        sourceLocation = geocode(getApplicationContext(), tem);
+        tem = dataSnapshot.child("Destination_Location").getValue().toString();
+        destinationLocation = geocode(getApplicationContext(), tem);
+        availableSeats = dataSnapshot.child("Num_Seats").getValue().toString();
+        costPerSeats = dataSnapshot.child("Cost_Per_Seat").getValue().toString();
+        date = dataSnapshot.child("Date").getValue().toString();
+        time = dataSnapshot.child("Time").getValue().toString();
+        car_id = dataSnapshot.child("Car_id").getValue().toString();
+        populateWidgetsForCardview1();
+    }
+
+    private void getDataForCardview2()
+    {
+        Log.d(TAG, "getDataForCardview2: getting data for cardview 2.");
+        DatabaseReference mChildDB = mdatabaseReference.child("Cars").child(UID).child(car_id);
+        mChildDB.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Log.d(TAG, "onDataChange: getting car details for the ride.");
+                carName = dataSnapshot.child("Car_Name").getValue().toString();
+                model = dataSnapshot.child("Model_Year").getValue().toString();
+                fuel = dataSnapshot.child("Fuel").getValue().toString();
+                airConditioner = dataSnapshot.child("Air_Conditioner").getValue().toString();
+                vechileNumber = dataSnapshot.child("Vehicle_Number").getValue().toString();
+                carImage = dataSnapshot.child("Car_Image").getValue().toString();
+                populateWidgetsForCardview2();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+    private void populateWidgetsForCardview1()
+    {
+        Log.d(TAG, "populateWidgetsForCardview1: populating widgets.");
         sourceLocationTV.setText(sourceLocation);
         destinationLocationTV.setText(destinationLocation);
         availableSeatsValueTV.setText(availableSeats);
         costPerSeatTV.setText(costPerSeats);
         dateValueTV.setText(date);
         timeValueTV.setText(time);
+    }
+
+    private void populateWidgetsForCardview2()
+    {
+        Log.d(TAG, "populateWidgetsForCardview2: populating widgets.");
+        carNameTV.setText(carName);
+        modelTV.setText(model);
+        fuelTV.setText(fuel);
+        airConditionerTV.setText(airConditioner);
+        vechileNumberTV.setText(vechileNumber);
+        Picasso.get().load(carImage).into(carImageCV);
     }
     public static String geocode(Context context, String location)
     {
