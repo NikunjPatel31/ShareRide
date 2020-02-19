@@ -4,12 +4,15 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -37,11 +40,27 @@ public class Info_Offered_Ride extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
     private DatabaseReference mdatabaseReference;
-    private StorageReference mStorageReference;
     private String UID, ride_id, car_id;
 
     private String sourceLocation, destinationLocation, availableSeats, costPerSeats, date, time;
     private String carName, model, fuel, airConditioner, vechileNumber, carImage;
+    private LatLng sourceLatLng, destinationLatLng;
+
+    public void edit(View view)
+    {
+        Log.d(TAG, "edit: edit button pressed.");
+        Intent intent = new Intent(Info_Offered_Ride.this, Edit_Ride_Info_Activity.class);
+        intent.putExtra("Source_Latlng",sourceLatLng);
+        intent.putExtra("Destination_Latlng",destinationLatLng);
+        intent.putExtra("Available_seats",availableSeats);
+        intent.putExtra("Cost_Per_Seats",costPerSeats);
+        intent.putExtra("Date",date);
+        intent.putExtra("Time",time);
+        intent.putExtra("Car_name",carName);
+        intent.putExtra("Car_id",car_id);
+        intent.putExtra("Ride_id",ride_id);
+        startActivity(intent);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,7 +97,6 @@ public class Info_Offered_Ride extends AppCompatActivity {
         UID = mAuth.getUid();
         ride_id = getIntent().getStringExtra("Ride_id");
         mdatabaseReference = FirebaseDatabase.getInstance().getReference();
-        mStorageReference = FirebaseStorage.getInstance().getReference();
         Log.d(TAG, "initializeFirebaseInstances: UID: "+UID);
     }
 
@@ -104,8 +122,10 @@ public class Info_Offered_Ride extends AppCompatActivity {
         Log.d(TAG, "getDataForCardview1: getting data for cardview 1.");
         String tem = dataSnapshot.child("Source_Location").getValue().toString();
         sourceLocation = geocode(getApplicationContext(), tem);
+        sourceLatLng = geocode(tem);
         tem = dataSnapshot.child("Destination_Location").getValue().toString();
         destinationLocation = geocode(getApplicationContext(), tem);
+        destinationLatLng = geocode(tem);
         availableSeats = dataSnapshot.child("Num_Seats").getValue().toString();
         costPerSeats = dataSnapshot.child("Cost_Per_Seat").getValue().toString();
         date = dataSnapshot.child("Date").getValue().toString();
@@ -164,6 +184,8 @@ public class Info_Offered_Ride extends AppCompatActivity {
         String[] str = location.split(",");
         Log.d(TAG, "geocode: String1: "+str[0]+" String2: "+str[1]);
 
+        LatLng latLng = new LatLng(Double.parseDouble(str[0]), Double.parseDouble(str[1]));
+
         Geocoder geocoder = new Geocoder(context, Locale.getDefault());
         Address address = null;
         try {
@@ -179,6 +201,17 @@ public class Info_Offered_Ride extends AppCompatActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
         return null;
+    }
+
+    public static LatLng geocode(String location)
+    {
+        String[] str = location.split(",");
+        Log.d(TAG, "geocode: String1: "+str[0]+" String2: "+str[1]);
+
+        LatLng latLng = new LatLng(Double.parseDouble(str[0]), Double.parseDouble(str[1]));
+
+        return latLng;
     }
 }

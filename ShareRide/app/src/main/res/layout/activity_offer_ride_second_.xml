@@ -34,24 +34,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/offer_ride_title_textview" />
 
-    <!-- <Button
-        android:id="@+id/select_car_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginEnd="20dp"
-        android:background="@drawable/background_ripple_button_apply"
-        android:text="Select Car"
-        android:textSize="18sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/offer_ride_description_textview"
-        app:layout_constraintVertical_bias="0.07" /> -->
-
-
-
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
