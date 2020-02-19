@@ -34,7 +34,6 @@ public class LoginActivity extends AppCompatActivity {
             signInUser();
         }
     }
-
     public void goToSignInActivity(View view)
     {
         startActivity(new Intent(LoginActivity.this,EmailVerificationActivity.class));
