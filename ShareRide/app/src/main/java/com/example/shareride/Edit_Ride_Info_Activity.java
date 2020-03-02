@@ -3,6 +3,7 @@ package com.example.shareride;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
@@ -25,9 +26,13 @@ public class Edit_Ride_Info_Activity extends AppCompatActivity {
     private TextView sourceLocationTV, destinationLocationTV, dateTV, timeTV, carNameTV, seatValueTV;
     private EditText costPerSeatET;
     private String date, time, car_id, ride_id, availableSeats, costPerSeat, carName, sourceLocation, destinationLocation;
-    private LatLng sourceLatln, destinationLatlng;
+    private LatLng sourceLatln, destinationLatlng = null;
 
     private int counter = 0;
+
+    String activity = null;
+    private LatLng editSourceLatln = null;
+    private LatLng editDestinationLatln = null;
 
     public void increaseNumber(View view)
     {
@@ -53,6 +58,12 @@ public class Edit_Ride_Info_Activity extends AppCompatActivity {
         getWindow().setBackgroundDrawableResource(R.drawable.background5);
 
         initializeWidgets();
+        textViewOnClickListener();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         getIntentData();
         populatingWidgets();
     }
@@ -71,25 +82,39 @@ public class Edit_Ride_Info_Activity extends AppCompatActivity {
 
     private void getIntentData()
     {
-        Log.d(TAG, "getIntentData: getting data from intent.");
-        date = getIntent().getStringExtra("Date");
-        time = getIntent().getStringExtra("Time");
-        car_id = getIntent().getStringExtra("Car_id");
-        ride_id = getIntent().getStringExtra("Ride_id");
-        availableSeats = getIntent().getStringExtra("Available_seats");
-        costPerSeat = getIntent().getStringExtra("Cost_Per_Seats");
-        Log.d(TAG, "getIntentData: cost per seat: "+costPerSeat);
-        carName = getIntent().getStringExtra("Car_name");
-        sourceLatln = getIntent().getExtras().getParcelable("Source_Latlng");
-        destinationLatlng = getIntent().getExtras().getParcelable("Destination_Latlng");
+        activity = getIntent().getStringExtra("Activity");
+        Log.d(TAG, "getIntentData: activity: "+activity);
+        if(activity.equals("Edit_Source_Location"))
+        {
+            editSourceLatln = getIntent().getExtras().getParcelable("SourceLocationFinal");
+            Log.d(TAG, "getIntentData: edit Source Location Lat: "+editSourceLatln.latitude);
+            sourceLocation = geocode(this, Double.toString(editSourceLatln.latitude), Double.toString(editSourceLatln.longitude));
+            Log.d(TAG, "getIntentData: edit Source location name: "+sourceLocation);
+        }
+        else if(activity.equals("Info_offered_ride"))
+        {
+            Log.d(TAG, "getIntentData: getting data from intent.");
+            date = getIntent().getStringExtra("Date");
+            time = getIntent().getStringExtra("Time");
+            car_id = getIntent().getStringExtra("Car_id");
+            ride_id = getIntent().getStringExtra("Ride_id");
+            availableSeats = getIntent().getStringExtra("Available_seats");
+            costPerSeat = getIntent().getStringExtra("Cost_Per_Seats");
+            Log.d(TAG, "getIntentData: cost per seat: "+costPerSeat);
+            carName = getIntent().getStringExtra("Car_name");
+            sourceLatln = getIntent().getExtras().getParcelable("Source_Latlng");
+            destinationLatlng = getIntent().getExtras().getParcelable("Destination_Latlng");
 
-        sourceLocation = geocode(getApplicationContext(), Double.toString(sourceLatln.latitude), Double.toString(sourceLatln.longitude));
-        destinationLocation = geocode(getApplicationContext(), Double.toString(destinationLatlng.latitude), Double.toString(destinationLatlng.longitude));
+            sourceLocation = geocode(getApplicationContext(), Double.toString(sourceLatln.latitude), Double.toString(sourceLatln.longitude));
+            destinationLocation = geocode(getApplicationContext(), Double.toString(destinationLatlng.latitude), Double.toString(destinationLatlng.longitude));
+        }
+
     }
 
     private void populatingWidgets()
     {
         Log.d(TAG, "populatingWidgets: populating widgets.");
+        Log.d(TAG, "populatingWidgets: we got data from info_offered_ride activity");
         dateTV.setText(date);
         timeTV.setText(time);
         seatValueTV.setText(availableSeats);
@@ -97,6 +122,26 @@ public class Edit_Ride_Info_Activity extends AppCompatActivity {
         carNameTV.setText(carName);
         sourceLocationTV.setText(sourceLocation);
         destinationLocationTV.setText(destinationLocation);
+    }
+
+    public void textViewOnClickListener()
+    {
+        sourceLocationTV.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Edit_Ride_Info_Activity.this, Source_Location_Activity.class);
+                intent.putExtra("Activity","SourceLocationActivity");
+                intent.putExtra("Source_Location",sourceLatln);
+                intent.putExtra("Destination_Location",destinationLatlng);
+                intent.putExtra("Date",date);
+                intent.putExtra("Time",time);
+                intent.putExtra("Car_Name",carName);
+                intent.putExtra("Car_ID",car_id);
+                intent.putExtra("Total_Seats",availableSeats);
+                intent.putExtra("Cost_Per_Seat",costPerSeat);
+                startActivity(intent);
+            }
+        });
     }
 
     public static String geocode(Context context, String latitude, String longitude)

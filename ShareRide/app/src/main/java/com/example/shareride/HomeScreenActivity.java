@@ -28,7 +28,9 @@ public class HomeScreenActivity extends AppCompatActivity {
 
     public void add(View view)
     {
-        startActivity(new Intent(HomeScreenActivity.this, Source_Location_Activity.class));
+        Intent intent = new Intent(HomeScreenActivity.this, Source_Location_Activity.class);
+        intent.putExtra("Activity","SourceLocation");
+        startActivity(intent);
     }
 
     @Override
@@ -69,6 +71,11 @@ public class HomeScreenActivity extends AppCompatActivity {
         {
             case R.id.home:
                 Toast.makeText(this, "menu pressed.", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.app_bar_search:
+                Intent intent = new Intent(HomeScreenActivity.this, Source_Location_Activity.class);
+                intent.putExtra("Activity","Search_Ride");
+                startActivity(intent);
                 break;
                 default:
                     return false;

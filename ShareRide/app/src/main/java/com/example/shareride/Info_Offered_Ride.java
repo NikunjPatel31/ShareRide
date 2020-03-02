@@ -50,6 +50,7 @@ public class Info_Offered_Ride extends AppCompatActivity {
     {
         Log.d(TAG, "edit: edit button pressed.");
         Intent intent = new Intent(Info_Offered_Ride.this, Edit_Ride_Info_Activity.class);
+        intent.putExtra("Activity","Info_offered_ride");
         intent.putExtra("Source_Latlng",sourceLatLng);
         intent.putExtra("Destination_Latlng",destinationLatLng);
         intent.putExtra("Available_seats",availableSeats);

@@ -2,7 +2,10 @@ package com.example.shareride;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -15,6 +18,10 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
 
 public class Offer_ride_second_Activity extends AppCompatActivity {
 
@@ -130,7 +137,11 @@ public class Offer_ride_second_Activity extends AppCompatActivity {
         DatabaseReference mChildDB = mdatabaseReference.child("Offer_Ride").child(UID).push();
         String sourceLocationCord = sourceLocation.latitude + "," + sourceLocation.longitude;
         String destinationLocationCord = destinationLocation.latitude + "," + destinationLocation.longitude;
+        String sourceLocationName = geocode(getApplicationContext(),Double.toString(sourceLocation.latitude), Double.toString(sourceLocation.longitude));
+        String destinationLocationName = geocode(getApplicationContext(),Double.toString(destinationLocation.latitude), Double.toString(destinationLocation.longitude));
         mChildDB.child("Source_Location").setValue(sourceLocationCord);
+        mChildDB.child("Source_Location_Name").setValue(sourceLocationName);
+        mChildDB.child("Destination_Location_Name").setValue(destinationLocationName);
         mChildDB.child("Destination_Location").setValue(destinationLocationCord);
         mChildDB.child("Car_id").setValue(car_id);
         mChildDB.child("Time").setValue(time);
@@ -142,5 +153,26 @@ public class Offer_ride_second_Activity extends AppCompatActivity {
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
         finish();
+    }
+
+    public static String geocode(Context context, String latitude, String longitude)
+    {
+        String locationName = null;
+        Geocoder geocoder = new Geocoder(context, Locale.getDefault());
+        Address address = null;
+        try {
+            List<Address> list = geocoder.getFromLocation(Double.parseDouble(latitude), Double.parseDouble(longitude),1);
+
+            if(list.size() > 0)
+            {
+                address = list.get(0);
+                Log.d(TAG, "geocode: sub_admin_Area: "+address.getLocality());
+                locationName = address.getLocality();
+                return locationName;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

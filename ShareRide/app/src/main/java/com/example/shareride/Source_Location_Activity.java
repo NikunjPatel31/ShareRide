@@ -36,6 +36,9 @@ import com.google.android.gms.tasks.Task;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+
+import javax.xml.transform.Source;
 
 public class Source_Location_Activity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -51,13 +54,29 @@ public class Source_Location_Activity extends FragmentActivity implements OnMapR
     private final float DEFAULT_ZOOM = 15f;
     private final int ACCESS_FINE_LOCATION = 1;
 
+    private boolean sourceActivity = false;
+
+    private LatLng destinationLocation = null;
+    private String time, date, car_name, totalSeats, costPerSeat, carID = null;
+
     public void next(View view)
     {
         centerScreenLatlng = mMap.getCameraPosition().target;
         Log.d(TAG, "next: lat: "+centerScreenLatlng.latitude+" long: "+centerScreenLatlng.longitude);
-        Intent intent = new Intent(Source_Location_Activity.this, Destination_Location_Activity.class);
-        intent.putExtra("Source Location",centerScreenLatlng);
-        startActivity(intent);
+        if(sourceActivity)
+        {
+            Log.d(TAG, "next: location set...");
+            Intent intent = new Intent(Source_Location_Activity.this, Edit_Ride_Info_Activity.class);
+            intent.putExtra("Activity","Edit_Source_Location");
+            intent.putExtra("SourceLocationFinal",centerScreenLatlng);
+            startActivity(intent);
+        }
+        else
+        {
+            Intent intent = new Intent(Source_Location_Activity.this, Destination_Location_Activity.class);
+            intent.putExtra("Source Location",centerScreenLatlng);
+            startActivity(intent);
+        }
     }
 
     public void centerOnMyLocation(View view)
@@ -132,17 +151,44 @@ public class Source_Location_Activity extends FragmentActivity implements OnMapR
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,zoom));
     }
 
+    private void addMarkerToPosition()
+    {
+        Log.d(TAG, "addMarkerToPosition: adding marker to the source location.");
+        LatLng sourceLocation = getIntent().getExtras().getParcelable("Source_Location");
+        addMarker(sourceLocation, DEFAULT_ZOOM);
+    }
+
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        Log.d(TAG, "onMapReady: we are in onMapReady.");
+        String activity = null;
+        activity = getIntent().getStringExtra("Activity");
         if(location_permission)
         {
-            getDeviceLocation();
+            Log.d(TAG, "onMapReady: if block...");
+            if(activity.equals("Search_Ride"))
+            {
+                Toast.makeText(this, "We are comming from search activity.", Toast.LENGTH_SHORT).show();
+            }
+            else if(activity.equals("SourceLocationActivity"))
+            {
+                getIntentData();
+                sourceActivity = true;
+                Log.d(TAG, "onMapReady: we got source location coordinates");
+                addMarkerToPosition();
+            }
+            else if(activity.equals("SourceLocation"))
+            {
+                Log.d(TAG, "onMapReady: if na if na else ma...");
+                getDeviceLocation();
+            }
             Log.d(TAG, "onMapReady: permission: "+location_permission);
             mMap.setMyLocationEnabled(true);
         }
         else
         {
+            Log.d(TAG, "onMapReady: we are in else part.");
             getLocationPermission();
         }
     }
@@ -195,5 +241,13 @@ public class Source_Location_Activity extends FragmentActivity implements OnMapR
         Address address = list.get(0);
         LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
         addMarker(latLng, DEFAULT_ZOOM);
+    }
+    private void getIntentData()
+    {
+        Log.d(TAG, "getIntentData: getting intent data from Edit_Ride_Info_Activity.");
+        destinationLocation = getIntent().getExtras().getParcelable("Destination_Location");
+        date = getIntent().getStringExtra("Date");
+        time = getIntent().getStringExtra("Time");
+        car_name = getIntent().getStringExtra("Car_Name");
     }
 }
