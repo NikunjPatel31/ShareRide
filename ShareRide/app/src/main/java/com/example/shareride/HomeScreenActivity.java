@@ -2,6 +2,7 @@ package com.example.shareride;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -20,11 +21,6 @@ public class HomeScreenActivity extends AppCompatActivity {
 
     BottomAppBar bottomAppBar;
     FirebaseAuth mAuth;
-
-    public void click(View view)
-    {
-        startActivity(new Intent(HomeScreenActivity.this, Offered_Ride_Activity.class));
-    }
 
     public void add(View view)
     {
@@ -67,18 +63,20 @@ public class HomeScreenActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getGroupId())
+        Toast.makeText(this, "hello", Toast.LENGTH_SHORT).show();
+        switch (item.getItemId())
         {
             case R.id.home:
                 Toast.makeText(this, "menu pressed.", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.app_bar_search:
-                Intent intent = new Intent(HomeScreenActivity.this, Source_Location_Activity.class);
+                Intent intent = new Intent(HomeScreenActivity.this, SearchActivity.class);
                 intent.putExtra("Activity","Search_Ride");
                 startActivity(intent);
                 break;
-                default:
-                    return false;
+            default:
+                Log.d(TAG, "onOptionsItemSelected: default case.");
+                return false;
         }
         return true;
     }
