@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:dist="http://schemas.android.com/apk/distribution"
     package="com.example.shareride">
+
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
          Google Maps Android API v2, but you must specify either coarse or fine
@@ -23,13 +24,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".SearchRideResultActivity"></activity>
-        <activity android:name=".SearchActivity" />
-        <activity android:name=".Edit_Ride_Info_Activity" />
-        <activity android:name=".Info_Offered_Ride" />
-        <activity android:name=".Offered_Ride_Activity" />
-        <activity android:name=".Offer_ride_second_Activity" />
-        <activity android:name=".Offer_ride_one_Activity" />
+
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -42,6 +37,13 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
+        <activity android:name=".SearchRideResultActivity" />
+        <activity android:name=".SearchActivity" />
+        <activity android:name=".Edit_Ride_Info_Activity" />
+        <activity android:name=".Info_Offered_Ride" />
+        <activity android:name=".Offered_Ride_Activity" />
+        <activity android:name=".Offer_ride_second_Activity" />
+        <activity android:name=".Offer_ride_one_Activity" />
         <activity
             android:name=".Destination_Location_Activity"
             android:label="@string/title_activity_destination__location_" />

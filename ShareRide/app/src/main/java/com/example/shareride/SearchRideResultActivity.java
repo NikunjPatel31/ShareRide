@@ -40,6 +40,7 @@ public class SearchRideResultActivity extends AppCompatActivity {
     boolean flag = true;
     private ArrayList<SearchRideResultDetails> searchRideResultDetails = new ArrayList<>();
     private int arrayIndex = 0;
+    private ArrayList<String> userID = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -208,7 +209,7 @@ public class SearchRideResultActivity extends AppCompatActivity {
     }
     private void getEachRideDetails(DatabaseReference databaseReference, Map<String, Integer> map, final ArrayList<String> rideUID)
     {
-        ArrayList<String> UIDForOfferedRide = new ArrayList<>();
+        final ArrayList<String> UIDForOfferedRide = new ArrayList<>();
         int j = 0;
         Log.d(TAG, "getEachRideDetails: getting each ride details.");
         Set< Map.Entry< String,Integer> > st = map.entrySet();
@@ -227,11 +228,12 @@ public class SearchRideResultActivity extends AppCompatActivity {
             {
                 DatabaseReference mChildDB = databaseReference.child(UIDForOfferedRide.get(j)).child(rideUID.get(i));
                 final int finalI = i;
+                final int finalJ = j;
                 mChildDB.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         Log.d(TAG, "onDataChange: "+dataSnapshot.toString());
-                        matchRide(dataSnapshot,arrayIndex);
+                        matchRide(dataSnapshot,arrayIndex,UIDForOfferedRide.get(finalJ));
                         arrayIndex++;
                         if(finalI == rideUID.size()-1)
                         {
@@ -258,7 +260,7 @@ public class SearchRideResultActivity extends AppCompatActivity {
             }
         }
     }
-    private void matchRide(DataSnapshot dataSnapshot, int arrayIndex)
+    private void matchRide(DataSnapshot dataSnapshot, int arrayIndex, String userID)
     {
         if(sourceLocation.equals(dataSnapshot.child("Source_Location_Name").getValue())
                 && destinationLocation.equals(dataSnapshot.child("Destination_Location_Name").getValue())
@@ -273,6 +275,7 @@ public class SearchRideResultActivity extends AppCompatActivity {
             rideDetails.setNum_Seats(dataSnapshot.child("Num_Seats").getValue().toString());
             rideDetails.setSource_Location_Name(dataSnapshot.child("Source_Location_Name").getValue().toString());
             rideDetails.setTime(dataSnapshot.child("Time").getValue().toString());
+            rideDetails.setUserID(userID);
             searchRideResultDetails.add(rideDetails);
         }
     }
