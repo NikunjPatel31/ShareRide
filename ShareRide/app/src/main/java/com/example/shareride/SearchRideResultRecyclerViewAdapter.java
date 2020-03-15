@@ -1,12 +1,17 @@
 package com.example.shareride;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -21,16 +26,19 @@ import java.util.ArrayList;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
+
 public class SearchRideResultRecyclerViewAdapter extends RecyclerView.Adapter<SearchRideResultRecyclerViewAdapter.SearchRideResultDetailsViewHolder> {
 
     private static final String TAG = "SearchRideResultRecycle";
     private FirebaseAuth mAuth;
     private DatabaseReference databaseReference;
+    private Context context;
 
     public static ArrayList<SearchRideResultDetails> searchRideResultDetails;
-    public SearchRideResultRecyclerViewAdapter(ArrayList<SearchRideResultDetails> searchRideResultDetails)
+    public SearchRideResultRecyclerViewAdapter(ArrayList<SearchRideResultDetails> searchRideResultDetails, Context context)
     {
         SearchRideResultRecyclerViewAdapter.searchRideResultDetails = searchRideResultDetails;
+        this.context = context;
     }
 
     @NonNull
@@ -53,6 +61,13 @@ public class SearchRideResultRecyclerViewAdapter extends RecyclerView.Adapter<Se
         holder.setSourceLocationName(rideDetails.getSource_Location_Name());
         holder.setTime(rideDetails.getTime());
         holder.getRideDetails(rideDetails,rideDetails.getUserID(), position);
+
+        holder.infoBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                context.startActivity(new Intent(context,SearchRideResultInfoActivity.class));
+            }
+        });
     }
 
     @Override
@@ -63,9 +78,12 @@ public class SearchRideResultRecyclerViewAdapter extends RecyclerView.Adapter<Se
     public static class SearchRideResultDetailsViewHolder extends RecyclerView.ViewHolder
     {
         public View view;
+        Button infoBtn, requestBtn;
         public SearchRideResultDetailsViewHolder(@NonNull View itemView) {
             super(itemView);
             view = itemView;
+            infoBtn = (Button) view.findViewById(R.id.info_button);
+            requestBtn = (Button) view.findViewById(R.id.request_button);
         }
 
         public void setCostPerSeat(String costPerSeat)

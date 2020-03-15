@@ -37,6 +37,9 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
+        <activity
+            android:name=".SearchRideResultInfoActivity"
+            android:label="@string/title_activity_search_ride_result_info"></activity>
         <activity android:name=".SearchRideResultActivity" />
         <activity android:name=".SearchActivity" />
         <activity android:name=".Edit_Ride_Info_Activity" />
