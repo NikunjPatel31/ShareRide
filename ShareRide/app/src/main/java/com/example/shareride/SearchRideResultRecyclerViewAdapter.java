@@ -71,7 +71,6 @@ public class SearchRideResultRecyclerViewAdapter extends RecyclerView.Adapter<Se
         holder.infoBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Bundle bundle = new Bundle();
 
                 Intent intent = new Intent(context,SearchRideResultInfoActivity.class);
                 try {

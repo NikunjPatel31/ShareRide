@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/background5"
     tools:context=".SearchedRideCompleteInfoActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -62,7 +61,7 @@
                     android:id="@+id/rider_gender_textview"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="32dp"
+                    android:layout_marginEnd="16dp"
                     android:padding="7dp"
                     android:text="( Male )"
                     android:textSize="18sp"
@@ -85,7 +84,7 @@
                     android:id="@+id/rider_contact_button"
                     android:layout_width="wrap_content"
                     android:layout_height="30dp"
-                    android:layout_marginEnd="32dp"
+                    android:layout_marginEnd="16dp"
                     android:background="@drawable/background_ripple_button_apply"
                     android:text="contact"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -208,8 +207,8 @@
                 
                 <de.hdodenhof.circleimageview.CircleImageView
                     android:id="@+id/rider_car_photo"
-                    android:layout_width="110dp"
-                    android:layout_height="110dp"
+                    android:layout_width="90dp"
+                    android:layout_height="90dp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"/>
                 
@@ -281,6 +280,7 @@
                     app:layout_constraintTop_toBottomOf="@+id/rider_car_air_conditioner_textview"/>
 
                 <TextView
+                    android:id="@+id/rider_car_vehicle_number_value_textview"
                     android:layout_width="0dp"
                     style="@style/SearchRideCompleteInfoActivity_TextView_style"
                     android:text="GJ 12 AB 1234"

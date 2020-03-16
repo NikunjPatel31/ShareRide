@@ -275,6 +275,8 @@ public class SearchRideResultActivity extends AppCompatActivity {
             rideDetails.setSource_Location_Name(dataSnapshot.child("Source_Location_Name").getValue().toString());
             rideDetails.setTime(dataSnapshot.child("Time").getValue().toString());
             rideDetails.setUserID(userID);
+            rideDetails.setCar_id(dataSnapshot.child("Car_id").getValue().toString());
+            Log.d(TAG, "matchRide: car_id: "+dataSnapshot.child("Car_id").getValue().toString());
             searchRideResultDetails.add(rideDetails);
         }
     }

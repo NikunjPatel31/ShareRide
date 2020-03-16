@@ -63,7 +63,6 @@ public class HomeScreenActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        Toast.makeText(this, "hello", Toast.LENGTH_SHORT).show();
         switch (item.getItemId())
         {
             case R.id.home:

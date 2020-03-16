@@ -34,7 +34,10 @@ public class SearchRideResultInfoActivity extends FragmentActivity implements On
 
     public void moreInformation(View view)
     {
-        startActivity(new Intent(SearchRideResultInfoActivity.this, SearchedRideCompleteInfoActivity.class));
+        Intent intent = new Intent(SearchRideResultInfoActivity.this, SearchedRideCompleteInfoActivity.class);
+        intent.putExtra("Ride_Details",searchRideResultDetails);
+        intent.putExtra("Rider_Details",riderDetails);
+        startActivity(intent);
     }
 
     @Override

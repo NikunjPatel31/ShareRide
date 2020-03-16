@@ -6,7 +6,7 @@ import android.os.Parcelable;
 public class UserDetails implements Parcelable {
 
     private static final String TAG = "UserDetails";
-    String firstName, lastName, gender, contact, city, pincode, profilePicture, DOB, userID;
+    String firstName, lastName, gender, contact, city, pincode, profilePicture, DOB, userID, profilePhoto;
 
     public UserDetails()
     {
