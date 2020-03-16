@@ -122,10 +122,12 @@ public class SearchActivity extends AppCompatActivity implements DatePickerDialo
         Log.d(TAG, "validateFields: validating fields.");
         sourceLocation = sourceLocationET.getText().toString();
         destinationLocation = destinationLocationET.getText().toString();
-        if(!(TextUtils.isEmpty(sourceLocation)
+        Log.d(TAG, "validateFields: sourceLocation: "+TextUtils.isEmpty(date));
+
+        if(!((TextUtils.isEmpty(sourceLocation)
                 && TextUtils.isEmpty(destinationLocation)
                 && TextUtils.isEmpty(date)
-                && TextUtils.isEmpty(time)))
+                && TextUtils.isEmpty(time))))
         {
             Log.d(TAG, "validateFields: fields are validated.");
             return true;

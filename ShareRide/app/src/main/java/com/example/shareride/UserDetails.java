@@ -1,6 +1,9 @@
 package com.example.shareride;
 
-public class UserDetails {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class UserDetails implements Parcelable {
 
     private static final String TAG = "UserDetails";
     String firstName, lastName, gender, contact, city, pincode, profilePicture, DOB, userID;
@@ -21,6 +24,30 @@ public class UserDetails {
         this.DOB = DOB;
         this.userID = userID;
     }
+
+    protected UserDetails(Parcel in) {
+        firstName = in.readString();
+        lastName = in.readString();
+        gender = in.readString();
+        contact = in.readString();
+        city = in.readString();
+        pincode = in.readString();
+        profilePicture = in.readString();
+        DOB = in.readString();
+        userID = in.readString();
+    }
+
+    public static final Creator<UserDetails> CREATOR = new Creator<UserDetails>() {
+        @Override
+        public UserDetails createFromParcel(Parcel in) {
+            return new UserDetails(in);
+        }
+
+        @Override
+        public UserDetails[] newArray(int size) {
+            return new UserDetails[size];
+        }
+    };
 
     public String getFirstName() {
         return firstName;
@@ -92,5 +119,23 @@ public class UserDetails {
 
     public void setUserID(String userID) {
         this.userID = userID;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(firstName);
+        dest.writeString(lastName);
+        dest.writeString(gender);
+        dest.writeString(contact);
+        dest.writeString(city);
+        dest.writeString(pincode);
+        dest.writeString(profilePicture);
+        dest.writeString(DOB);
+        dest.writeString(userID);
     }
 }

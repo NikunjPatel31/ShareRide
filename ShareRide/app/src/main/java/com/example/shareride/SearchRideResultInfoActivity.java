@@ -1,8 +1,12 @@
 package com.example.shareride;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -10,10 +14,22 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class SearchRideResultInfoActivity extends FragmentActivity implements OnMapReadyCallback {
 
+    private static final String TAG = "SearchRideResultInfoAct";
+
     private GoogleMap mMap;
+    private SearchRideResultDetails searchRideResultDetails;
+    private TextView riderNameTV, ratingTV, sourceLocationTV, destinationLocationTV, timeTV, dateTV, seatTV, costPerSeatTV, genderTV;
+    private String riderUID=null;
+    private DatabaseReference databaseReference;
+    private UserDetails riderDetails=null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,18 +39,17 @@ public class SearchRideResultInfoActivity extends FragmentActivity implements On
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        initializeWidgets();
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        getIntentData();
+        populatingWidgets();
+    }
 
-    /**
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
-     * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
-     * installed Google Play services and returned to the app.
-     */
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
@@ -43,5 +58,56 @@ public class SearchRideResultInfoActivity extends FragmentActivity implements On
         LatLng sydney = new LatLng(-34, 151);
         mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+    }
+
+    private void getIntentData()
+    {
+        Log.d(TAG, "getIntentData: getting intent data.");
+        try
+        {
+            searchRideResultDetails = getIntent().getParcelableExtra("Ride_details");
+            riderDetails = getIntent().getParcelableExtra("Rider_Details");
+            riderUID = getIntent().getStringExtra("Rider_UID");
+        }
+        catch (Exception e)
+        {
+            Log.d(TAG, "getIntentData: Exception: "+e.getLocalizedMessage());
+        }
+    }
+    private void initializeWidgets()
+    {
+        Log.d(TAG, "initializeWidgets: initializing widgets.");
+        riderNameTV = (TextView) findViewById(R.id.rider_name_textview);
+        ratingTV = (TextView) findViewById(R.id.rating_textview);
+        sourceLocationTV = (TextView) findViewById(R.id.source_location_textview);
+        destinationLocationTV = (TextView) findViewById(R.id.destination_location_textview);
+        timeTV = (TextView) findViewById(R.id.time_value_textview);
+        dateTV = (TextView) findViewById(R.id.date_value_textview);
+        seatTV = (TextView) findViewById(R.id.seats_value_textview);
+        costPerSeatTV = (TextView) findViewById(R.id.cost_per_seat_textview);
+        genderTV = (TextView) findViewById(R.id.gender_value_textview);
+    }
+    private void populatingWidgets()
+    {
+        Log.d(TAG, "populatingWidgets: populating widgets.");
+
+        try
+        {
+            String firstName = riderDetails.getFirstName();
+            String lastName = riderDetails.getLastName();
+            String fullName = firstName+" "+lastName;
+            riderNameTV.setText(fullName);
+            sourceLocationTV.setText(searchRideResultDetails.getSource_Location_Name());
+            destinationLocationTV.setText(searchRideResultDetails.getDestination_Location_Name());
+            timeTV.setText(searchRideResultDetails.getTime());
+            dateTV.setText(searchRideResultDetails.getDate());
+            seatTV.setText(searchRideResultDetails.getNum_Seats());
+            costPerSeatTV.setText(searchRideResultDetails.getCost_Per_Seat());
+            genderTV.setText(riderDetails.getGender());
+        }
+        catch (Exception e)
+        {
+            Log.d(TAG, "populatingWidgets: Exception: "+e.getLocalizedMessage());
+        }
     }
 }

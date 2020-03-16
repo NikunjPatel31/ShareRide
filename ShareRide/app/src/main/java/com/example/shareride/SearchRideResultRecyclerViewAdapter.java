@@ -4,6 +4,9 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Bundle;
+import android.os.Parcelable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +25,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -33,6 +37,8 @@ public class SearchRideResultRecyclerViewAdapter extends RecyclerView.Adapter<Se
     private FirebaseAuth mAuth;
     private DatabaseReference databaseReference;
     private Context context;
+    public static UserDetails userDetails=null;
+    public static String riderUID=null;
 
     public static ArrayList<SearchRideResultDetails> searchRideResultDetails;
     public SearchRideResultRecyclerViewAdapter(ArrayList<SearchRideResultDetails> searchRideResultDetails, Context context)
@@ -50,7 +56,7 @@ public class SearchRideResultRecyclerViewAdapter extends RecyclerView.Adapter<Se
     }
 
     @Override
-    public void onBindViewHolder(@NonNull SearchRideResultDetailsViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull SearchRideResultDetailsViewHolder holder, final int position) {
 
         SearchRideResultDetails rideDetails = searchRideResultDetails.get(position);
 
@@ -65,7 +71,20 @@ public class SearchRideResultRecyclerViewAdapter extends RecyclerView.Adapter<Se
         holder.infoBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                context.startActivity(new Intent(context,SearchRideResultInfoActivity.class));
+                Bundle bundle = new Bundle();
+
+                Intent intent = new Intent(context,SearchRideResultInfoActivity.class);
+                try {
+                    intent.putExtra("Ride_details",searchRideResultDetails.get(position));
+                    intent.putExtra("Rider_Details",userDetails);
+                    intent.putExtra("Rider_UID",riderUID);
+                    context.startActivity(intent);
+                }
+                catch (Exception e)
+                {
+                    Log.d(TAG, "onClick: Exception: "+e.getLocalizedMessage());
+                }
+
             }
         });
     }
@@ -135,7 +154,7 @@ public class SearchRideResultRecyclerViewAdapter extends RecyclerView.Adapter<Se
             databaseReference.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    UserDetails userDetails = new UserDetails();
+                    userDetails = new UserDetails();
                     userDetails.setCity(dataSnapshot.child("City").getValue().toString());
                     userDetails.setContact(dataSnapshot.child("Contact").getValue().toString());
                     userDetails.setDOB(dataSnapshot.child("DOB").getValue().toString());
@@ -145,7 +164,7 @@ public class SearchRideResultRecyclerViewAdapter extends RecyclerView.Adapter<Se
                     userDetails.setPincode(dataSnapshot.child("Pincode").getValue().toString());
                     userDetails.setProfilePicture(dataSnapshot.child("Profile Picture").getValue().toString());
                     userDetails.setUserID(dataSnapshot.getKey());
-
+                    riderUID = dataSnapshot.getKey();
                     temSearchRideResultDetails.riderDetails = userDetails;
 
                     searchRideResultDetails.set(position, temSearchRideResultDetails);

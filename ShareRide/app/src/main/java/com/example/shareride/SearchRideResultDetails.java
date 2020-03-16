@@ -1,5 +1,7 @@
 package com.example.shareride;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -11,7 +13,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-public class SearchRideResultDetails {
+public class SearchRideResultDetails implements Parcelable{
 
     private static final String TAG = "SearchRideResultDetails";
     
@@ -36,7 +38,8 @@ public class SearchRideResultDetails {
             , String source_Location
             , String time
             , String userID
-            , String riderImage) {
+            , String riderImage
+            , UserDetails userDetails) {
         Destination_Location_Name = destination_Location_Name;
         Source_Location_Name = source_Location_Name;
         Car_id = car_id;
@@ -48,6 +51,37 @@ public class SearchRideResultDetails {
         Time = time;
         this.userID = userID;
         this.riderImage = riderImage;
+        this.riderDetails = userDetails;
+    }
+
+    protected SearchRideResultDetails(Parcel in) {
+        Destination_Location_Name = in.readString();
+        Source_Location_Name = in.readString();
+        Car_id = in.readString();
+        Cost_Per_Seat = in.readString();
+        Date = in.readString();
+        Destination_Location = in.readString();
+        Num_Seats = in.readString();
+        Source_Location = in.readString();
+        Time = in.readString();
+        userID = in.readString();
+        riderImage = in.readString();
+    }
+
+    public static final Creator<SearchRideResultDetails> CREATOR = new Creator<SearchRideResultDetails>() {
+        @Override
+        public SearchRideResultDetails createFromParcel(Parcel in) {
+            return new SearchRideResultDetails(in);
+        }
+
+        @Override
+        public SearchRideResultDetails[] newArray(int size) {
+            return new SearchRideResultDetails[size];
+        }
+    };
+
+    public void setRiderDetails(UserDetails riderDetails) {
+        this.riderDetails = riderDetails;
     }
 
     public void setDestination_Location_Name(String destination_Location_Name) {
@@ -161,5 +195,25 @@ public class SearchRideResultDetails {
 
             }
         });
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(Destination_Location_Name);
+        dest.writeString(Source_Location_Name);
+        dest.writeString(Car_id);
+        dest.writeString(Cost_Per_Seat);
+        dest.writeString(Date);
+        dest.writeString(Destination_Location);
+        dest.writeString(Num_Seats);
+        dest.writeString(Source_Location);
+        dest.writeString(Time);
+        dest.writeString(userID);
+        dest.writeString(riderImage);
     }
 }

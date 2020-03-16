@@ -267,7 +267,6 @@ public class SearchRideResultActivity extends AppCompatActivity {
                 && date.equals(dataSnapshot.child("Date").getValue())
                 && time.equals(dataSnapshot.child("Time").getValue()))
         {
-            Toast.makeText(this, "Match Found..."+dataSnapshot.getKey(), Toast.LENGTH_SHORT).show();
             SearchRideResultDetails rideDetails = new SearchRideResultDetails();
             rideDetails.setCost_Per_Seat(dataSnapshot.child("Cost_Per_Seat").getValue().toString());
             rideDetails.setDate(dataSnapshot.child("Date").getValue().toString());
