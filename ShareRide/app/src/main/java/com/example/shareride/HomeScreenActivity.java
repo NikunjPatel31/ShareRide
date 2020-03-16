@@ -73,6 +73,8 @@ public class HomeScreenActivity extends AppCompatActivity {
                 intent.putExtra("Activity","Search_Ride");
                 startActivity(intent);
                 break;
+            case R.id.app_bar_notification:
+                startActivity(new Intent(HomeScreenActivity.this, NotificationActivity.class));
             default:
                 Log.d(TAG, "onOptionsItemSelected: default case.");
                 return false;
