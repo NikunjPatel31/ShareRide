@@ -6,6 +6,7 @@ import androidx.fragment.app.FragmentActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -30,6 +31,11 @@ public class SearchRideResultInfoActivity extends FragmentActivity implements On
     private String riderUID=null;
     private DatabaseReference databaseReference;
     private UserDetails riderDetails=null;
+
+    public void moreInformation(View view)
+    {
+        startActivity(new Intent(SearchRideResultInfoActivity.this, SearchedRideCompleteInfoActivity.class));
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

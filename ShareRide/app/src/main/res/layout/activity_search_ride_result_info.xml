@@ -236,7 +236,8 @@
                 android:padding="5dp"
                 android:text="More Information"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/gender_textview" />
+                app:layout_constraintTop_toBottomOf="@id/gender_textview"
+                android:onClick="moreInformation"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

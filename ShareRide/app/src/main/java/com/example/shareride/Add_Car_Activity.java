@@ -349,4 +349,7 @@ public class Add_Car_Activity extends AppCompatActivity {
         }
 
     }
+
+    public void apply(View view) {
+    }
 }

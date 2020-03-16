@@ -1,0 +1,323 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background5"
+    tools:context=".SearchedRideCompleteInfoActivity">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/activity_title_textview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Ride Information"
+            android:textAlignment="center"
+            android:layout_marginTop="50dp"
+            android:textColor="@color/colorText"
+            android:textSize="36sp"
+            android:textStyle="bold"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/rider_personal_detail_cardview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            app:cardCornerRadius="10dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/activity_title_textview">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="5dp">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/rider_photo"
+                    android:layout_width="110dp"
+                    android:layout_height="110dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"/>
+
+                <TextView
+                    android:id="@+id/rider_name_textview"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Rider Name"
+                    android:textSize="22sp"
+                    android:textStyle="bold"
+                    android:padding="5dp"
+                    app:layout_constraintStart_toEndOf="@id/rider_photo"
+                    app:layout_constraintTop_toTopOf="parent"/>
+
+                <TextView
+                    android:id="@+id/rider_gender_textview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="32dp"
+                    android:padding="7dp"
+                    android:text="( Male )"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/rider_age_textview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="20 y/s"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:padding="5dp"
+                    app:layout_constraintStart_toEndOf="@+id/rider_photo"
+                    app:layout_constraintTop_toBottomOf="@id/rider_name_textview"/>
+
+                <Button
+                    android:id="@+id/rider_contact_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:layout_marginEnd="32dp"
+                    android:background="@drawable/background_ripple_button_apply"
+                    android:text="contact"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/rider_gender_textview" />
+
+                <TextView
+                    android:id="@+id/rider_city_textview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="City : "
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:padding="5dp"
+                    app:layout_constraintStart_toEndOf="@+id/rider_photo"
+                    app:layout_constraintTop_toBottomOf="@id/rider_age_textview"/>
+
+                <TextView
+                    android:id="@+id/rider_city_value_textview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="city value"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:padding="5dp"
+                    app:layout_constraintStart_toEndOf="@id/rider_city_textview"
+                    app:layout_constraintTop_toBottomOf="@id/rider_age_textview"/>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/rider_detail_cardview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            app:cardCornerRadius="10dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/rider_personal_detail_cardview">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="5dp">
+
+                <TextView
+                    android:id="@+id/ride_source_location_textview"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="SourceLocation"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:padding="5dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+                
+                <TextView
+                    android:id="@+id/ride_destination_location_textview"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Destination Location"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:padding="5dp" 
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"/>
+
+                <TextView
+                    android:id="@+id/ride_available_seat_textview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Available Seats : "
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:padding="5dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/ride_source_location_textview"/>
+
+                <TextView
+                    android:id="@+id/ride_available_seat_value_textview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="4"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:padding="5dp"
+                    app:layout_constraintStart_toEndOf="@+id/ride_available_seat_textview"
+                    app:layout_constraintTop_toBottomOf="@+id/ride_source_location_textview"/>
+
+                <TextView
+                    android:id="@+id/ride_cost_per_seat_textview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="420 Rs / seat"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:padding="5dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/ride_destination_location_textview"/>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/ride_car_detials_cardview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            app:cardCornerRadius="10dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/rider_detail_cardview">
+        
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="5dp">
+                
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/rider_car_photo"
+                    android:layout_width="110dp"
+                    android:layout_height="110dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"/>
+                
+                <TextView
+                    android:id="@+id/rider_car_name_textview"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="car name"
+                    android:textSize="22sp"
+                    android:textStyle="bold"
+                    android:padding="5dp"
+                    app:layout_constraintStart_toEndOf="@+id/rider_car_photo"
+                    app:layout_constraintTop_toTopOf="parent"/>
+
+                <TextView
+                    android:id="@+id/rider_car_model_textview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Model : "
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:padding="5dp"
+                    app:layout_constraintStart_toEndOf="@+id/rider_car_photo"
+                    app:layout_constraintTop_toBottomOf="@+id/rider_car_name_textview"/>
+
+                <TextView
+                    android:id="@+id/rider_car_model_value_textview"
+                    android:layout_width="0dp"
+                    style="@style/SearchRideCompleteInfoActivity_TextView_style"
+                    android:text="2014"
+                    android:textSize="18sp"
+                    app:layout_constraintStart_toEndOf="@+id/rider_car_model_textview"
+                    app:layout_constraintTop_toBottomOf="@+id/rider_car_name_textview"/>
+
+                <TextView
+                    android:id="@+id/rider_car_fuel_textview"
+                    android:layout_width="wrap_content"
+                    style="@style/SearchRideCompleteInfoActivity_TextView_style"
+                    android:text="Fuel : "
+                    android:textSize="18sp"
+                    app:layout_constraintStart_toEndOf="@+id/rider_car_photo"
+                    app:layout_constraintTop_toBottomOf="@+id/rider_car_model_textview"/>
+
+                <TextView
+                    android:id="@+id/rider_car_fuel_value_textview"
+                    android:layout_width="0dp"
+                    style="@style/SearchRideCompleteInfoActivity_TextView_style"
+                    android:text="Petrol"
+                    android:textSize="18sp"
+                    app:layout_constraintStart_toEndOf="@+id/rider_car_fuel_textview"
+                    app:layout_constraintTop_toBottomOf="@+id/rider_car_model_value_textview"/>
+
+                <TextView
+                    android:id="@+id/rider_car_air_conditioner_textview"
+                    android:layout_width="wrap_content"
+                    style="@style/SearchRideCompleteInfoActivity_TextView_style"
+                    android:text="AC"
+                    android:textSize="18sp"
+                    app:layout_constraintStart_toEndOf="@+id/rider_car_photo"
+                    app:layout_constraintTop_toBottomOf="@id/rider_car_fuel_textview"/>
+                
+                <TextView
+                    android:id="@+id/rider_car_vehicle_number_textview"
+                    android:layout_width="wrap_content"
+                    style="@style/SearchRideCompleteInfoActivity_TextView_style"
+                    android:text="Vehicle No : "
+                    android:textSize="18sp"
+                    app:layout_constraintStart_toEndOf="@+id/rider_car_photo"
+                    app:layout_constraintTop_toBottomOf="@+id/rider_car_air_conditioner_textview"/>
+
+                <TextView
+                    android:layout_width="0dp"
+                    style="@style/SearchRideCompleteInfoActivity_TextView_style"
+                    android:text="GJ 12 AB 1234"
+                    android:textSize="18sp"
+                    app:layout_constraintStart_toEndOf="@+id/rider_car_vehicle_number_textview"
+                    app:layout_constraintTop_toBottomOf="@+id/rider_car_air_conditioner_textview"/>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+            
+        </androidx.cardview.widget.CardView>
+
+        <Button
+            android:layout_width="110dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="100dp"
+            android:layout_marginBottom="50dp"
+            android:background="@drawable/background_ripple_edit_button"
+            android:text="Request"
+            android:textColor="@color/colorPrimary"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ride_car_detials_cardview" />
+
+        <Button
+            android:layout_width="110dp"
+            android:layout_height="40dp"
+            android:layout_marginEnd="32dp"
+            android:layout_marginBottom="50dp"
+            android:background="@drawable/background_ripple_button_cancel"
+            android:text="Cancel"
+            android:textSize="18sp"
+            android:textColor="@color/colorButtonCancelText"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+    
+</ScrollView>
