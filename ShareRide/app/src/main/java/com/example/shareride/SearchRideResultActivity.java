@@ -238,7 +238,7 @@ public class SearchRideResultActivity extends AppCompatActivity {
                         if(finalI == rideUID.size()-1)
                         {
                             Log.d(TAG, "getEachRideDetails: this is the correct place to call function.");
-                            recyclerView.setAdapter(new SearchRideResultRecyclerViewAdapter(searchRideResultDetails,getApplicationContext()));
+                            recyclerView.setAdapter(new SearchRideResultRecyclerViewAdapter(searchRideResultDetails,getApplicationContext(),mAuth));
                         }
                     }
 
@@ -276,7 +276,7 @@ public class SearchRideResultActivity extends AppCompatActivity {
             rideDetails.setTime(dataSnapshot.child("Time").getValue().toString());
             rideDetails.setUserID(userID);
             rideDetails.setCar_id(dataSnapshot.child("Car_id").getValue().toString());
-            Log.d(TAG, "matchRide: car_id: "+dataSnapshot.child("Car_id").getValue().toString());
+            rideDetails.setRideID(dataSnapshot.getKey());
             searchRideResultDetails.add(rideDetails);
         }
     }

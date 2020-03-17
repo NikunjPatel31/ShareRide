@@ -31,12 +31,14 @@ public class SearchRideResultInfoActivity extends FragmentActivity implements On
     private String riderUID=null;
     private DatabaseReference databaseReference;
     private UserDetails riderDetails=null;
+    private boolean requestFlag = false;
 
     public void moreInformation(View view)
     {
         Intent intent = new Intent(SearchRideResultInfoActivity.this, SearchedRideCompleteInfoActivity.class);
         intent.putExtra("Ride_Details",searchRideResultDetails);
         intent.putExtra("Rider_Details",riderDetails);
+        intent.putExtra("Request_Flag",requestFlag);
         startActivity(intent);
     }
 
@@ -76,6 +78,7 @@ public class SearchRideResultInfoActivity extends FragmentActivity implements On
         {
             searchRideResultDetails = getIntent().getParcelableExtra("Ride_details");
             riderDetails = getIntent().getParcelableExtra("Rider_Details");
+            requestFlag = getIntent().getBooleanExtra("Request_Flag",false);
             riderUID = getIntent().getStringExtra("Rider_UID");
         }
         catch (Exception e)

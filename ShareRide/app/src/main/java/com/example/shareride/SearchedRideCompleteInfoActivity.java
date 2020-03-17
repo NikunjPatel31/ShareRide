@@ -5,8 +5,10 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -24,9 +26,12 @@ public class SearchedRideCompleteInfoActivity extends AppCompatActivity {
     private TextView riderNameTV, riderGenderTV, riderAgeTV, riderCityTV;
     private TextView sourceLocationTV, destinationLocationTV, availabelSeatsTV, costPerSeatTV;
     private TextView carNameTV, carModelValueTV, carFuelTV, carAirConditionerTV, carVehicleNumberTV;
+    private Button requestBtn;
     private CircleImageView riderProfilePicture, riderCarPhoto;
     private String carID;
     private DatabaseReference databaseReference;
+    private FirebaseAuth mAuth;
+    private boolean requestFlag = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,6 +55,7 @@ public class SearchedRideCompleteInfoActivity extends AppCompatActivity {
         searchRideResultDetails = getIntent().getParcelableExtra("Ride_Details");
         riderDetails = getIntent().getParcelableExtra("Rider_Details");
         carID = searchRideResultDetails.getCar_id();
+        requestFlag = getIntent().getBooleanExtra("Request_Flag",false);
     }
     private void initializeWidgets()
     {
@@ -69,11 +75,13 @@ public class SearchedRideCompleteInfoActivity extends AppCompatActivity {
         carVehicleNumberTV = (TextView) findViewById(R.id.rider_car_vehicle_number_value_textview);
         riderProfilePicture = (CircleImageView) findViewById(R.id.rider_photo);
         riderCarPhoto = (CircleImageView) findViewById(R.id.rider_car_photo);
+        requestBtn = (Button) findViewById(R.id.request_button);
     }
     private void initializeFirebaseInstance()
     {
         Log.d(TAG, "initializeFirebaseInstance: initializing firebase instance.");
         databaseReference = FirebaseDatabase.getInstance().getReference();
+        mAuth = FirebaseAuth.getInstance();
     }
     private void getCarDetails()
     {
@@ -127,5 +135,20 @@ public class SearchedRideCompleteInfoActivity extends AppCompatActivity {
         // this value will change on the basis of the passenger of the ride... so i will write the code for that later.
         availabelSeatsTV.setText(searchRideResultDetails.getNum_Seats());
         costPerSeatTV.setText(searchRideResultDetails.getCost_Per_Seat());
+        if(requestFlag)
+        {
+            requestBtn.setText("Requested");
+        }
+        else
+        {
+            requestRide(searchRideResultDetails);
+        }
+    }
+    private void requestRide(SearchRideResultDetails searchRideResultDetails)
+    {
+        Log.d(TAG, "requestRide: requesting ride.");
+        DatabaseReference mChildDB = databaseReference.child("Registration").child(mAuth.getUid());
+        mChildDB.child("Offer_Ride_ID").setValue(searchRideResultDetails.getRideID());
+        mChildDB.child("Status").setValue("Not Accepted");
     }
 }

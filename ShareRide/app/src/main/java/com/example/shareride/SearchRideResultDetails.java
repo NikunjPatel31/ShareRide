@@ -20,12 +20,20 @@ public class SearchRideResultDetails implements Parcelable{
     String Destination_Location_Name, Source_Location_Name, Car_id, Cost_Per_Seat
             , Date, Destination_Location, Num_Seats, Source_Location
             , Time;
-    String userID, riderImage;
+    String userID, riderImage, rideID;
     UserDetails riderDetails;
 
     public SearchRideResultDetails()
     {
 
+    }
+
+    public String getRideID() {
+        return rideID;
+    }
+
+    public void setRideID(String rideID) {
+        this.rideID = rideID;
     }
 
     public SearchRideResultDetails(String destination_Location_Name
@@ -39,7 +47,8 @@ public class SearchRideResultDetails implements Parcelable{
             , String time
             , String userID
             , String riderImage
-            , UserDetails userDetails) {
+            , UserDetails userDetails
+            , String rideID) {
         Destination_Location_Name = destination_Location_Name;
         Source_Location_Name = source_Location_Name;
         Car_id = car_id;
@@ -52,6 +61,7 @@ public class SearchRideResultDetails implements Parcelable{
         this.userID = userID;
         this.riderImage = riderImage;
         this.riderDetails = userDetails;
+        this.rideID = rideID;
     }
 
     protected SearchRideResultDetails(Parcel in) {

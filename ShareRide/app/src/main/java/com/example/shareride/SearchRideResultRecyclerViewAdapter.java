@@ -17,6 +17,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -39,12 +41,15 @@ public class SearchRideResultRecyclerViewAdapter extends RecyclerView.Adapter<Se
     private Context context;
     public static UserDetails userDetails=null;
     public static String riderUID=null;
+    private boolean requestFlag = false;
 
     public static ArrayList<SearchRideResultDetails> searchRideResultDetails;
-    public SearchRideResultRecyclerViewAdapter(ArrayList<SearchRideResultDetails> searchRideResultDetails, Context context)
+    public SearchRideResultRecyclerViewAdapter(ArrayList<SearchRideResultDetails> searchRideResultDetails, Context context, FirebaseAuth mAuth)
     {
         SearchRideResultRecyclerViewAdapter.searchRideResultDetails = searchRideResultDetails;
         this.context = context;
+        this.mAuth = mAuth;
+        databaseReference = FirebaseDatabase.getInstance().getReference();
     }
 
     @NonNull
@@ -56,7 +61,7 @@ public class SearchRideResultRecyclerViewAdapter extends RecyclerView.Adapter<Se
     }
 
     @Override
-    public void onBindViewHolder(@NonNull SearchRideResultDetailsViewHolder holder, final int position) {
+    public void onBindViewHolder(@NonNull final SearchRideResultDetailsViewHolder holder, final int position) {
 
         SearchRideResultDetails rideDetails = searchRideResultDetails.get(position);
 
@@ -76,6 +81,7 @@ public class SearchRideResultRecyclerViewAdapter extends RecyclerView.Adapter<Se
                 try {
                     intent.putExtra("Ride_details",searchRideResultDetails.get(position));
                     intent.putExtra("Rider_Details",userDetails);
+                    intent.putExtra("Request_Flag",requestFlag);
                     intent.putExtra("Rider_UID",riderUID);
                     context.startActivity(intent);
                 }
@@ -86,6 +92,45 @@ public class SearchRideResultRecyclerViewAdapter extends RecyclerView.Adapter<Se
 
             }
         });
+        holder.requestBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(holder.requestBtn.getText().equals("Request"))
+                {
+                    requestRide(searchRideResultDetails.get(position));
+                    holder.requestBtn.setText("Requested");
+                    requestFlag = true;
+                }
+                else if(holder.requestBtn.getText().equals("Requested"))
+                {
+                    DatabaseReference mChild = FirebaseDatabase.getInstance().getReference().child("Registration").child(mAuth.getUid());
+                    mChild.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if(task.isSuccessful())
+                            {
+                                Log.d(TAG, "onComplete: request canceled.");
+                                holder.requestBtn.setText("Request");
+                                requestFlag = false;
+                            }
+                            else
+                            {
+                                Log.d(TAG, "onComplete: request not canceled. Exception: "+task.getException());
+                                requestFlag = true;
+                            }
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+    private void requestRide(SearchRideResultDetails searchRideResultDetails)
+    {
+        Log.d(TAG, "requestRide: requesting ride.");
+        DatabaseReference mChildDB = databaseReference.child("Registration").child(mAuth.getUid());
+        mChildDB.child("Offer_Ride_ID").setValue(searchRideResultDetails.getRideID());
+        mChildDB.child("Status").setValue("Not Accepted");
     }
 
     @Override
