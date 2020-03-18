@@ -14,12 +14,14 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -42,6 +44,7 @@ public class SearchRideResultRecyclerViewAdapter extends RecyclerView.Adapter<Se
     public static UserDetails userDetails=null;
     public static String riderUID=null;
     private boolean requestFlag = false;
+    private String requestKey = "";
 
     public static ArrayList<SearchRideResultDetails> searchRideResultDetails;
     public SearchRideResultRecyclerViewAdapter(ArrayList<SearchRideResultDetails> searchRideResultDetails, Context context, FirebaseAuth mAuth)
@@ -64,7 +67,7 @@ public class SearchRideResultRecyclerViewAdapter extends RecyclerView.Adapter<Se
     public void onBindViewHolder(@NonNull final SearchRideResultDetailsViewHolder holder, final int position) {
 
         SearchRideResultDetails rideDetails = searchRideResultDetails.get(position);
-
+        Log.d(TAG, "onBindViewHolder: userID: "+rideDetails.getUserID());
         holder.setCostPerSeat(rideDetails.getCost_Per_Seat());
         holder.setDate(rideDetails.getDate());
         holder.setDestinationLocationName(rideDetails.getDestination_Location_Name());
@@ -79,8 +82,19 @@ public class SearchRideResultRecyclerViewAdapter extends RecyclerView.Adapter<Se
 
                 Intent intent = new Intent(context,SearchRideResultInfoActivity.class);
                 try {
+                    SearchRideResultDetails tem = searchRideResultDetails.get(position);
                     intent.putExtra("Ride_details",searchRideResultDetails.get(position));
+                    Log.d(TAG, "onClick: First Name: "+tem.riderDetails.getFirstName());
+                    userDetails = tem.riderDetails;
                     intent.putExtra("Rider_Details",userDetails);
+                    if(holder.requestBtn.getText().equals("Requested"))
+                    {
+                        requestFlag = true;
+                    }
+                    else
+                    {
+                        requestFlag = false;
+                    }
                     intent.putExtra("Request_Flag",requestFlag);
                     intent.putExtra("Rider_UID",riderUID);
                     context.startActivity(intent);
@@ -92,19 +106,27 @@ public class SearchRideResultRecyclerViewAdapter extends RecyclerView.Adapter<Se
 
             }
         });
+        holder.checkRequestRide(position);
         holder.requestBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                DatabaseReference mChildDB = databaseReference.child("Registration").child(mAuth.getUid());
+
                 if(holder.requestBtn.getText().equals("Request"))
                 {
-                    requestRide(searchRideResultDetails.get(position));
+                    DatabaseReference tem = mChildDB.push();
+                    requestKey = tem.getKey();
+                    holder.setRequestKey(tem.getKey());
+                    Log.d(TAG, "onClick: request key: "+requestKey);
+                    requestRide(searchRideResultDetails.get(position), tem);
                     holder.requestBtn.setText("Requested");
                     requestFlag = true;
                 }
                 else if(holder.requestBtn.getText().equals("Requested"))
                 {
-                    DatabaseReference mChild = FirebaseDatabase.getInstance().getReference().child("Registration").child(mAuth.getUid());
-                    mChild.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                    Log.d(TAG, "onClick: requestID: "+holder.getRequestKey());
+                    DatabaseReference tem = mChildDB.child(holder.getRequestKey());
+                    tem.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             if(task.isSuccessful())
@@ -120,17 +142,18 @@ public class SearchRideResultRecyclerViewAdapter extends RecyclerView.Adapter<Se
                             }
                         }
                     });
+                    SearchRideResultDetails details = searchRideResultDetails.get(position);
+                    Log.d(TAG, "onClick: offer_ride_id: "+details.getRideID());
                 }
             }
         });
     }
 
-    private void requestRide(SearchRideResultDetails searchRideResultDetails)
+    private void requestRide(SearchRideResultDetails searchRideResultDetails,DatabaseReference databaseReference)
     {
         Log.d(TAG, "requestRide: requesting ride.");
-        DatabaseReference mChildDB = databaseReference.child("Registration").child(mAuth.getUid());
-        mChildDB.child("Offer_Ride_ID").setValue(searchRideResultDetails.getRideID());
-        mChildDB.child("Status").setValue("Not Accepted");
+        databaseReference.child("Offer_Ride_ID").setValue(searchRideResultDetails.getRideID());
+        databaseReference.child("Status").setValue("Not Accepted");
     }
 
     @Override
@@ -142,6 +165,10 @@ public class SearchRideResultRecyclerViewAdapter extends RecyclerView.Adapter<Se
     {
         public View view;
         Button infoBtn, requestBtn;
+        private int requestIDCounter = 1;
+        ArrayList<String> requestID = new ArrayList<>();
+        int requestIDChildrenCount = 0;
+        String requestKey="";
         public SearchRideResultDetailsViewHolder(@NonNull View itemView) {
             super(itemView);
             view = itemView;
@@ -194,7 +221,7 @@ public class SearchRideResultRecyclerViewAdapter extends RecyclerView.Adapter<Se
         }
         public void getRideDetails(final SearchRideResultDetails temSearchRideResultDetails, String userID, final int position)
         {
-            DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("Users").child(userID);
+            DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("Users").child(temSearchRideResultDetails.getUserID());
             databaseReference.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -203,11 +230,12 @@ public class SearchRideResultRecyclerViewAdapter extends RecyclerView.Adapter<Se
                     userDetails.setContact(dataSnapshot.child("Contact").getValue().toString());
                     userDetails.setDOB(dataSnapshot.child("DOB").getValue().toString());
                     userDetails.setFirstName(dataSnapshot.child("First Name").getValue().toString());
+                    Log.d(TAG, "onDataChange: ahkjh kjhaskjhjkdhfkh aksfk first Name: "+dataSnapshot.child("First Name").getValue().toString());
                     userDetails.setGender(dataSnapshot.child("Gender").getValue().toString());
                     userDetails.setLastName(dataSnapshot.child("Last Name").getValue().toString());
                     userDetails.setPincode(dataSnapshot.child("Pincode").getValue().toString());
                     userDetails.setProfilePicture(dataSnapshot.child("Profile Picture").getValue().toString());
-                    userDetails.setUserID(dataSnapshot.getKey());
+                    //userDetails.setUserID(dataSnapshot.getKey());
                     riderUID = dataSnapshot.getKey();
                     temSearchRideResultDetails.riderDetails = userDetails;
 
@@ -223,6 +251,131 @@ public class SearchRideResultRecyclerViewAdapter extends RecyclerView.Adapter<Se
 
                 }
             });
+        }
+
+        private void checkRequestRide(final int position)
+        {
+            final FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+            Log.d(TAG, "checkRequestRide: checking if the ride is already requested or not.");
+            final DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("Registration");
+            databaseReference.addChildEventListener(new ChildEventListener() {
+                @Override
+                public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                    Log.d(TAG, "onChildAdded: All Passenger UID: "+dataSnapshot.getKey());
+                    Log.d(TAG, "onChildAdded: children count: "+dataSnapshot.getChildrenCount());
+                    if(dataSnapshot.getKey().equals(firebaseAuth.getUid()))
+                    {
+                        requestIDChildrenCount = (int) dataSnapshot.getChildrenCount();
+                        Log.d(TAG, "onChildAdded: user has already requested for some ride.");
+                        final DatabaseReference childDB = databaseReference.child(firebaseAuth.getUid());
+                        childDB.addChildEventListener(new ChildEventListener() {
+                            @Override
+                            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                                Log.d(TAG, "onChildAdded: this child listener will get the request id.");
+                                Log.d(TAG, "onChildAdded: all request ID: "+dataSnapshot.getKey());
+                                requestID.add(dataSnapshot.getKey());
+                                if(requestIDCounter == requestIDChildrenCount)
+                                {
+                                    Log.d(TAG, "onChildAdded: requestID size: "+requestID.size());
+                                    getEachRequestIDDetails(childDB,requestID,position);
+                                }
+                                else
+                                {
+                                    Log.d(TAG, "onChildAdded: else value: "+requestIDCounter);
+                                }
+                                requestIDCounter++;
+
+                            }
+
+                            @Override
+                            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                            }
+
+                            @Override
+                            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+                            }
+
+                            @Override
+                            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
+                    }
+                    else
+                    {
+                        Log.d(TAG, "onChildAdded: user have not requested for any ride till now.");
+                    }
+
+                }
+
+                @Override
+                public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                }
+
+                @Override
+                public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+                }
+
+                @Override
+                public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+        }
+        private void getEachRequestIDDetails(DatabaseReference childDB, ArrayList<String> requestID, final int position)
+        {
+            Log.d(TAG, "getEachRequestIDDetails: getting each request ID details"+requestID.size());
+            for(int i = 0;i < requestID.size();i++)
+            {
+                DatabaseReference mChildDB = childDB.child(requestID.get(i));
+                mChildDB.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        Log.d(TAG, "onDataChange: offered_RideID: "+dataSnapshot.child("Offer_Ride_ID").getValue());
+                        Log.d(TAG, "onDataChange: status: "+dataSnapshot.child("Status").getValue());
+                        SearchRideResultDetails tem = searchRideResultDetails.get(position);
+                        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+                        Log.d(TAG, "onDataChange: ride ID: "+tem.getRideID());
+                        if(tem.getRideID().equals(dataSnapshot.child("Offer_Ride_ID").getValue()))
+                        {
+                            Log.d(TAG, "onDataChange: user has requested the ride.");
+                            setRequestKey(dataSnapshot.getKey());
+                            requestBtn.setText("Requested");
+                        }
+                        else
+                        {
+                            Log.d(TAG, "onDataChange: user has not requested the ride");
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+            }
+        }
+        private void setRequestKey(String requestKey)
+        {
+            this.requestKey = requestKey;
+        }
+        private String getRequestKey()
+        {
+            return requestKey;
         }
     }
 }

@@ -147,7 +147,7 @@ public class SearchedRideCompleteInfoActivity extends AppCompatActivity {
     private void requestRide(SearchRideResultDetails searchRideResultDetails)
     {
         Log.d(TAG, "requestRide: requesting ride.");
-        DatabaseReference mChildDB = databaseReference.child("Registration").child(mAuth.getUid());
+        DatabaseReference mChildDB = databaseReference.child("Registration").child(mAuth.getUid()).push();
         mChildDB.child("Offer_Ride_ID").setValue(searchRideResultDetails.getRideID());
         mChildDB.child("Status").setValue("Not Accepted");
     }

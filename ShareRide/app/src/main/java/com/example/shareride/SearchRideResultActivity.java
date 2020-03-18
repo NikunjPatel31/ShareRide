@@ -41,6 +41,8 @@ public class SearchRideResultActivity extends AppCompatActivity {
     private ArrayList<SearchRideResultDetails> searchRideResultDetails = new ArrayList<>();
     private int arrayIndex = 0;
     private ArrayList<String> userID = new ArrayList<>();
+    private int mainTableCounter = 1;
+    private Map<Integer,String> priority = new HashMap<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,16 +83,18 @@ public class SearchRideResultActivity extends AppCompatActivity {
     private void getUIDForOfferedRide()
     {
         Log.d(TAG, "getUIDForOfferedRide: getting UID for offered ride.");
-
+        boolean flag = false;
         DatabaseReference mChild = mDatabaseReference;
         mChild.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                Log.d(TAG, "onChildAdded: mDatabase dataSnapshot size: "+dataSnapshot.getChildrenCount());
                 Counter++;
+
                 if(Counter == 2)
                 {
-                    Log.d(TAG, "onChildAdded: mDatabase dataSnapshot size: "+dataSnapshot.getChildrenCount());
-                    getUIDofRide();
+                    Log.d(TAG, "onChildAdded: counter value: "+dataSnapshot.getChildrenCount());
+                    getUIDofRide((int) dataSnapshot.getChildrenCount());
                 }
             }
 
@@ -115,7 +119,7 @@ public class SearchRideResultActivity extends AppCompatActivity {
             }
         });
     }
-    private void getUIDofRide()
+    private void getUIDofRide(final int counter)
     {
         final DatabaseReference mChildDB = mDatabaseReference.child("Offer_Ride");
         mChildDB.addChildEventListener(new ChildEventListener() {
@@ -129,10 +133,12 @@ public class SearchRideResultActivity extends AppCompatActivity {
                 UIDsum += dataSnapshot.getChildrenCount();
                 Log.d(TAG, "onChildAdded: UIDsum: "+UIDsum);
                 localCounter++;
+                priority.put(localCounter,dataSnapshot.getKey());
                 Log.d(TAG, "onChildAdded: localCounter: "+localCounter);
 
-                if(localCounter == Counter-1)
+                if(localCounter == counter)
                 {
+                    Log.d(TAG, "onChildAdded: localCounter == counter-1"+counter);
                     getAllRides(mChildDB,UIDForOfferedRide);
                 }
                 else
@@ -178,8 +184,12 @@ public class SearchRideResultActivity extends AppCompatActivity {
                     Log.d(TAG, "onChildAdded: RideID: "+dataSnapshot.getKey());
                     RideID.add(dataSnapshot.getKey());
                     localCounter++;
+                    Log.d(TAG, "onChildAdded: RideUID size outside the if block: "+RideID.size());
                     if(localCounter == UIDsum)
                     {
+                        Log.d(TAG, "onChildAdded: RideUID Size: "+RideID.size());
+                        Log.d(TAG, "onChildAdded: Counter Size: "+UIDsum);
+                        Log.d(TAG, "onChildAdded: localCounter: "+localCounter);
                         getEachRideDetails(superChildDB, map, RideID);
                     }
                 }
@@ -210,8 +220,9 @@ public class SearchRideResultActivity extends AppCompatActivity {
     private void getEachRideDetails(DatabaseReference databaseReference, Map<String, Integer> map, final ArrayList<String> rideUID)
     {
         final ArrayList<String> UIDForOfferedRide = new ArrayList<>();
-        int j = 0;
+        int j = 0, temJ = 1;
         Log.d(TAG, "getEachRideDetails: getting each ride details.");
+        Log.d(TAG, "getEachRideDetails: map value: "+map.toString());
         Set< Map.Entry< String,Integer> > st = map.entrySet();
         for (Map.Entry< String,Integer> me:st)
         {
@@ -220,25 +231,34 @@ public class SearchRideResultActivity extends AppCompatActivity {
             j++;
         }
         j--;
-        Log.d(TAG, "getEachRideDetails: map Child: "+map.get(UIDForOfferedRide.get(j)));
         int innerCounter = 0;
+        Log.d(TAG, "getEachRideDetails: total number of rides in app: "+rideUID.size());
         for(int i = 0; i < rideUID.size();i++)
         {
-            if(innerCounter != (map.get(UIDForOfferedRide.get(j))))
+            Log.d(TAG, "getEachRideDetails: new idea: "+map.get(priority.get(temJ)));
+            if(innerCounter != (map.get(priority.get(temJ))))
             {
-                DatabaseReference mChildDB = databaseReference.child(UIDForOfferedRide.get(j)).child(rideUID.get(i));
+                Log.d(TAG, "getEachRideDetails: map Child: "+map.get(priority.get(temJ)));
+                Log.d(TAG, "getEachRideDetails: userID of the rider: "+UIDForOfferedRide.get(j));
+                Log.d(TAG, "getEachRideDetails: rideID of the ride: "+rideUID.get(i));
+                DatabaseReference mChildDB = databaseReference.child(priority.get(temJ)).child(rideUID.get(i));
                 final int finalI = i;
                 final int finalJ = j;
+                final int finalTemJ = temJ;
                 mChildDB.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         Log.d(TAG, "onDataChange: "+dataSnapshot.toString());
-                        matchRide(dataSnapshot,arrayIndex,UIDForOfferedRide.get(finalJ));
+                        matchRide(dataSnapshot,arrayIndex,priority.get(finalTemJ));
                         arrayIndex++;
                         if(finalI == rideUID.size()-1)
                         {
                             Log.d(TAG, "getEachRideDetails: this is the correct place to call function.");
                             recyclerView.setAdapter(new SearchRideResultRecyclerViewAdapter(searchRideResultDetails,getApplicationContext(),mAuth));
+                        }
+                        else
+                        {
+                            Log.d(TAG, "onDataChange: there is a problem in the code."+rideUID.size());
                         }
                     }
 
@@ -251,6 +271,7 @@ public class SearchRideResultActivity extends AppCompatActivity {
             }
             else
             {
+                temJ++;
                 i--;
                 if(j > 0)
                 {

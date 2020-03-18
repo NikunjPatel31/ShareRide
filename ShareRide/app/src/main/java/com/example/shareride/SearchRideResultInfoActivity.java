@@ -77,7 +77,9 @@ public class SearchRideResultInfoActivity extends FragmentActivity implements On
         try
         {
             searchRideResultDetails = getIntent().getParcelableExtra("Ride_details");
+            Log.d(TAG, "getIntentData: userID: "+searchRideResultDetails.getUserID());
             riderDetails = getIntent().getParcelableExtra("Rider_Details");
+            Log.d(TAG, "getIntentData: first Name: "+riderDetails.getFirstName());
             requestFlag = getIntent().getBooleanExtra("Request_Flag",false);
             riderUID = getIntent().getStringExtra("Rider_UID");
         }
