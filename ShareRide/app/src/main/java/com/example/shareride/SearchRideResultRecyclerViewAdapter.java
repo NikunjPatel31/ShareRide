@@ -83,8 +83,8 @@ public class SearchRideResultRecyclerViewAdapter extends RecyclerView.Adapter<Se
                 Intent intent = new Intent(context,SearchRideResultInfoActivity.class);
                 try {
                     SearchRideResultDetails tem = searchRideResultDetails.get(position);
+                    Log.d(TAG, "onClick: Ride_ID: "+tem.getRideID());
                     intent.putExtra("Ride_details",searchRideResultDetails.get(position));
-                    Log.d(TAG, "onClick: First Name: "+tem.riderDetails.getFirstName());
                     userDetails = tem.riderDetails;
                     intent.putExtra("Rider_Details",userDetails);
                     if(holder.requestBtn.getText().equals("Requested"))
@@ -97,6 +97,10 @@ public class SearchRideResultRecyclerViewAdapter extends RecyclerView.Adapter<Se
                     }
                     intent.putExtra("Request_Flag",requestFlag);
                     intent.putExtra("Rider_UID",riderUID);
+                    String path = holder.databaseReference.toString();
+                    Log.d(TAG, "onClick: String path"+path);
+                    intent.putExtra("DatabaseReference",path);
+                    Log.d(TAG, "onDataChange: user has info button is pressed. now there will be change in the log file... just see it");
                     context.startActivity(intent);
                 }
                 catch (Exception e)
@@ -147,6 +151,16 @@ public class SearchRideResultRecyclerViewAdapter extends RecyclerView.Adapter<Se
                 }
             }
         });
+
+        if(holder.flag)
+        {
+            holder.requestBtn.setText("Requested");
+        }
+        else
+        {
+            holder.requestBtn.setText("Request");
+        }
+
     }
 
     private void requestRide(SearchRideResultDetails searchRideResultDetails,DatabaseReference databaseReference)
@@ -169,6 +183,9 @@ public class SearchRideResultRecyclerViewAdapter extends RecyclerView.Adapter<Se
         ArrayList<String> requestID = new ArrayList<>();
         int requestIDChildrenCount = 0;
         String requestKey="";
+        DatabaseReference databaseReference;
+        private boolean flag = false;
+
         public SearchRideResultDetailsViewHolder(@NonNull View itemView) {
             super(itemView);
             view = itemView;
@@ -339,6 +356,7 @@ public class SearchRideResultRecyclerViewAdapter extends RecyclerView.Adapter<Se
         private void getEachRequestIDDetails(DatabaseReference childDB, ArrayList<String> requestID, final int position)
         {
             Log.d(TAG, "getEachRequestIDDetails: getting each request ID details"+requestID.size());
+            setDataSnapshot(childDB);
             for(int i = 0;i < requestID.size();i++)
             {
                 DatabaseReference mChildDB = childDB.child(requestID.get(i));
@@ -353,11 +371,19 @@ public class SearchRideResultRecyclerViewAdapter extends RecyclerView.Adapter<Se
                         if(tem.getRideID().equals(dataSnapshot.child("Offer_Ride_ID").getValue()))
                         {
                             Log.d(TAG, "onDataChange: user has requested the ride.");
+                            Log.d(TAG, "onDataChange: user has database Ride_ID: "+dataSnapshot.child("Offer_Ride_ID").getValue());
+                            Log.d(TAG, "onDataChange: user has Ride_ID: "+tem.getRideID());
                             setRequestKey(dataSnapshot.getKey());
                             requestBtn.setText("Requested");
+                            flag = true;
+
                         }
                         else
                         {
+                            flag = false;
+                            requestBtn.setText("Request");
+                            Log.d(TAG, "onDataChange: user has Ride_ID: "+tem.getRideID());
+                            Log.d(TAG, "onDataChange: user has database Ride_ID: "+dataSnapshot.child("Offer_Ride_ID").getValue());
                             Log.d(TAG, "onDataChange: user has not requested the ride");
                         }
                     }
@@ -368,6 +394,14 @@ public class SearchRideResultRecyclerViewAdapter extends RecyclerView.Adapter<Se
                     }
                 });
             }
+        }
+        private void setDataSnapshot(DatabaseReference databaseReference)
+        {
+            this.databaseReference = databaseReference;
+        }
+        private DatabaseReference getDataSnapshot()
+        {
+            return databaseReference;
         }
         private void setRequestKey(String requestKey)
         {

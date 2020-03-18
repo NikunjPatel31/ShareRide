@@ -32,6 +32,7 @@ public class SearchRideResultInfoActivity extends FragmentActivity implements On
     private DatabaseReference databaseReference;
     private UserDetails riderDetails=null;
     private boolean requestFlag = false;
+    private String path;
 
     public void moreInformation(View view)
     {
@@ -39,6 +40,7 @@ public class SearchRideResultInfoActivity extends FragmentActivity implements On
         intent.putExtra("Ride_Details",searchRideResultDetails);
         intent.putExtra("Rider_Details",riderDetails);
         intent.putExtra("Request_Flag",requestFlag);
+        intent.putExtra("DatabaseReference",path);
         startActivity(intent);
     }
 
@@ -77,11 +79,11 @@ public class SearchRideResultInfoActivity extends FragmentActivity implements On
         try
         {
             searchRideResultDetails = getIntent().getParcelableExtra("Ride_details");
-            Log.d(TAG, "getIntentData: userID: "+searchRideResultDetails.getUserID());
             riderDetails = getIntent().getParcelableExtra("Rider_Details");
-            Log.d(TAG, "getIntentData: first Name: "+riderDetails.getFirstName());
+            Log.d(TAG, "getIntentData: Ride_ID: "+searchRideResultDetails.getRideID());
             requestFlag = getIntent().getBooleanExtra("Request_Flag",false);
             riderUID = getIntent().getStringExtra("Rider_UID");
+            path = getIntent().getStringExtra("DatabaseReference");
         }
         catch (Exception e)
         {

@@ -76,6 +76,7 @@ public class SearchRideResultDetails implements Parcelable{
         Time = in.readString();
         userID = in.readString();
         riderImage = in.readString();
+        rideID = in.readString();
     }
 
     public static final Creator<SearchRideResultDetails> CREATOR = new Creator<SearchRideResultDetails>() {
@@ -225,5 +226,6 @@ public class SearchRideResultDetails implements Parcelable{
         dest.writeString(Time);
         dest.writeString(userID);
         dest.writeString(riderImage);
+        dest.writeString(rideID);
     }
 }

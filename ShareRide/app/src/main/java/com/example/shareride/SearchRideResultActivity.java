@@ -52,13 +52,19 @@ public class SearchRideResultActivity extends AppCompatActivity {
         initializeWidgets();
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         initializeFirebaseObjects();
-        getUIDForOfferedRide();
     }
 
     @Override
     protected void onStart() {
         super.onStart();
         Log.d(TAG, "onStart: inside the onStart method.");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d(TAG, "onResume: inside the onResume method.");
+        getUIDForOfferedRide();
     }
 
     private void initializeWidgets()
