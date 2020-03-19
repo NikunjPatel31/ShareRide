@@ -65,7 +65,6 @@ public class SearchRideResultRecyclerViewAdapter extends RecyclerView.Adapter<Se
 
     @Override
     public void onBindViewHolder(@NonNull final SearchRideResultDetailsViewHolder holder, final int position) {
-
         SearchRideResultDetails rideDetails = searchRideResultDetails.get(position);
         Log.d(TAG, "onBindViewHolder: userID: "+rideDetails.getUserID());
         holder.setCostPerSeat(rideDetails.getCost_Per_Seat());
@@ -75,6 +74,25 @@ public class SearchRideResultRecyclerViewAdapter extends RecyclerView.Adapter<Se
         holder.setSourceLocationName(rideDetails.getSource_Location_Name());
         holder.setTime(rideDetails.getTime());
         holder.getRideDetails(rideDetails,rideDetails.getUserID(), position);
+        Log.d(TAG, "onBindViewHolder: checking is this is getting called every time.");
+        if(position == SearchRideResultDetailsViewHolder.viewPosition)
+        {
+            if(SearchRideResultDetailsViewHolder.requestViewValue)
+            {
+                holder.requestBtn.setText("Requested");
+                Log.d(TAG, "onBindViewHolder: requested is the value");
+            }
+            else
+            {
+                holder.requestBtn.setText("Request");
+                Log.d(TAG, "onBindViewHolder: request is the value");
+            }
+        }
+        else
+        {
+            Log.d(TAG, "onBindViewHolder: position: "+position);
+            Log.d(TAG, "onBindViewHolder: viewPosition: "+SearchRideResultDetailsViewHolder.viewPosition);
+        }
 
         holder.infoBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -100,6 +118,8 @@ public class SearchRideResultRecyclerViewAdapter extends RecyclerView.Adapter<Se
                     String path = holder.databaseReference.toString();
                     Log.d(TAG, "onClick: String path"+path);
                     intent.putExtra("DatabaseReference",path);
+                    SearchRideResultDetailsViewHolder.viewPosition = position;
+                    Log.d(TAG, "onClick: viewPosition: "+SearchRideResultDetailsViewHolder.viewPosition);
                     Log.d(TAG, "onDataChange: user has info button is pressed. now there will be change in the log file... just see it");
                     context.startActivity(intent);
                 }
@@ -174,7 +194,6 @@ public class SearchRideResultRecyclerViewAdapter extends RecyclerView.Adapter<Se
         {
             holder.requestBtn.setText("Request");
         }
-
     }
 
     private void requestRide(SearchRideResultDetails searchRideResultDetails,DatabaseReference databaseReference)
@@ -205,6 +224,8 @@ public class SearchRideResultRecyclerViewAdapter extends RecyclerView.Adapter<Se
         String requestKey="";
         DatabaseReference databaseReference;
         private boolean flag = false;
+        static int viewPosition;
+        static boolean requestViewValue;
 
         public SearchRideResultDetailsViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -310,6 +331,7 @@ public class SearchRideResultRecyclerViewAdapter extends RecyclerView.Adapter<Se
                             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                                 Log.d(TAG, "onChildAdded: this child listener will get the request id.");
                                 Log.d(TAG, "onChildAdded: all request ID: "+dataSnapshot.getKey());
+                                Log.d(TAG, "onChildAdded: request_ID Children Count: "+dataSnapshot.getChildrenCount());
                                 requestID.add(dataSnapshot.getKey());
                                 if(requestIDCounter == requestIDChildrenCount)
                                 {
@@ -331,7 +353,7 @@ public class SearchRideResultRecyclerViewAdapter extends RecyclerView.Adapter<Se
 
                             @Override
                             public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-
+                                Log.d(TAG, "onChildRemoved: dataSnapshot children: "+dataSnapshot.getChildrenCount());
                             }
 
                             @Override
@@ -354,12 +376,14 @@ public class SearchRideResultRecyclerViewAdapter extends RecyclerView.Adapter<Se
 
                 @Override
                 public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
+                    Log.d(TAG, "onChildChanged: inner dataSnapshot children: "+dataSnapshot.toString());
+                    requestBtn.setText("Requested");
                 }
 
                 @Override
                 public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-
+                    Log.d(TAG, "onChildRemoved: inner dataSnapshot children: "+dataSnapshot.toString());
+                    requestBtn.setText("Request");
                 }
 
                 @Override

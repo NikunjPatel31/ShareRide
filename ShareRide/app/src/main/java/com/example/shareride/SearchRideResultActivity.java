@@ -288,7 +288,9 @@ public class SearchRideResultActivity extends AppCompatActivity {
                         if(finalI == rideUID.size()-1)
                         {
                             Log.d(TAG, "getEachRideDetails: this is the correct place to call function.");
-                            recyclerView.setAdapter(new SearchRideResultRecyclerViewAdapter(searchRideResultDetails,getApplicationContext(),mAuth));
+                            SearchRideResultRecyclerViewAdapter adapter = new SearchRideResultRecyclerViewAdapter(searchRideResultDetails,getApplicationContext(),mAuth);
+                            recyclerView.setAdapter(adapter);
+                            adapter.notifyDataSetChanged();
                         }
                         else
                         {

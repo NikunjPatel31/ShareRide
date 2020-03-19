@@ -87,6 +87,7 @@ public class SearchedRideCompleteInfoActivity extends AppCompatActivity {
                         requestRide(searchRideResultDetails);
                         requestBtn.setText("Requested");
                         requestFlag = true;
+                        SearchRideResultRecyclerViewAdapter.SearchRideResultDetailsViewHolder.requestViewValue = true;
                     }
                     else if(requestBtn.getText().equals("Requested"))
                     {
@@ -100,6 +101,7 @@ public class SearchedRideCompleteInfoActivity extends AppCompatActivity {
                                     Log.d(TAG, "onComplete: request canceled.");
                                     requestBtn.setText("Request");
                                     requestFlag = false;
+                                    SearchRideResultRecyclerViewAdapter.SearchRideResultDetailsViewHolder.requestViewValue = false;
                                 }
                                 else
                                 {
@@ -119,6 +121,7 @@ public class SearchedRideCompleteInfoActivity extends AppCompatActivity {
                                 {
                                     Log.d(TAG, "onComplete: request Canceled from the notification");
                                     requestBtn.setText("Request");
+                                    SearchRideResultRecyclerViewAdapter.SearchRideResultDetailsViewHolder.requestViewValue = false;
                                     requestFlag = false;
                                 }
                             }
