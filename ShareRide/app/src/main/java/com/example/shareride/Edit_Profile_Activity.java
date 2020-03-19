@@ -71,9 +71,9 @@ public class Edit_Profile_Activity extends AppCompatActivity {
         {
             sendUserData();
             Intent intent = new Intent(Edit_Profile_Activity.this, Account_Activity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
+            //intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
-            finish();
+            //finish();
         }
     }
 

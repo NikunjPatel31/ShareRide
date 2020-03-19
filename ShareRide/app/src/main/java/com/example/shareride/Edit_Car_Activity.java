@@ -68,18 +68,18 @@ public class Edit_Car_Activity extends AppCompatActivity {
         {
             sendCarData();
             Intent intent = new Intent(Edit_Car_Activity.this, View_My_Cars_Activity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            //intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
-            finish();
+            //finish();
         }
     }
 
     public void cancel(View view)
     {
         Intent intent = new Intent(Edit_Car_Activity.this, View_My_Cars_Activity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        //intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
-        finish();
+        //finish();
     }
 
     @Override

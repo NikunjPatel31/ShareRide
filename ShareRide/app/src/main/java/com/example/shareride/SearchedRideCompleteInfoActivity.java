@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -45,6 +46,14 @@ public class SearchedRideCompleteInfoActivity extends AppCompatActivity {
     ArrayList<String> requestID = new ArrayList<>();
     int requestIDChildrenCount = 0;
     String requestKey="";
+
+    public void cancel(View view)
+    {
+        Intent intent = new Intent(SearchedRideCompleteInfoActivity.this, SearchRideResultActivity.class);
+        //intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+        //finish();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,6 +108,10 @@ public class SearchedRideCompleteInfoActivity extends AppCompatActivity {
                             }
                         });
                     }
+                    Intent intent = new Intent(SearchedRideCompleteInfoActivity.this, SearchRideResultActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(intent);
+                    finish();
                 }
             });
         }

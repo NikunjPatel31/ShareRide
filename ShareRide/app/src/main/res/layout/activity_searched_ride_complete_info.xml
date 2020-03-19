@@ -317,7 +317,8 @@
             android:textSize="18sp"
             android:textColor="@color/colorButtonCancelText"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintEnd_toEndOf="parent"
+            android:onClick="cancel"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
     

@@ -66,10 +66,10 @@ public class Add_Car_Activity extends AppCompatActivity {
         {
             Log.d(TAG, "apply: fields validation returned true.");
             sendCarData();
-            /*Intent intent = new Intent(Add_Car_Activity.this, Account_Activity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
+            Intent intent = new Intent(Add_Car_Activity.this, Account_Activity.class);
+            //intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
-            finish();*/
+            //finish();
         }
         else
         {
@@ -81,9 +81,9 @@ public class Add_Car_Activity extends AppCompatActivity {
     public void cancel(View view)
     {
         Intent intent = new Intent(Add_Car_Activity.this, Account_Activity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
+        //intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
-        finish();
+        //finish();
     }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
