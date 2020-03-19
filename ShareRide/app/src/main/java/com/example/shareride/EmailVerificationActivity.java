@@ -121,31 +121,6 @@ public class EmailVerificationActivity extends AppCompatActivity {
                 progressDialog.dismiss();
             }
         });
-        /*mAuth.signInWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                Log.d(TAG, "onComplete: User Created successfully.");
-                if(task.isSuccessful())
-                {
-                    Log.d(TAG, "onComplete: taking user to the sign in activity.");
-                    Intent intent = new Intent(EmailVerificationActivity.this, SignInActivity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    startActivity(intent);
-                    finish();
-                }
-                else
-                {
-                    Log.d(TAG, "onComplete: task Exception: "+task.getException());
-                    Toast.makeText(EmailVerificationActivity.this, "Error in creating user.", Toast.LENGTH_SHORT).show();
-                }
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Log.d(TAG, "onFailure: failed to create user. Exception: "+e.getLocalizedMessage());
-                Toast.makeText(EmailVerificationActivity.this, "Failed to create user.", Toast.LENGTH_SHORT).show();
-            }
-        });*/
     }
 
     private void sendVerificationEmail()
@@ -214,39 +189,4 @@ public class EmailVerificationActivity extends AppCompatActivity {
         progressDialog.setIndeterminate(true);
     }
 
-    private void deleteUser()
-    {
-        if(mAuth.getCurrentUser() != null)
-        {
-            Log.d(TAG, "deleteUser: deleting the user.");
-            mAuth.getCurrentUser().delete().addOnCompleteListener(new OnCompleteListener<Void>() {
-                @Override
-                public void onComplete(@NonNull Task<Void> task) {
-                    if(task.isSuccessful())
-                    {
-                        Log.d(TAG, "onComplete: user deleted successfully.");
-                    }
-                    else
-                    {
-                        Log.d(TAG, "onComplete: unsuccessful to delete user.");
-                    }
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    Log.d(TAG, "onFailure: user deletion failure Exception: "+e.getLocalizedMessage());
-                }
-            });
-        }
-        else
-        {
-            Log.d(TAG, "deleteUser: there is not user.");
-        }
-    }
-
-    /*@Override
-    protected void onDestroy() {
-        super.onDestroy();
-        deleteUser();
-    }*/
 }

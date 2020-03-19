@@ -41,7 +41,7 @@
             android:name=".SearchRideResultInfoActivity"
             android:label="@string/title_activity_search_ride_result_info" />
         <activity android:name=".SearchRideResultActivity" android:launchMode="singleTask"/>
-        <activity android:name=".SearchActivity" />
+        <activity android:name=".SearchActivity" android:launchMode="singleTask"/>
         <activity android:name=".Edit_Ride_Info_Activity" />
         <activity android:name=".Info_Offered_Ride" />
         <activity android:name=".Offered_Ride_Activity" />

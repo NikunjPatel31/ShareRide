@@ -2,10 +2,14 @@ package com.example.shareride;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -37,12 +41,13 @@ public class SearchRideResultActivity extends AppCompatActivity {
     private ArrayList<String> UIDForOfferedRide = new ArrayList<>();
     private int Counter = 0, localCounter = 0, UIDsum = 0;
     private Map<String, Integer> map = new HashMap<>();
-    boolean flag = true;
+    boolean searchFound = false;
     private ArrayList<SearchRideResultDetails> searchRideResultDetails = new ArrayList<>();
-    private int arrayIndex = 0;
     private ArrayList<String> userID = new ArrayList<>();
-    private int mainTableCounter = 1;
     private Map<Integer,String> priority = new HashMap<>();
+    private ProgressDialog progressDialog;
+    private AlertDialog.Builder builder;
+    private AlertDialog alertDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,20 +57,55 @@ public class SearchRideResultActivity extends AppCompatActivity {
         initializeWidgets();
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         initializeFirebaseObjects();
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        Log.d(TAG, "onStart: inside the onStart method.");
+        progressBar();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         Log.d(TAG, "onResume: inside the onResume method.");
+        if(searchFound)
+        {
+            progressDialog.dismiss();
+        }
+        else
+        {
+            progressDialog.show();
+        }
         fun();
-        //getUIDForOfferedRide();
+    }
+
+    private void progressBar()
+    {
+        progressDialog = new ProgressDialog(this,R.style.CustomProgressDialog);
+        progressDialog.setMessage("Searching ride...");
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progressDialog.setIndeterminate(true);
+    }
+
+    private void dialog()
+    {
+        builder = new AlertDialog.Builder(this);
+        builder.setTitle("Search Ride...")
+                .setMessage("Sorry, There is no available rides...")
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Log.d(TAG, "onClick: button clicked on alert dialog.");
+                        Intent intent = new Intent(SearchRideResultActivity.this, SearchActivity.class);
+                        //intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(intent);
+                        //finish();
+                    }
+                });
+        alertDialog = builder.create();
+        alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface dialog) {
+                alertDialog.getButton(DialogInterface.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorPrimary));
+            }
+        });
+        alertDialog.show();
     }
 
     private void initializeWidgets()
@@ -95,12 +135,19 @@ public class SearchRideResultActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Log.d(TAG, "onDataChange: database size: "+dataSnapshot.getChildrenCount());
-                int i = 0;
-                if(dataSnapshot.hasChild("Notification"))
+                if(dataSnapshot.exists())
                 {
-                    i = 1;
+                    int i = 0;
+                    if(dataSnapshot.hasChild("Notification"))
+                    {
+                        i = 1;
+                    }
+                    getUIDForOfferedRide(i);
                 }
-                getUIDForOfferedRide(i);
+                else
+                {
+                    progressDialog.dismiss();
+                }
             }
 
             @Override
@@ -119,16 +166,23 @@ public class SearchRideResultActivity extends AppCompatActivity {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 Log.d(TAG, "onChildAdded: mDatabase dataSnapshot size: "+dataSnapshot.getChildrenCount());
-                Counter++;
-                if(Counter == 2+difference)
+                if(dataSnapshot.exists())
                 {
-                    Log.d(TAG, "onChildAdded: counter value: "+dataSnapshot.getChildrenCount());
-                    Log.d(TAG, "onChildAdded: value of counter: "+Counter);
-                    getUIDofRide((int) dataSnapshot.getChildrenCount());
+                    Counter++;
+                    if(Counter == 2+difference)
+                    {
+                        Log.d(TAG, "onChildAdded: counter value: "+dataSnapshot.getChildrenCount());
+                        Log.d(TAG, "onChildAdded: value of counter: "+Counter);
+                        getUIDofRide((int) dataSnapshot.getChildrenCount());
+                    }
+                    else
+                    {
+                        Log.d(TAG, "onChildAdded: value of counter: "+Counter);
+                    }
                 }
                 else
                 {
-                    Log.d(TAG, "onChildAdded: value of counter: "+Counter);
+                    progressDialog.dismiss();
                 }
             }
 
@@ -159,27 +213,32 @@ public class SearchRideResultActivity extends AppCompatActivity {
         mChildDB.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-                map.put(dataSnapshot.getKey(), (int) dataSnapshot.getChildrenCount());
-                Log.d(TAG, "onChildAdded: UID for offered Ride: "+dataSnapshot.getKey());
-                Log.d(TAG, "onChildAdded: size of dataSnapshot: "+dataSnapshot.getChildrenCount());
-                UIDForOfferedRide.add(dataSnapshot.getKey());
-                UIDsum += dataSnapshot.getChildrenCount();
-                Log.d(TAG, "onChildAdded: UIDsum: "+UIDsum);
-                localCounter++;
-                priority.put(localCounter,dataSnapshot.getKey());
-                Log.d(TAG, "onChildAdded: localCounter: "+localCounter);
-
-                if(localCounter == counter)
+                if(dataSnapshot.exists())
                 {
-                    Log.d(TAG, "onChildAdded: localCounter == counter-1"+counter);
-                    getAllRides(mChildDB,UIDForOfferedRide);
+                    map.put(dataSnapshot.getKey(), (int) dataSnapshot.getChildrenCount());
+                    Log.d(TAG, "onChildAdded: UID for offered Ride: "+dataSnapshot.getKey());
+                    Log.d(TAG, "onChildAdded: size of dataSnapshot: "+dataSnapshot.getChildrenCount());
+                    UIDForOfferedRide.add(dataSnapshot.getKey());
+                    UIDsum += dataSnapshot.getChildrenCount();
+                    Log.d(TAG, "onChildAdded: UIDsum: "+UIDsum);
+                    localCounter++;
+                    priority.put(localCounter,dataSnapshot.getKey());
+                    Log.d(TAG, "onChildAdded: localCounter: "+localCounter);
+
+                    if(localCounter == counter)
+                    {
+                        Log.d(TAG, "onChildAdded: localCounter == counter-1"+counter);
+                        getAllRides(mChildDB,UIDForOfferedRide);
+                    }
+                    else
+                    {
+                        Log.d(TAG, "onChildAdded: localCounter != Counter: "+Counter);
+                    }
                 }
                 else
                 {
-                    Log.d(TAG, "onChildAdded: localCounter != Counter: "+Counter);
+                    progressDialog.dismiss();
                 }
-
             }
 
             @Override
@@ -216,15 +275,22 @@ public class SearchRideResultActivity extends AppCompatActivity {
                 @Override
                 public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                     Log.d(TAG, "onChildAdded: RideID: "+dataSnapshot.getKey());
-                    RideID.add(dataSnapshot.getKey());
-                    localCounter++;
-                    Log.d(TAG, "onChildAdded: RideUID size outside the if block: "+RideID.size());
-                    if(localCounter == UIDsum)
+                    if(dataSnapshot.exists())
                     {
-                        Log.d(TAG, "onChildAdded: RideUID Size: "+RideID.size());
-                        Log.d(TAG, "onChildAdded: Counter Size: "+UIDsum);
-                        Log.d(TAG, "onChildAdded: localCounter: "+localCounter);
-                        getEachRideDetails(superChildDB, map, RideID);
+                        RideID.add(dataSnapshot.getKey());
+                        localCounter++;
+                        Log.d(TAG, "onChildAdded: RideUID size outside the if block: "+RideID.size());
+                        if(localCounter == UIDsum)
+                        {
+                            Log.d(TAG, "onChildAdded: RideUID Size: "+RideID.size());
+                            Log.d(TAG, "onChildAdded: Counter Size: "+UIDsum);
+                            Log.d(TAG, "onChildAdded: localCounter: "+localCounter);
+                            getEachRideDetails(superChildDB, map, RideID);
+                        }
+                    }
+                    else
+                    {
+                        progressDialog.dismiss();
                     }
                 }
 
@@ -283,25 +349,35 @@ public class SearchRideResultActivity extends AppCompatActivity {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         Log.d(TAG, "onDataChange: "+dataSnapshot.toString());
-                        matchRide(dataSnapshot,priority.get(finalTemJ));
-                        arrayIndex++;
-                        if(finalI == rideUID.size()-1)
+                        if(dataSnapshot.exists())
                         {
-                            Log.d(TAG, "getEachRideDetails: this is the correct place to call function.");
-                            if(searchRideResultDetails.isEmpty())
+                            matchRide(dataSnapshot,priority.get(finalTemJ));
+                            if(finalI == rideUID.size()-1)
                             {
-                                Toast.makeText(SearchRideResultActivity.this, "There is no ride available", Toast.LENGTH_SHORT).show();
+                                progressDialog.dismiss();
+                                Log.d(TAG, "getEachRideDetails: this is the correct place to call function.");
+                                if(searchRideResultDetails.isEmpty())
+                                {
+                                    dialog();
+                                }
+                                else
+                                {
+                                    searchFound = true;
+                                    SearchRideResultRecyclerViewAdapter adapter = new SearchRideResultRecyclerViewAdapter(searchRideResultDetails,getApplicationContext(),mAuth);
+                                    recyclerView.setAdapter(adapter);
+                                    adapter.notifyDataSetChanged();
+                                }
                             }
                             else
                             {
-                                SearchRideResultRecyclerViewAdapter adapter = new SearchRideResultRecyclerViewAdapter(searchRideResultDetails,getApplicationContext(),mAuth);
-                                recyclerView.setAdapter(adapter);
-                                adapter.notifyDataSetChanged();
+                                progressDialog.dismiss();
+                                Log.d(TAG, "onDataChange: there is a problem in the code."+rideUID.size());
                             }
+                            progressDialog.dismiss();
                         }
                         else
                         {
-                            Log.d(TAG, "onDataChange: there is a problem in the code."+rideUID.size());
+                            progressDialog.dismiss();
                         }
                     }
 

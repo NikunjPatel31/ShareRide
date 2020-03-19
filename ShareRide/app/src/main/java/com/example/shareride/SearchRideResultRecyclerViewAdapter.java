@@ -74,25 +74,6 @@ public class SearchRideResultRecyclerViewAdapter extends RecyclerView.Adapter<Se
         holder.setSourceLocationName(rideDetails.getSource_Location_Name());
         holder.setTime(rideDetails.getTime());
         holder.getRideDetails(rideDetails,rideDetails.getUserID(), position);
-        Log.d(TAG, "onBindViewHolder: checking is this is getting called every time.");
-        if(position == SearchRideResultDetailsViewHolder.viewPosition)
-        {
-            if(SearchRideResultDetailsViewHolder.requestViewValue)
-            {
-                holder.requestBtn.setText("Requested");
-                Log.d(TAG, "onBindViewHolder: requested is the value");
-            }
-            else
-            {
-                holder.requestBtn.setText("Request");
-                Log.d(TAG, "onBindViewHolder: request is the value");
-            }
-        }
-        else
-        {
-            Log.d(TAG, "onBindViewHolder: position: "+position);
-            Log.d(TAG, "onBindViewHolder: viewPosition: "+SearchRideResultDetailsViewHolder.viewPosition);
-        }
 
         holder.infoBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -105,22 +86,8 @@ public class SearchRideResultRecyclerViewAdapter extends RecyclerView.Adapter<Se
                     intent.putExtra("Ride_details",searchRideResultDetails.get(position));
                     userDetails = tem.riderDetails;
                     intent.putExtra("Rider_Details",userDetails);
-                    if(holder.requestBtn.getText().equals("Requested"))
-                    {
-                        requestFlag = true;
-                    }
-                    else
-                    {
-                        requestFlag = false;
-                    }
                     intent.putExtra("Request_Flag",requestFlag);
                     intent.putExtra("Rider_UID",riderUID);
-                    String path = holder.databaseReference.toString();
-                    Log.d(TAG, "onClick: String path"+path);
-                    intent.putExtra("DatabaseReference",path);
-                    SearchRideResultDetailsViewHolder.viewPosition = position;
-                    Log.d(TAG, "onClick: viewPosition: "+SearchRideResultDetailsViewHolder.viewPosition);
-                    Log.d(TAG, "onDataChange: user has info button is pressed. now there will be change in the log file... just see it");
                     context.startActivity(intent);
                 }
                 catch (Exception e)

@@ -40,7 +40,6 @@ public class SearchedRideCompleteInfoActivity extends AppCompatActivity {
     private DatabaseReference databaseReference;
     private FirebaseAuth mAuth;
     private boolean requestFlag = false;
-    private String path;
 
     private int requestIDCounter = 1;
     ArrayList<String> requestID = new ArrayList<>();
@@ -149,7 +148,6 @@ public class SearchedRideCompleteInfoActivity extends AppCompatActivity {
         carID = searchRideResultDetails.getCar_id();
         Log.d(TAG, "getIntentData: Ride_ID: "+searchRideResultDetails.getRideID());
         requestFlag = getIntent().getBooleanExtra("Request_Flag",false);
-        path = getIntent().getStringExtra("DatabaseReference");
     }
     private void initializeWidgets()
     {
