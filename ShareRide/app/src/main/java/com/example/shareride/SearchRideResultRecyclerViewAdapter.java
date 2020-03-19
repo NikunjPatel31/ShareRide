@@ -271,6 +271,10 @@ public class SearchRideResultRecyclerViewAdapter extends RecyclerView.Adapter<Se
             {
                 Picasso.get().load(Uri.parse(image)).into(riderPhoto);
             }
+            else
+            {
+                Log.d(TAG, "setRiderPhoto: rider profile picture is null");
+            }
         }
         public void setRideName(String rideName)
         {
@@ -292,6 +296,7 @@ public class SearchRideResultRecyclerViewAdapter extends RecyclerView.Adapter<Se
                     userDetails.setGender(dataSnapshot.child("Gender").getValue().toString());
                     userDetails.setLastName(dataSnapshot.child("Last Name").getValue().toString());
                     userDetails.setPincode(dataSnapshot.child("Pincode").getValue().toString());
+                    Log.d(TAG, "onDataChange: profile picture: "+dataSnapshot.child("Profile Picture").getValue().toString());
                     userDetails.setProfilePicture(dataSnapshot.child("Profile Picture").getValue().toString());
                     //userDetails.setUserID(dataSnapshot.getKey());
                     riderUID = dataSnapshot.getKey();
