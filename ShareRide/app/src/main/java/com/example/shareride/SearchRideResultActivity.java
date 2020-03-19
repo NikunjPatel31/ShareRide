@@ -57,7 +57,7 @@ public class SearchRideResultActivity extends AppCompatActivity {
         initializeWidgets();
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         initializeFirebaseObjects();
-        progressBar();
+        progressDialog = CommanClass.progressBar(this,new ProgressDialog(this),"Searching ride...");
     }
 
     @Override
@@ -73,14 +73,6 @@ public class SearchRideResultActivity extends AppCompatActivity {
             progressDialog.show();
         }
         fun();
-    }
-
-    private void progressBar()
-    {
-        progressDialog = new ProgressDialog(this,R.style.CustomProgressDialog);
-        progressDialog.setMessage("Searching ride...");
-        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        progressDialog.setIndeterminate(true);
     }
 
     private void dialog()

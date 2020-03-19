@@ -60,7 +60,9 @@ public class Profile_Fragment extends Fragment{
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "onClick: addCarTV pressed.");
-                startActivity(new Intent(getActivity(), Add_Car_Activity.class));
+                Intent intent = new Intent(getActivity(), Add_Car_Activity.class);
+                intent.putExtra("Activity","Account");
+                startActivity(intent);
             }
         });
 

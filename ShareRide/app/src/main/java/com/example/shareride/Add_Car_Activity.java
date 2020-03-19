@@ -21,6 +21,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -59,6 +60,9 @@ public class Add_Car_Activity extends AppCompatActivity {
 
     private int GALLERY_REQUEST_CODE = 1, READ_EXTERNAL_STORAGE_REQUSET_CODE = 2;
     private boolean storagePermission = false;
+    private String car_id="";
+    private LatLng sourceLocation, destinationLocation;
+    private String time, date;
 
     public void add(View view)
     {
@@ -285,6 +289,15 @@ public class Add_Car_Activity extends AppCompatActivity {
         UID = mAuth.getUid();
         Log.d(TAG, "sendCarData: UId: "+UID);
         final DatabaseReference mChildDB = databaseReference.child("Cars").child(UID).push();
+        try
+        {
+            Log.d(TAG, "sendCarData: key: "+mChildDB.getKey());
+            car_id = mChildDB.getKey();
+        }
+        catch (Exception e)
+        {
+            Log.d(TAG, "sendCarData: Key Exception: "+e.getLocalizedMessage());
+        }
         mChildDB.child("Car_Name").setValue(carName);
         mChildDB.child("Model_Year").setValue(modelYear);
         mChildDB.child("Vehicle_Number").setValue(vechicleNumber);

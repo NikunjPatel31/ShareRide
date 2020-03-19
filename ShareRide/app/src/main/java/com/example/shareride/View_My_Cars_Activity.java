@@ -5,7 +5,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -49,6 +52,9 @@ public class View_My_Cars_Activity extends AppCompatActivity {
     private String UID;
     private LatLng sourceLocation, destinationLocation;
     private String time, date;
+    private ProgressDialog progressDialog;
+    private AlertDialog.Builder builder;
+    private AlertDialog alertDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,7 +68,14 @@ public class View_My_Cars_Activity extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        initalizingFirebaseRecyclerAdapter();
+        try
+        {
+            progressDialog = CommanClass.progressBar(this,new ProgressDialog(this),"Getting all your car's details");
+        }
+        catch (Exception e)
+        {
+            Log.d(TAG, "onCreate: progress Bar Exception: "+e.getLocalizedMessage());
+        }
     }
 
     @Override
@@ -98,17 +111,26 @@ public class View_My_Cars_Activity extends AppCompatActivity {
 
     private void initalizingFirebaseRecyclerAdapter()
     {
+        progressDialog.show();
         Log.d(TAG, "initalizingFirebaseRecyclerAdapter: initializing firebase recycler view adapter.");
         firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<CarDetails, CarDetailsViewHolder>(options) {
             @Override
             protected void onBindViewHolder(@NonNull CarDetailsViewHolder holder, int position, @NonNull CarDetails model) {
+                progressDialog.dismiss();
                 Log.d(TAG, "onBindViewHolder: populating the recycler view.");
                 final String car_id = getRef(position).getKey();
                 holder.setCarName(model.getCar_Name());
                 holder.setVehicleNumber(model.getVehicle_Number());
                 holder.setFuel(model.getModel_Year());
                 holder.setAirConditioner(model.getAir_Conditioner());
-                holder.setCarModelYear(model.getModel_Year());
+                try
+                {
+                    holder.setCarModelYear(model.getModel_Year());
+                }
+                catch (Exception e)
+                {
+                    Log.d(TAG, "onBindViewHolder: image Exception: "+e.getLocalizedMessage());
+                }
                 holder.setCarImage(getApplicationContext(),model.getCar_Image());
 
                 if(getIntent().getStringExtra("Activity").equals("select car"))
@@ -182,9 +204,6 @@ public class View_My_Cars_Activity extends AppCompatActivity {
                         }
                     });
                 }
-
-
-
             }
 
             @NonNull
@@ -195,9 +214,70 @@ public class View_My_Cars_Activity extends AppCompatActivity {
 
                 return new CarDetailsViewHolder(view);
             }
+
+            @Override
+            public void onDataChanged() {
+                super.onDataChanged();
+                Log.d(TAG, "onDataChanged: getItemCount: "+getItemCount());
+                if(getItemCount() == 0)
+                {
+                    progressDialog.dismiss();
+                    try
+                    {
+                        dialog();
+                    }
+                    catch (Exception e)
+                    {
+                        Log.d(TAG, "onDataChanged: dialog Exception: "+e.getLocalizedMessage());
+                    }
+                }
+            }
         };
         recyclerView.setAdapter(firebaseRecyclerAdapter);
         firebaseRecyclerAdapter.startListening();
+    }
+
+    private void dialog()
+    {
+        String message="";
+        if(getIntent().getStringExtra("Activity").equals("select car"))
+        {
+            message = "Sorry, You don't have any cars. Please add a car and then offere the ride.";
+        }
+        else
+        {
+            message = "Sorry, You don't have any cars. Please add a car.";
+        }
+        builder = new AlertDialog.Builder(this);
+        builder.setTitle("My Cars")
+                .setMessage(message)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Log.d(TAG, "onClick: button clicked on alert dialog.");
+                        if(getIntent().getStringExtra("Activity").equals("select car"))
+                        {
+                            Intent intent = new Intent(getApplicationContext(),Add_Car_Activity.class);
+                            intent.putExtra("Activity","Offered_Ride_Activity");
+                            startActivity(intent);
+                        }
+                        else
+                        {
+                            Intent intent = new Intent(getApplicationContext(), Account_Activity.class);
+                            //intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
+                            startActivity(intent);
+                            //finish();
+                        }
+                    }
+                });
+        alertDialog = builder.create();
+        alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface dialog) {
+                alertDialog.getButton(DialogInterface.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.colorPrimary));
+            }
+        });
+        alertDialog.show();
     }
 
     public static class CarDetailsViewHolder extends RecyclerView.ViewHolder
@@ -246,7 +326,5 @@ public class View_My_Cars_Activity extends AppCompatActivity {
             TextView vehicleNumberTV = (TextView) mView.findViewById(R.id.vehicle_number_textview);
             vehicleNumberTV.setText(vehicleNumber);
         }
-
-
     }
 }
