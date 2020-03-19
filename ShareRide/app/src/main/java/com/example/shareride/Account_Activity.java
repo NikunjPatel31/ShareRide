@@ -66,7 +66,7 @@ public class Account_Activity extends AppCompatActivity {
     private void setViewPagerAdapter()
     {
         Log.d(TAG, "setViewPagerAdapter: setting viewpager adapter.");
-        PageAdapter pageAdapter = new PageAdapter(getSupportFragmentManager(),tabLayout.getTabCount());
+        PageAdapter pageAdapter = new PageAdapter(getSupportFragmentManager(),tabLayout.getTabCount(),"Account");
         viewPager.setAdapter(pageAdapter);
     }
 

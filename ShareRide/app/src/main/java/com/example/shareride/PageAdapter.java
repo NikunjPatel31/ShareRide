@@ -10,24 +10,42 @@ import com.example.shareride.Profile_Fragment;
 public class PageAdapter extends FragmentPagerAdapter {
 
     public int itemCount;
+    public String Activity;
 
-    public PageAdapter(FragmentManager fm, int itemCount) {
+    public PageAdapter(FragmentManager fm, int itemCount, String Activity) {
         super(fm);
         this.itemCount = itemCount;
+        this.Activity = Activity;
     }
 
     @Override
     public Fragment getItem(int position) {
 
-        switch (position)
+        if(Activity.equals("Account"))
         {
-            case 0:
-                return new Profile_Fragment();
-            case 1:
-                return new Account_Fragment();
-            default:
-                return null;
+            switch (position)
+            {
+                case 0:
+                    return new Profile_Fragment();
+                case 1:
+                    return new Account_Fragment();
+                default:
+                    return null;
+            }
         }
+        else if(Activity.equals("Notification"))
+        {
+            switch (position)
+            {
+                case 0:
+                    return new Notification_Rider_Fragment();
+                case 1:
+                    return new Notification_Passenger_Fragment();
+                default:
+                    return null;
+            }
+        }
+        return null;
     }
 
     @Override

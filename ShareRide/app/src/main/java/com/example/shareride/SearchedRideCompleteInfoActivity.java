@@ -77,6 +77,7 @@ public class SearchedRideCompleteInfoActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     DatabaseReference mChildDB = databaseReference.child("Registration").child(mAuth.getUid());
+                    DatabaseReference notificationDB = FirebaseDatabase.getInstance().getReference().child("Notification").child("Rider");
                     if(requestBtn.getText().equals("Request"))
                     {
                         DatabaseReference tem = mChildDB.push();
@@ -107,11 +108,26 @@ public class SearchedRideCompleteInfoActivity extends AppCompatActivity {
                                 }
                             }
                         });
+                        SearchRideResultDetails details = searchRideResultDetails;
+                        Log.d(TAG, "onClick: rider_id: "+details.getUserID());
+                        Log.d(TAG, "onClick: ride_id: "+details.getRideID());
+                        DatabaseReference temNotification = notificationDB.child(details.getUserID()).child(details.getRideID());
+                        temNotification.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if(task.isSuccessful())
+                                {
+                                    Log.d(TAG, "onComplete: request Canceled from the notification");
+                                    requestBtn.setText("Request");
+                                    requestFlag = false;
+                                }
+                            }
+                        });
                     }
                     Intent intent = new Intent(SearchedRideCompleteInfoActivity.this, SearchRideResultActivity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    //intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent);
-                    finish();
+                    //finish();
                 }
             });
         }
@@ -215,6 +231,11 @@ public class SearchedRideCompleteInfoActivity extends AppCompatActivity {
     private void requestRide(SearchRideResultDetails searchRideResultDetails)
     {
         Log.d(TAG, "requestRide: requesting ride.");
+        DatabaseReference databaseReference1 = FirebaseDatabase.getInstance().getReference().child("Notification")
+                .child("Rider")
+                .child(searchRideResultDetails.getUserID())
+                .child(searchRideResultDetails.getRideID());
+        databaseReference1.child("Passenger_ID").setValue(mAuth.getUid());
         DatabaseReference mChildDB = databaseReference.child("Registration").child(mAuth.getUid()).push();
         mChildDB.child("Offer_Ride_ID").setValue(searchRideResultDetails.getRideID());
         mChildDB.child("Status").setValue("Not Accepted");

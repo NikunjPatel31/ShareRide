@@ -64,7 +64,8 @@ public class SearchRideResultActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         Log.d(TAG, "onResume: inside the onResume method.");
-        getUIDForOfferedRide();
+        fun();
+        //getUIDForOfferedRide();
     }
 
     private void initializeWidgets()
@@ -86,7 +87,30 @@ public class SearchRideResultActivity extends AppCompatActivity {
         date = getIntent().getStringExtra("Date");
         time = getIntent().getStringExtra("Time");
     }
-    private void getUIDForOfferedRide()
+
+    private void fun()
+    {
+        DatabaseReference mChild = mDatabaseReference;
+        mChild.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Log.d(TAG, "onDataChange: database size: "+dataSnapshot.getChildrenCount());
+                int i = 0;
+                if(dataSnapshot.hasChild("Notification"))
+                {
+                    i = 1;
+                }
+                getUIDForOfferedRide(i);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void getUIDForOfferedRide(final int difference)
     {
         Log.d(TAG, "getUIDForOfferedRide: getting UID for offered ride.");
         boolean flag = false;
@@ -96,11 +120,15 @@ public class SearchRideResultActivity extends AppCompatActivity {
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 Log.d(TAG, "onChildAdded: mDatabase dataSnapshot size: "+dataSnapshot.getChildrenCount());
                 Counter++;
-
-                if(Counter == 2)
+                if(Counter == 2+difference)
                 {
                     Log.d(TAG, "onChildAdded: counter value: "+dataSnapshot.getChildrenCount());
+                    Log.d(TAG, "onChildAdded: value of counter: "+Counter);
                     getUIDofRide((int) dataSnapshot.getChildrenCount());
+                }
+                else
+                {
+                    Log.d(TAG, "onChildAdded: value of counter: "+Counter);
                 }
             }
 

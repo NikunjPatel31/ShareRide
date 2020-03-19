@@ -40,11 +40,13 @@
                 app:tabTextColor="@color/colorGrey">
 
                 <com.google.android.material.tabs.TabItem
+                    android:id="@+id/rider_tabItem"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Rider"/>
 
                 <com.google.android.material.tabs.TabItem
+                    android:id="@+id/passenger_tabItem"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Passenger"/>
@@ -54,5 +56,19 @@
         </com.google.android.material.appbar.CollapsingToolbarLayout>
 
     </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <androidx.viewpager.widget.ViewPager
+            android:id="@+id/viewPager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+
+    </androidx.core.widget.NestedScrollView>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

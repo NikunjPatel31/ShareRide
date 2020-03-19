@@ -58,7 +58,7 @@
     <EditText
         android:id="@+id/confirm_password_edittext"
         style="@style/EditTextStyle"
-        android:hint="Password"
+        android:hint="Confirm Password"
         android:inputType="textPassword"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
