@@ -283,14 +283,21 @@ public class SearchRideResultActivity extends AppCompatActivity {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         Log.d(TAG, "onDataChange: "+dataSnapshot.toString());
-                        matchRide(dataSnapshot,arrayIndex,priority.get(finalTemJ));
+                        matchRide(dataSnapshot,priority.get(finalTemJ));
                         arrayIndex++;
                         if(finalI == rideUID.size()-1)
                         {
                             Log.d(TAG, "getEachRideDetails: this is the correct place to call function.");
-                            SearchRideResultRecyclerViewAdapter adapter = new SearchRideResultRecyclerViewAdapter(searchRideResultDetails,getApplicationContext(),mAuth);
-                            recyclerView.setAdapter(adapter);
-                            adapter.notifyDataSetChanged();
+                            if(searchRideResultDetails.isEmpty())
+                            {
+                                Toast.makeText(SearchRideResultActivity.this, "There is no ride available", Toast.LENGTH_SHORT).show();
+                            }
+                            else
+                            {
+                                SearchRideResultRecyclerViewAdapter adapter = new SearchRideResultRecyclerViewAdapter(searchRideResultDetails,getApplicationContext(),mAuth);
+                                recyclerView.setAdapter(adapter);
+                                adapter.notifyDataSetChanged();
+                            }
                         }
                         else
                         {
@@ -317,7 +324,7 @@ public class SearchRideResultActivity extends AppCompatActivity {
             }
         }
     }
-    private void matchRide(DataSnapshot dataSnapshot, int arrayIndex, String userID)
+    private void matchRide(DataSnapshot dataSnapshot, String userID)
     {
         if(sourceLocation.equals(dataSnapshot.child("Source_Location_Name").getValue())
                 && destinationLocation.equals(dataSnapshot.child("Destination_Location_Name").getValue())
