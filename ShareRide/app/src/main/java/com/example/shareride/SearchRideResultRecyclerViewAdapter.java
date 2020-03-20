@@ -172,6 +172,7 @@ public class SearchRideResultRecyclerViewAdapter extends RecyclerView.Adapter<Se
         DatabaseReference databaseReference1 = FirebaseDatabase.getInstance().getReference().child("Notification")
                                                                                             .child("Rider")
                                                                                             .child(searchRideResultDetails.getUserID())
+                                                                                            .child(databaseReference.getKey())
                                                                                             .child(searchRideResultDetails.getRideID());
         databaseReference1.child("Passenger_ID").setValue(mAuth.getUid());
         Log.d(TAG, "requestRide: ride_ID: "+searchRideResultDetails.getRideID());
