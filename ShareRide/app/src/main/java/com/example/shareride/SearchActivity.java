@@ -10,11 +10,14 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.AnimationUtils;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.Calendar;
 
@@ -24,6 +27,8 @@ public class SearchActivity extends AppCompatActivity implements DatePickerDialo
     private EditText sourceLocationET, destinationLocationET;
     private TextView dateTV, timeTV;
     private String date, time, sourceLocation, destinationLocation = null;
+    private FloatingActionButton floatingActionButton;
+    private TextView searchRideTitleTV, searchRideTitleDescriptionTV;
     public void search(View view)
     {
         Log.d(TAG, "search: search button pressed.");
@@ -43,6 +48,7 @@ public class SearchActivity extends AppCompatActivity implements DatePickerDialo
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
         initializeWigets();
+        animateWidgets();
         textViewClickListener();
     }
     private void initializeWigets()
@@ -52,6 +58,20 @@ public class SearchActivity extends AppCompatActivity implements DatePickerDialo
         destinationLocationET = (EditText) findViewById(R.id.destination_location_edittext);
         dateTV = (TextView) findViewById(R.id.date_textview);
         timeTV = (TextView) findViewById(R.id.time_textview);
+        floatingActionButton = (FloatingActionButton) findViewById(R.id.floating_button);
+        searchRideTitleTV = (TextView) findViewById(R.id.search_ride_title_textview);
+        searchRideTitleDescriptionTV = (TextView) findViewById(R.id.search_ride_description_textview);
+    }
+    private void animateWidgets()
+    {
+        Log.d(TAG, "animateWidgets: animating all widgets.");
+        sourceLocationET.setAnimation(AnimationUtils.loadAnimation(this,R.anim.recycler_view_animation));
+        destinationLocationET.setAnimation(AnimationUtils.loadAnimation(this,R.anim.recycler_view_animation));
+        dateTV.setAnimation(AnimationUtils.loadAnimation(this,R.anim.recycler_view_animation));
+        timeTV.setAnimation(AnimationUtils.loadAnimation(this,R.anim.recycler_view_animation));
+        floatingActionButton.setAnimation(AnimationUtils.loadAnimation(this,R.anim.recycler_view_animation));
+        searchRideTitleTV.setAnimation(AnimationUtils.loadAnimation(this,R.anim.recycler_view_image));
+        searchRideTitleDescriptionTV.setAnimation(AnimationUtils.loadAnimation(this,R.anim.recycler_view_image));
     }
     private void textViewClickListener()
     {
