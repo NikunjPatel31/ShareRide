@@ -152,7 +152,6 @@ public class SearchRideResultActivity extends AppCompatActivity {
     private void getUIDForOfferedRide(final int difference)
     {
         Log.d(TAG, "getUIDForOfferedRide: getting UID for offered ride.");
-        boolean flag = false;
         DatabaseReference mChild = mDatabaseReference;
         mChild.addChildEventListener(new ChildEventListener() {
             @Override

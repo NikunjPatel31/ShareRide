@@ -1,12 +1,14 @@
 package com.example.shareride;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.FragmentActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.AnimationUtils;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -32,6 +34,7 @@ public class SearchRideResultInfoActivity extends FragmentActivity implements On
     private DatabaseReference databaseReference;
     private UserDetails riderDetails=null;
     private boolean requestFlag = false;
+    private CardView cardView;
 
     public void moreInformation(View view)
     {
@@ -52,6 +55,7 @@ public class SearchRideResultInfoActivity extends FragmentActivity implements On
         mapFragment.getMapAsync(this);
 
         initializeWidgets();
+        cardView.setAnimation(AnimationUtils.loadAnimation(this,R.anim.recycler_view_animation));
     }
 
     @Override
@@ -90,6 +94,7 @@ public class SearchRideResultInfoActivity extends FragmentActivity implements On
     private void initializeWidgets()
     {
         Log.d(TAG, "initializeWidgets: initializing widgets.");
+        cardView = (CardView) findViewById(R.id.cardview);
         riderNameTV = (TextView) findViewById(R.id.rider_name_textview);
         ratingTV = (TextView) findViewById(R.id.rating_textview);
         sourceLocationTV = (TextView) findViewById(R.id.source_location_textview);

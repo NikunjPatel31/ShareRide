@@ -2,6 +2,7 @@ package com.example.shareride;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -16,6 +17,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -117,6 +119,7 @@ public class View_My_Cars_Activity extends AppCompatActivity {
             @Override
             protected void onBindViewHolder(@NonNull CarDetailsViewHolder holder, int position, @NonNull CarDetails model) {
                 progressDialog.dismiss();
+                holder.cardView.setAnimation(AnimationUtils.loadAnimation(getApplicationContext(),R.anim.recycler_view_animation));
                 Log.d(TAG, "onBindViewHolder: populating the recycler view.");
                 final String car_id = getRef(position).getKey();
                 holder.setCarName(model.getCar_Name());
@@ -284,12 +287,14 @@ public class View_My_Cars_Activity extends AppCompatActivity {
     {
         View mView;
         Button editBtn, deleteBtn, selectBtn;
+        CardView cardView;
         public CarDetailsViewHolder(@NonNull View itemView) {
             super(itemView);
             mView = itemView;
             editBtn = (Button) mView.findViewById(R.id.edit_button);
             deleteBtn = (Button) mView.findViewById(R.id.delete_button);
             selectBtn = (Button) mView.findViewById(R.id.select_button);
+            cardView = (CardView) mView.findViewById(R.id.inner_cardview);
         }
 
         public void setAirConditioner(String airConditioner)

@@ -10,12 +10,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -74,7 +76,8 @@ public class SearchRideResultRecyclerViewAdapter extends RecyclerView.Adapter<Se
         holder.setSourceLocationName(rideDetails.getSource_Location_Name());
         holder.setTime(rideDetails.getTime());
         holder.getRideDetails(rideDetails,rideDetails.getUserID(), position);
-
+        holder.riderPhoto.setAnimation(AnimationUtils.loadAnimation(context,R.anim.recycler_view_image));
+        holder.cardView.setAnimation(AnimationUtils.loadAnimation(context,R.anim.recycler_view_animation));
         holder.infoBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -193,12 +196,16 @@ public class SearchRideResultRecyclerViewAdapter extends RecyclerView.Adapter<Se
         private boolean flag = false;
         static int viewPosition;
         static boolean requestViewValue;
+        private CardView cardView;
+        private CircleImageView riderPhoto;
 
         public SearchRideResultDetailsViewHolder(@NonNull View itemView) {
             super(itemView);
             view = itemView;
             infoBtn = (Button) view.findViewById(R.id.info_button);
             requestBtn = (Button) view.findViewById(R.id.request_button);
+            cardView = (CardView) view.findViewById(R.id.inner_cardview);
+            riderPhoto = (CircleImageView) view.findViewById(R.id.rider_photo);
         }
 
         public void setCostPerSeat(String costPerSeat)
@@ -233,10 +240,9 @@ public class SearchRideResultRecyclerViewAdapter extends RecyclerView.Adapter<Se
         }
         public void setRiderPhoto(String image)
         {
-            CircleImageView riderPhoto = (CircleImageView) view.findViewById(R.id.rider_photo);
             if(!(image.equals("null")))
             {
-                Picasso.get().load(Uri.parse(image)).into(riderPhoto);
+                Picasso.get().load(Uri.parse(image)).placeholder(R.drawable.ic_account_circle_black_24dp).into(riderPhoto);
             }
             else
             {
