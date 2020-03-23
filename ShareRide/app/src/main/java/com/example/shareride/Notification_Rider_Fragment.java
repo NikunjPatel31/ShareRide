@@ -259,6 +259,7 @@ public class Notification_Rider_Fragment extends Fragment {
                     .child(mAuth.getCurrentUser().getUid())
                     .child(offeredRideID.get(i));
             final int finalI = i;
+            final int finalI1 = i;
             databaseReference.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -275,6 +276,7 @@ public class Notification_Rider_Fragment extends Fragment {
                        tem.setSource_Location(dataSnapshot.child("Source_Location").getValue().toString());
                        tem.setSource_Location_Name(dataSnapshot.child("Source_Location_Name").getValue().toString());
                        tem.setTime(dataSnapshot.child("Time").getValue().toString());
+                       tem.setRideID(offeredRideID.get(finalI1));
 
                        searchRideResultDetails.add(tem);
 
@@ -331,7 +333,7 @@ public class Notification_Rider_Fragment extends Fragment {
                         if(finalI1 == (passengerID.size() - 1))
                         {
                             NotificationRiderFragmentRecyclerViewAdapter adapter = new NotificationRiderFragmentRecyclerViewAdapter(
-                                    searchRideResultDetails,passengerDetails,getContext());
+                                    searchRideResultDetails,passengerDetails,requestID,getContext());
                             notificationRiderRecyclerView.setAdapter(adapter);
                         }
                     }
