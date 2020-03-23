@@ -9,6 +9,7 @@ import android.location.Geocoder;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.AnimationUtils;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -23,7 +24,7 @@ public class Edit_Ride_Info_Activity extends AppCompatActivity {
 
     private static final String TAG = "Edit_Ride_Info_Activity";
 
-    private TextView sourceLocationTV, destinationLocationTV, dateTV, timeTV, carNameTV, seatValueTV;
+    private TextView sourceLocationTV, destinationLocationTV, dateTV, timeTV, carNameTV, seatValueTV, editRideTitleTV, editRideDesTV;
     private EditText costPerSeatET;
     private String date, time, car_id, ride_id, availableSeats, costPerSeat, carName, sourceLocation, destinationLocation;
     private LatLng sourceLatln, destinationLatlng = null;
@@ -58,6 +59,7 @@ public class Edit_Ride_Info_Activity extends AppCompatActivity {
         getWindow().setBackgroundDrawableResource(R.drawable.background5);
 
         initializeWidgets();
+        animateWidgets();
         textViewOnClickListener();
     }
 
@@ -78,6 +80,22 @@ public class Edit_Ride_Info_Activity extends AppCompatActivity {
         carNameTV = (TextView) findViewById(R.id.car_name_textview);
         seatValueTV = (TextView) findViewById(R.id.number_of_seats_textview);
         costPerSeatET = (EditText) findViewById(R.id.cost_per_seat_edittext);
+        editRideTitleTV = (TextView) findViewById(R.id.edit_ride_title_textview);
+        editRideDesTV = (TextView) findViewById(R.id.edit_ride_description_textview);
+    }
+
+    private void animateWidgets()
+    {
+        Log.d(TAG, "animateWidgets: animating widgets.");
+        sourceLocationTV.setAnimation(AnimationUtils.loadAnimation(this,R.anim.recycler_view_animation));
+        destinationLocationTV.setAnimation(AnimationUtils.loadAnimation(this,R.anim.recycler_view_animation));
+        dateTV.setAnimation(AnimationUtils.loadAnimation(this,R.anim.recycler_view_animation));
+        timeTV.setAnimation(AnimationUtils.loadAnimation(this,R.anim.recycler_view_animation));
+        carNameTV.setAnimation(AnimationUtils.loadAnimation(this,R.anim.recycler_view_animation));
+        seatValueTV.setAnimation(AnimationUtils.loadAnimation(this,R.anim.recycler_view_animation));
+        costPerSeatET.setAnimation(AnimationUtils.loadAnimation(this,R.anim.recycler_view_animation));
+        editRideTitleTV.setAnimation(AnimationUtils.loadAnimation(this,R.anim.recycler_view_image));
+        editRideDesTV.setAnimation(AnimationUtils.loadAnimation(this,R.anim.recycler_view_image));
     }
 
     private void getIntentData()

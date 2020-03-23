@@ -15,6 +15,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -49,7 +50,7 @@ public class Edit_Profile_Activity extends AppCompatActivity {
     private CircleImageView profileImageIV;
     private EditText firstNameET, lastNameET, contactET, yearOfBirthET, cityET, pincodeET;
     private Spinner genderSpinner;
-    private TextView genderTV;
+    private TextView genderTV, editProfileTV;
     private ArrayList<String> genderArrayList;
     private ArrayAdapter<String> genderArrayAdapter;
 
@@ -93,6 +94,7 @@ public class Edit_Profile_Activity extends AppCompatActivity {
 
         storagePermissions();
         initailizeWidgets();
+        animateWidgets();
         initailizeFirebaseInstances();
         spinnerArrayAdapter();
         spinnerListener();
@@ -112,6 +114,22 @@ public class Edit_Profile_Activity extends AppCompatActivity {
         pincodeET = (EditText) findViewById(R.id.pincode_edittext);
         genderSpinner = (Spinner) findViewById(R.id.gender_spinner);
         genderTV = (TextView) findViewById(R.id.gender_textview);
+        editProfileTV = (TextView) findViewById(R.id.edit_profile_title_textview);
+    }
+
+    private void animateWidgets()
+    {
+        Log.d(TAG, "animateWidgets: animating widgets.");
+        profileImageIV.setAnimation(AnimationUtils.loadAnimation(this,R.anim.recycler_view_animation));
+        firstNameET.setAnimation(AnimationUtils.loadAnimation(this,R.anim.recycler_view_animation));
+        lastNameET.setAnimation(AnimationUtils.loadAnimation(this,R.anim.recycler_view_animation));
+        contactET.setAnimation(AnimationUtils.loadAnimation(this,R.anim.recycler_view_animation));
+        yearOfBirthET.setAnimation(AnimationUtils.loadAnimation(this,R.anim.recycler_view_animation));
+        cityET.setAnimation(AnimationUtils.loadAnimation(this,R.anim.recycler_view_animation));
+        pincodeET.setAnimation(AnimationUtils.loadAnimation(this,R.anim.recycler_view_animation));
+        genderSpinner.setAnimation(AnimationUtils.loadAnimation(this,R.anim.recycler_view_animation));
+        genderTV.setAnimation(AnimationUtils.loadAnimation(this,R.anim.recycler_view_animation));
+        editProfileTV.setAnimation(AnimationUtils.loadAnimation(this,R.anim.recycler_view_image));
     }
 
     private void initailizeFirebaseInstances()

@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.AnimationUtils;
 import android.widget.DatePicker;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -22,7 +23,7 @@ public class Offer_ride_one_Activity extends AppCompatActivity implements DatePi
 
     private static final String TAG = "Offer_ride_one_Activity";
 
-    private TextView dateTV, timeTV;
+    private TextView dateTV, timeTV, offeredRideTitleTV, offeredRideTitleDescTV;
     private String time = "";
     private String date = "";
 
@@ -58,6 +59,7 @@ public class Offer_ride_one_Activity extends AppCompatActivity implements DatePi
         destinationLocation = getIntent().getExtras().getParcelable("Destination Location");
 
         initializeWidgets();
+        animateWidgets();
         textViewClickListener();
     }
 
@@ -66,6 +68,17 @@ public class Offer_ride_one_Activity extends AppCompatActivity implements DatePi
         Log.d(TAG, "initializeWidgets: initializing widgets.");
         dateTV = (TextView) findViewById(R.id.date_textview);
         timeTV = (TextView) findViewById(R.id.time_textview);
+        offeredRideTitleTV = (TextView) findViewById(R.id.offer_ride_title_textview);
+        offeredRideTitleDescTV = (TextView) findViewById(R.id.offer_ride_description_textview);
+    }
+
+    private void animateWidgets()
+    {
+        Log.d(TAG, "animateWidgets: animating widgets.");
+        dateTV.setAnimation(AnimationUtils.loadAnimation(this,R.anim.recycler_view_animation));
+        timeTV.setAnimation(AnimationUtils.loadAnimation(this,R.anim.recycler_view_animation));
+        offeredRideTitleTV.setAnimation(AnimationUtils.loadAnimation(this,R.anim.recycler_view_image));
+        offeredRideTitleDescTV.setAnimation(AnimationUtils.loadAnimation(this,R.anim.recycler_view_image));
     }
 
     private void textViewClickListener()

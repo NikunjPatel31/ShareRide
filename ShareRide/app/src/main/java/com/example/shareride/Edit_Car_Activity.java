@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -46,7 +47,7 @@ public class Edit_Car_Activity extends AppCompatActivity {
 
     private EditText carNameET, modelYearET, vechileNumberET;
     private Spinner airConditionerSpinner, fuelSpinner;
-    private TextView airConditionerTV, fuelTV;
+    private TextView airConditionerTV, fuelTV, editCarTitleTV;
     private CircleImageView carIV;
 
     private FirebaseAuth mAuth;
@@ -87,8 +88,8 @@ public class Edit_Car_Activity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit__car_);
         getWindow().setBackgroundDrawableResource(R.drawable.background5);
-
         initializWidgets();
+        animateWidgets();
         initailizeFirebaseInstances();
         spinnerArrayAdapter();
         spinnerListener();
@@ -107,6 +108,21 @@ public class Edit_Car_Activity extends AppCompatActivity {
         carNameET = (EditText) findViewById(R.id.car_name_edittext);
         modelYearET = (EditText) findViewById(R.id.model_year_edittext);
         vechileNumberET = (EditText) findViewById(R.id.vehicle_number_edittext);
+        editCarTitleTV = (TextView) findViewById(R.id.edit_car_in_title_textview);
+    }
+
+    private void animateWidgets()
+    {
+        Log.d(TAG, "animateWidgets: animating widgets.");
+        airConditionerSpinner.setAnimation(AnimationUtils.loadAnimation(this,R.anim.recycler_view_animation));
+        airConditionerTV.setAnimation(AnimationUtils.loadAnimation(this,R.anim.recycler_view_animation));
+        fuelSpinner.setAnimation(AnimationUtils.loadAnimation(this,R.anim.recycler_view_animation));
+        fuelTV.setAnimation(AnimationUtils.loadAnimation(this,R.anim.recycler_view_animation));
+        carIV.setAnimation(AnimationUtils.loadAnimation(this,R.anim.recycler_view_animation));
+        carNameET.setAnimation(AnimationUtils.loadAnimation(this,R.anim.recycler_view_animation));
+        modelYearET.setAnimation(AnimationUtils.loadAnimation(this,R.anim.recycler_view_animation));
+        vechileNumberET.setAnimation(AnimationUtils.loadAnimation(this,R.anim.recycler_view_animation));
+        editCarTitleTV.setAnimation(AnimationUtils.loadAnimation(this,R.anim.recycler_view_image));
     }
 
     private void initailizeFirebaseInstances()
@@ -166,7 +182,6 @@ public class Edit_Car_Activity extends AppCompatActivity {
 
     private void imageSelect()
     {
-
         carIV.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

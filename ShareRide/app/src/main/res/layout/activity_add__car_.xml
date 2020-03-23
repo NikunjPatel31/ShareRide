@@ -11,7 +11,7 @@
         android:layout_height="wrap_content">
 
         <TextView
-            android:id="@+id/sign_in_title_textview"
+            android:id="@+id/add_car_title_textview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="50dp"
@@ -25,7 +25,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/sign_in_description_textview"
+            android:id="@+id/add_car_description_textview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Enter your new car"
@@ -35,7 +35,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/sign_in_title_textview" />
+            app:layout_constraintTop_toBottomOf="@+id/add_car_title_textview" />
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/car_image"
@@ -45,7 +45,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/sign_in_description_textview"
+            app:layout_constraintTop_toBottomOf="@+id/add_car_description_textview"
             app:layout_constraintVertical_bias="0.06"/>
 
         <EditText

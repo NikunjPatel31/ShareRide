@@ -15,6 +15,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.animation.AnimationUtils;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -32,6 +33,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +43,7 @@ public class Destination_Location_Activity extends FragmentActivity implements O
     private static final String TAG = "Destination_Location_Ac";
 
     private EditText searchSourceET;
+    private FloatingActionButton nextFAB;
 
     private LatLng centerScreenLatlng;
     private LatLng sourceLocation;
@@ -81,6 +84,7 @@ public class Destination_Location_Activity extends FragmentActivity implements O
         Log.d(TAG, "onCreate: source Location - Lat: "+sourceLocation.latitude+" Long: "+sourceLocation.longitude);
 
         initializingWidgets();
+        animateWidgets();
         getLocationPermission();
     }
 
@@ -104,6 +108,13 @@ public class Destination_Location_Activity extends FragmentActivity implements O
     {
         Log.d(TAG, "initializingWidgets: initializing widgets.");
         searchSourceET = (EditText) findViewById(R.id.search_source_location_edittext);
+        nextFAB = (FloatingActionButton) findViewById(R.id.next_FAB);
+    }
+    private void animateWidgets()
+    {
+        Log.d(TAG, "animateWidgets: animating widgets.");
+        searchSourceET.setAnimation(AnimationUtils.loadAnimation(this,R.anim.recycler_view_animation));
+        nextFAB.setAnimation(AnimationUtils.loadAnimation(this,R.anim.recycler_view_animation));
     }
 
     private void getLocationPermission()

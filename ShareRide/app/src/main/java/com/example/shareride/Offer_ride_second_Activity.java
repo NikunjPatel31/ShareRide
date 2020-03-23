@@ -10,11 +10,13 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.AnimationUtils;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -27,8 +29,9 @@ public class Offer_ride_second_Activity extends AppCompatActivity {
 
     private static final String TAG = "Offer_ride_second_Activ";
 
-    private TextView numOfSeats;
+    private TextView numOfSeats, seatTitleTV, offerRideTitleTV, offerRideDescTV;
     private EditText costPerSeatET;
+    private FloatingActionButton decreaseFAB, increaseFAB;
 
     private int counter = 0;
     private LatLng sourceLocation, destinationLocation;
@@ -72,6 +75,7 @@ public class Offer_ride_second_Activity extends AppCompatActivity {
 
         gettingIntentData();
         initializeWidgets();
+        animateWidgets();
         intializeFirebaseInstances();
     }
 
@@ -90,6 +94,23 @@ public class Offer_ride_second_Activity extends AppCompatActivity {
         Log.d(TAG, "initializeWidgets: initializing widgets");
         numOfSeats = (TextView) findViewById(R.id.number_of_seats_textview);
         costPerSeatET = (EditText) findViewById(R.id.cost_per_seat_edittext);
+        offerRideTitleTV = (TextView) findViewById(R.id.offer_ride_title_textview);
+        offerRideDescTV = (TextView) findViewById(R.id.offer_ride_description_textview);
+        seatTitleTV = (TextView) findViewById(R.id.seat_title_textview);
+        decreaseFAB = (FloatingActionButton) findViewById(R.id.decrease_number_FAB);
+        increaseFAB = (FloatingActionButton) findViewById(R.id.increase_number_FAB);
+    }
+
+    private void animateWidgets()
+    {
+        Log.d(TAG, "animateWidgets: animating widgets.");
+        offerRideTitleTV.setAnimation(AnimationUtils.loadAnimation(this,R.anim.recycler_view_image));
+        offerRideDescTV.setAnimation(AnimationUtils.loadAnimation(this,R.anim.recycler_view_image));
+        seatTitleTV.setAnimation(AnimationUtils.loadAnimation(this,R.anim.recycler_view_animation));
+        decreaseFAB.setAnimation(AnimationUtils.loadAnimation(this,R.anim.recycler_view_animation));
+        numOfSeats.setAnimation(AnimationUtils.loadAnimation(this,R.anim.recycler_view_animation));
+        increaseFAB.setAnimation(AnimationUtils.loadAnimation(this,R.anim.recycler_view_animation));
+        costPerSeatET.setAnimation(AnimationUtils.loadAnimation(this,R.anim.recycler_view_animation));
     }
 
     private void intializeFirebaseInstances()
