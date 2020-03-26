@@ -1,6 +1,7 @@
 package com.example.shareride;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -97,6 +98,19 @@ public class NotificationRiderFragmentRecyclerViewAdapter extends RecyclerView.A
                 @Override
                 public void onCancelled(@NonNull DatabaseError databaseError) {
 
+                }
+            });
+
+            holder.infoBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(context,SearchRideResultInfoActivity.class);
+                    intent.putExtra("Activity","Rider_Notification");
+                    intent.putExtra("Rider_Details",passengerDeatilsTem);
+                    //remember to change the key value to passenger_details instead of rider_details..
+                    Log.d(TAG, "onClick: passenger Name: "+passengerDeatilsTem.getFirstName());
+                    intent.putExtra("Ride_details",searchRideResultDetailsTem);
+                    context.startActivity(intent);
                 }
             });
 
@@ -203,12 +217,13 @@ public class NotificationRiderFragmentRecyclerViewAdapter extends RecyclerView.A
     public static class RequestRideNotificationViewHolder extends RecyclerView.ViewHolder
     {
         View view;
-        Button requestBtn, rejectBtn;
+        Button requestBtn, rejectBtn, infoBtn;
         public RequestRideNotificationViewHolder(@NonNull View itemView) {
             super(itemView);
             view = itemView;
             requestBtn = (Button) view.findViewById(R.id.request_button);
             rejectBtn = (Button) view.findViewById(R.id.reject_button);
+            infoBtn = (Button) view.findViewById(R.id.info_button);
         }
         public void setPassengerName(String passengerName)
         {

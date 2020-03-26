@@ -63,6 +63,7 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
+                android:id="@+id/rating_value"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="9dp"
@@ -88,38 +89,36 @@
                 android:id="@+id/source_location_textview"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:padding="3dp"
                 android:text="Source Location"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                android:padding="3dp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/horizontal_line"
-                app:layout_constraintEnd_toStartOf="@+id/destination_location_textview"/>
+                app:layout_constraintTop_toBottomOf="@+id/horizontal_line" />
 
             <TextView
                 android:id="@+id/destination_location_textview"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
+                android:padding="3dp"
                 android:text="Destination ..."
                 android:textSize="18sp"
                 android:textStyle="bold"
-                android:padding="3dp"
-                app:layout_constraintStart_toEndOf="@+id/source_location_textview"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/horizontal_line"/>
+                app:layout_constraintTop_toBottomOf="@+id/horizontal_line" />
 
             <TextView
                 android:id="@+id/time_textview"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
                 android:padding="3dp"
                 android:text="Time : "
                 android:textSize="18sp"
                 android:textStyle="bold"
-                android:layout_marginStart="5dp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/time_value_textview"
-                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/source_location_textview"
                 app:layout_constraintVertical_bias="0.0" />
@@ -131,24 +130,22 @@
                 android:padding="3dp"
                 android:text="10:00 AM"
                 android:textSize="18sp"
-                app:layout_constraintStart_toEndOf="@id/time_textview"
-                app:layout_constraintEnd_toStartOf="@id/cost_per_seat_textview"
                 app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@id/time_textview"
                 app:layout_constraintTop_toBottomOf="@id/source_location_textview"
                 app:layout_constraintVertical_bias="0.0" />
 
             <TextView
                 android:id="@+id/cost_per_seat_textview"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
+                android:padding="3dp"
                 android:text="290 Rs / seat"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                android:padding="3dp"
-                android:layout_marginStart="40dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/time_value_textview"
                 app:layout_constraintTop_toBottomOf="@id/destination_location_textview"
                 app:layout_constraintVertical_bias="0.0" />
 
@@ -222,23 +219,25 @@
                 android:id="@+id/gender_value_textview"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
                 android:padding="3dp"
                 android:text="Male"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                app:layout_constraintStart_toEndOf="@+id/gender_textview"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/cost_per_seat_textview" />
 
             <Button
+                android:id="@+id/button2"
                 android:layout_width="170dp"
                 android:layout_height="35dp"
                 android:layout_marginEnd="32dp"
                 android:background="@drawable/background_ripple_button_apply"
+                android:onClick="moreInformation"
                 android:padding="5dp"
                 android:text="More Information"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/gender_textview"
-                android:onClick="moreInformation"/>
+                app:layout_constraintTop_toBottomOf="@id/gender_textview" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

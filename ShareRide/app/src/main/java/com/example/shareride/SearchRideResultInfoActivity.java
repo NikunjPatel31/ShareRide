@@ -9,6 +9,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -23,6 +25,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.time.Year;
+import java.util.Calendar;
+
 public class SearchRideResultInfoActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private static final String TAG = "SearchRideResultInfoAct";
@@ -30,15 +35,18 @@ public class SearchRideResultInfoActivity extends FragmentActivity implements On
     private GoogleMap mMap;
     private SearchRideResultDetails searchRideResultDetails;
     private TextView riderNameTV, ratingTV, sourceLocationTV, destinationLocationTV, timeTV, dateTV, seatTV, costPerSeatTV, genderTV;
+    private ImageView ratingStar;
+    private TextView ratingValueTV;
     private String riderUID=null;
-    private DatabaseReference databaseReference;
     private UserDetails riderDetails=null;
     private boolean requestFlag = false;
     private CardView cardView;
+    String activity;
 
     public void moreInformation(View view)
     {
         Intent intent = new Intent(SearchRideResultInfoActivity.this, SearchedRideCompleteInfoActivity.class);
+        intent.putExtra("Activity",activity);
         intent.putExtra("Ride_Details",searchRideResultDetails);
         intent.putExtra("Rider_Details",riderDetails);
         intent.putExtra("Request_Flag",requestFlag);
@@ -56,6 +64,17 @@ public class SearchRideResultInfoActivity extends FragmentActivity implements On
 
         initializeWidgets();
         cardView.setAnimation(AnimationUtils.loadAnimation(this,R.anim.recycler_view_animation));
+
+        if(getIntent().getStringExtra("Activity").equals("Rider_Notification"))
+        {
+            ratingStar.setVisibility(View.INVISIBLE);
+            ratingValueTV.setVisibility(View.INVISIBLE);
+            activity = "Rider_Notification";
+        }
+        else
+        {
+            activity = "Search";
+        }
     }
 
     @Override
@@ -82,7 +101,6 @@ public class SearchRideResultInfoActivity extends FragmentActivity implements On
         {
             searchRideResultDetails = getIntent().getParcelableExtra("Ride_details");
             riderDetails = getIntent().getParcelableExtra("Rider_Details");
-            Log.d(TAG, "getIntentData: Ride_ID: "+searchRideResultDetails.getRideID());
             requestFlag = getIntent().getBooleanExtra("Request_Flag",false);
             riderUID = getIntent().getStringExtra("Rider_UID");
         }
@@ -96,7 +114,6 @@ public class SearchRideResultInfoActivity extends FragmentActivity implements On
         Log.d(TAG, "initializeWidgets: initializing widgets.");
         cardView = (CardView) findViewById(R.id.cardview);
         riderNameTV = (TextView) findViewById(R.id.rider_name_textview);
-        ratingTV = (TextView) findViewById(R.id.rating_textview);
         sourceLocationTV = (TextView) findViewById(R.id.source_location_textview);
         destinationLocationTV = (TextView) findViewById(R.id.destination_location_textview);
         timeTV = (TextView) findViewById(R.id.time_value_textview);
@@ -104,6 +121,9 @@ public class SearchRideResultInfoActivity extends FragmentActivity implements On
         seatTV = (TextView) findViewById(R.id.seats_value_textview);
         costPerSeatTV = (TextView) findViewById(R.id.cost_per_seat_textview);
         genderTV = (TextView) findViewById(R.id.gender_value_textview);
+        ratingStar = (ImageView) findViewById(R.id.rating_star);
+        ratingValueTV = (TextView) findViewById(R.id.rating_value);
+
     }
     private void populatingWidgets()
     {
@@ -120,7 +140,17 @@ public class SearchRideResultInfoActivity extends FragmentActivity implements On
             timeTV.setText(searchRideResultDetails.getTime());
             dateTV.setText(searchRideResultDetails.getDate());
             seatTV.setText(searchRideResultDetails.getNum_Seats());
-            costPerSeatTV.setText(searchRideResultDetails.getCost_Per_Seat());
+            if(getIntent().getStringExtra("Activity").equals("Rider_Notification"))
+            {
+                Calendar calendar = Calendar.getInstance();
+                int year = calendar.get(Calendar.YEAR);
+                int DOB = Integer.parseInt(riderDetails.getDOB());
+                costPerSeatTV.setText("Age : "+(year-DOB));
+            }
+            else if (getIntent().getStringExtra("Activity").equals("Search"))
+            {
+                costPerSeatTV.setText(searchRideResultDetails.getCost_Per_Seat());
+            }
             genderTV.setText(riderDetails.getGender());
         }
         catch (Exception e)

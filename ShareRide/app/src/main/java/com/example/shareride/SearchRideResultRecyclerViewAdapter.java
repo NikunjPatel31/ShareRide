@@ -86,9 +86,9 @@ public class SearchRideResultRecyclerViewAdapter extends RecyclerView.Adapter<Se
                 Intent intent = new Intent(context,SearchRideResultInfoActivity.class);
                 try {
                     SearchRideResultDetails tem = searchRideResultDetails.get(position);
-                    Log.d(TAG, "onClick: Ride_ID: "+tem.getRideID());
-                    intent.putExtra("Ride_details",searchRideResultDetails.get(position));
                     userDetails = tem.riderDetails;
+                    intent.putExtra("Activity","Search");
+                    intent.putExtra("Ride_details",searchRideResultDetails.get(position));
                     intent.putExtra("Rider_Details",userDetails);
                     intent.putExtra("Request_Flag",requestFlag);
                     intent.putExtra("Rider_UID",riderUID);
