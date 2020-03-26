@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -87,6 +88,8 @@ public class SearchedRideCompleteInfoActivity extends AppCompatActivity {
                         requestBtn.setText("Requested");
                         requestFlag = true;
                         SearchRideResultRecyclerViewAdapter.SearchRideResultDetailsViewHolder.requestViewValue = true;
+                        Intent intent = new Intent(SearchedRideCompleteInfoActivity.this, SearchRideResultActivity.class);
+                        startActivity(intent);
                     }
                     else if(requestBtn.getText().equals("Requested"))
                     {
@@ -125,11 +128,13 @@ public class SearchedRideCompleteInfoActivity extends AppCompatActivity {
                                 }
                             }
                         });
+                        Intent intent = new Intent(SearchedRideCompleteInfoActivity.this, SearchRideResultActivity.class);
+                        startActivity(intent);
                     }
-                    Intent intent = new Intent(SearchedRideCompleteInfoActivity.this, SearchRideResultActivity.class);
-                    //intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(intent);
-                    //finish();
+                    else if(requestBtn.getText().equals("Accepted"))
+                    {
+                        Toast.makeText(SearchedRideCompleteInfoActivity.this, "Your ride is already requested.", Toast.LENGTH_SHORT).show();
+                    }
                 }
             });
         }
@@ -353,7 +358,15 @@ public class SearchedRideCompleteInfoActivity extends AppCompatActivity {
                     {
                         Log.d(TAG, "onDataChange: user has requested the ride.");
                         setRequestKey(dataSnapshot.getKey());
-                        requestBtn.setText("Requested");
+                        if(dataSnapshot.child("Status").getValue().equals("Accepted"))
+                        {
+                            Log.d(TAG, "onDataChange: rider has accepted the request.");
+                            requestBtn.setText("Accepted");
+                        }
+                        else
+                        {
+                            requestBtn.setText("Requested");
+                        }
                     }
                     else
                     {

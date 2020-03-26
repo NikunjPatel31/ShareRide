@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -105,7 +106,7 @@ public class SearchRideResultRecyclerViewAdapter extends RecyclerView.Adapter<Se
             @Override
             public void onClick(View v) {
                 DatabaseReference mChildDB = databaseReference.child("Registration").child(mAuth.getUid());
-                DatabaseReference notificationDB = FirebaseDatabase.getInstance().getReference().child("Notification").child("Rider");
+                final DatabaseReference notificationDB = FirebaseDatabase.getInstance().getReference().child("Notification").child("Rider");
                 if(holder.requestBtn.getText().equals("Request"))
                 {
                     DatabaseReference tem = mChildDB.push();
@@ -126,7 +127,21 @@ public class SearchRideResultRecyclerViewAdapter extends RecyclerView.Adapter<Se
                             if(task.isSuccessful())
                             {
                                 Log.d(TAG, "onComplete: request canceled from the registration.");
-                                holder.requestBtn.setText("Request");
+                                SearchRideResultDetails details = searchRideResultDetails.get(position);
+                                Log.d(TAG, "onComplete: rider_id: "+details.getUserID());
+                                DatabaseReference temNotification = notificationDB.child(details.getUserID()).child(holder.getRequestKey());
+                                temNotification.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        if(task.isSuccessful())
+                                        {
+                                            Log.d(TAG, "onComplete: request Canceled from the notification");
+                                            holder.requestBtn.setText("Request");
+                                            requestFlag = false;
+                                        }
+                                    }
+                                });
+                                //holder.requestBtn.setText("Request");
                                 requestFlag = false;
                             }
                             else
@@ -136,34 +151,13 @@ public class SearchRideResultRecyclerViewAdapter extends RecyclerView.Adapter<Se
                             }
                         }
                     });
-                    SearchRideResultDetails details = searchRideResultDetails.get(position);
-                    Log.d(TAG, "onClick: rider_id: "+details.getUserID());
-                    Log.d(TAG, "onClick: ride_id: "+details.getRideID());
-                    DatabaseReference temNotification = notificationDB.child(details.getUserID()).child(details.getRideID());
-                    temNotification.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            if(task.isSuccessful())
-                            {
-                                Log.d(TAG, "onComplete: request Canceled from the notification");
-                                holder.requestBtn.setText("Request");
-                                requestFlag = false;
-                            }
-                        }
-                    });
-                    Log.d(TAG, "onClick: offer_ride_id: "+details.getRideID());
+                }
+                else if(holder.requestBtn.getText().equals("Accepted"))
+                {
+                    Toast.makeText(context, "Your ride is already requested.", Toast.LENGTH_SHORT).show();
                 }
             }
         });
-
-        if(holder.flag)
-        {
-            holder.requestBtn.setText("Requested");
-        }
-        else
-        {
-            holder.requestBtn.setText("Request");
-        }
     }
 
     private void requestRide(SearchRideResultDetails searchRideResultDetails,DatabaseReference databaseReference)
@@ -195,7 +189,6 @@ public class SearchRideResultRecyclerViewAdapter extends RecyclerView.Adapter<Se
         String requestKey="";
         DatabaseReference databaseReference;
         private boolean flag = false;
-        static int viewPosition;
         static boolean requestViewValue;
         private CardView cardView;
         private CircleImageView riderPhoto;
@@ -266,11 +259,9 @@ public class SearchRideResultRecyclerViewAdapter extends RecyclerView.Adapter<Se
                     userDetails.setContact(dataSnapshot.child("Contact").getValue().toString());
                     userDetails.setDOB(dataSnapshot.child("DOB").getValue().toString());
                     userDetails.setFirstName(dataSnapshot.child("First Name").getValue().toString());
-                    Log.d(TAG, "onDataChange: ahkjh kjhaskjhjkdhfkh aksfk first Name: "+dataSnapshot.child("First Name").getValue().toString());
                     userDetails.setGender(dataSnapshot.child("Gender").getValue().toString());
                     userDetails.setLastName(dataSnapshot.child("Last Name").getValue().toString());
                     userDetails.setPincode(dataSnapshot.child("Pincode").getValue().toString());
-                    Log.d(TAG, "onDataChange: profile picture: "+dataSnapshot.child("Profile Picture").getValue().toString());
                     userDetails.setProfilePicture(dataSnapshot.child("Profile Picture").getValue().toString());
                     //userDetails.setUserID(dataSnapshot.getKey());
                     riderUID = dataSnapshot.getKey();
@@ -376,7 +367,7 @@ public class SearchRideResultRecyclerViewAdapter extends RecyclerView.Adapter<Se
                 }
             });
         }
-        private void getEachRequestIDDetails(DatabaseReference childDB, ArrayList<String> requestID, final int position)
+        private void getEachRequestIDDetails(DatabaseReference childDB, final ArrayList<String> requestID, final int position)
         {
             Log.d(TAG, "getEachRequestIDDetails: getting each request ID details"+requestID.size());
             setDataSnapshot(childDB);
@@ -398,19 +389,30 @@ public class SearchRideResultRecyclerViewAdapter extends RecyclerView.Adapter<Se
                             Log.d(TAG, " 384 onDataChange: user has Ride_ID: "+tem.getRideID());
                             Log.d(TAG, "onDataChange: passenger id: "+dataSnapshot.getKey());
                             setRequestKey(dataSnapshot.getKey());
-                            requestBtn.setText("Requested");
-                            flag = true;
-
+                            if(dataSnapshot.child("Status").getValue().equals("Accepted"))
+                            {
+                                Log.d(TAG, "onDataChange: rider has accepted the request.");
+                                requestBtn.setText("Accepted");
+                            }
+                            else
+                            {
+                                Log.d(TAG, "onDataChange: rider has not accepted the request");
+                                requestBtn.setText("Requested");
+                                flag = true;
+                            }
                         }
                         else
                         {
-                            if(!flag)
+                            if(!requestBtn.getText().equals("Accepted"))
                             {
-                                requestBtn.setText("Request");
-                                Log.d(TAG, " 384 onDataChange: user has not requested the ride");
-                                Log.d(TAG, " 384 onDataChange: user has database Ride_ID: "+dataSnapshot.child("Offer_Ride_ID").getValue());
-                                Log.d(TAG, " 384 onDataChange: user has Ride_ID: "+tem.getRideID());
-                                Log.d(TAG, "onDataChange: passenger id: "+dataSnapshot.getKey());
+                                if(!flag)
+                                {
+                                    requestBtn.setText("Request");
+                                    Log.d(TAG, " 384 onDataChange: user has not requested the ride");
+                                    Log.d(TAG, " 384 onDataChange: user has database Ride_ID: "+dataSnapshot.child("Offer_Ride_ID").getValue());
+                                    Log.d(TAG, " 384 onDataChange: user has Ride_ID: "+tem.getRideID());
+                                    Log.d(TAG, "onDataChange: passenger id: "+dataSnapshot.getKey());
+                                }
                             }
                         }
                     }

@@ -148,7 +148,9 @@ public class Notification_Rider_Fragment extends Fragment {
 
             @Override
             public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-
+                Log.d(TAG, "getRequestRideID: onChildRemoved: request_id removed: "+dataSnapshot.getKey());
+                requestID.remove(dataSnapshot.getKey());
+                getOfferedRideID(requestID,mChild);
             }
 
             @Override
@@ -293,11 +295,6 @@ public class Notification_Rider_Fragment extends Fragment {
                 }
             });
         }
-//        if(i >= offeredRideID.size())
-//        {
-//            Log.d(TAG, "getRideDetails: size of searchRideResultDetails: "+searchRideResultDetails.size());
-//
-//        }
     }
     private void getPassengerDetails()
     {
@@ -332,9 +329,16 @@ public class Notification_Rider_Fragment extends Fragment {
 
                         if(finalI1 == (passengerID.size() - 1))
                         {
-                            NotificationRiderFragmentRecyclerViewAdapter adapter = new NotificationRiderFragmentRecyclerViewAdapter(
-                                    searchRideResultDetails,passengerDetails,requestID,getContext());
-                            notificationRiderRecyclerView.setAdapter(adapter);
+                            try {
+                                NotificationRiderFragmentRecyclerViewAdapter adapter = new NotificationRiderFragmentRecyclerViewAdapter(
+                                        searchRideResultDetails,passengerDetails,requestID,getContext());
+                                notificationRiderRecyclerView.setAdapter(adapter);
+                                adapter.notifyDataSetChanged();
+                            }
+                            catch (Exception e)
+                            {
+                                Log.d(TAG, "onDataChange: Exception: "+e.getLocalizedMessage());
+                            }
                         }
                     }
                     else

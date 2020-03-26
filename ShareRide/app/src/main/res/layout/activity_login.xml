@@ -67,7 +67,19 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/password_edittext"
         app:layout_constraintVertical_bias="0.100000024"
-        android:onClick="login"/>
+        android:onClick="login">
+    </Button>
+
+    <ProgressBar
+        android:id="@+id/login_progress_bar"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:indeterminateTint="@android:color/black"
+        app:layout_constraintStart_toStartOf="@+id/button"
+        app:layout_constraintEnd_toEndOf="@+id/button"
+        app:layout_constraintTop_toTopOf="@+id/button"
+        app:layout_constraintBottom_toBottomOf="@+id/button"/>
+
 
     <TextView
         android:id="@+id/textView"

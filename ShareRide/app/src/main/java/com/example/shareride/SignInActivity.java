@@ -70,7 +70,6 @@ public class SignInActivity extends AppCompatActivity {
     public void apply(View view)
     {
         Log.d(TAG, "apply: button pressed.");
-        Toast.makeText(this, "Button pressed", Toast.LENGTH_SHORT).show();
         if(fieldsValidation())
         {
             if(EmailVerifed())

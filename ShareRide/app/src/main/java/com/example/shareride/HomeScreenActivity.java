@@ -10,20 +10,24 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.AnimationUtils;
 import android.widget.Toast;
 
 import com.google.android.material.bottomappbar.BottomAppBar;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class HomeScreenActivity extends AppCompatActivity {
 
     private static final String TAG = "HomeScreenActivity";
 
+    FloatingActionButton offerFAB;
     BottomAppBar bottomAppBar;
     FirebaseAuth mAuth;
 
     public void add(View view)
     {
+        offerFAB.startAnimation(AnimationUtils.loadAnimation(this, R.anim.fab_click_animation));
         Intent intent = new Intent(HomeScreenActivity.this, Source_Location_Activity.class);
         intent.putExtra("Activity","SourceLocation");
         startActivity(intent);
@@ -35,8 +39,7 @@ public class HomeScreenActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home_screen);
         initializeFirebaseInstance();
 
-
-
+        offerFAB = (FloatingActionButton) findViewById(R.id.offer_ride_FAB);
         bottomAppBar = (BottomAppBar) findViewById(R.id.bottom_action_bar);
         setSupportActionBar(bottomAppBar);
 
@@ -46,6 +49,13 @@ public class HomeScreenActivity extends AppCompatActivity {
                 startActivity(new Intent(HomeScreenActivity.this, Account_Activity.class));
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        offerFAB.setAnimation(AnimationUtils.loadAnimation(this,R.anim.fab_animation));
+        bottomAppBar.setAnimation(AnimationUtils.loadAnimation(this,R.anim.bottom_app_bar_animation));
     }
 
     private void initializeFirebaseInstance()

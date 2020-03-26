@@ -64,6 +64,7 @@ public class Source_Location_Activity extends FragmentActivity implements OnMapR
 
     public void next(View view)
     {
+        nextFAB.startAnimation(AnimationUtils.loadAnimation(this, R.anim.fab_click_animation));
         centerScreenLatlng = mMap.getCameraPosition().target;
         Log.d(TAG, "next: lat: "+centerScreenLatlng.latitude+" long: "+centerScreenLatlng.longitude);
         if(location_permission)

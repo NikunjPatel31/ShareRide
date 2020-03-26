@@ -362,7 +362,6 @@ public class SearchRideResultActivity extends AppCompatActivity {
                             else
                             {
                                 progressDialog.dismiss();
-                                Log.d(TAG, "onDataChange: there is a problem in the code."+rideUID.size());
                             }
                             progressDialog.dismiss();
                         }

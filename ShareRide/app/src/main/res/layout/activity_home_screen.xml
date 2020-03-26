@@ -33,7 +33,7 @@
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/coordinatorLayout"
         android:layout_width="match_parent"
-        android:layout_height="90dp"
+        android:layout_height="0dp"
         android:layout_gravity="bottom"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -47,19 +47,20 @@
             android:layout_height="60dp"
             android:layout_gravity="bottom"
             android:backgroundTint="@color/colorPrimary"
+            android:elevation="80dp"
             android:padding="15dp"
             app:fabAlignmentMode="center"
             app:fabCradleRoundedCornerRadius="32dp"
-            app:navigationIcon="@drawable/ic_menu_24dp"
-            android:elevation="80dp"/>
+            app:navigationIcon="@drawable/ic_menu_24dp" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/offer_ride_FAB"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:backgroundTint="@color/colorPrimary"
             android:onClick="add"
-            app:borderWidth="0dp"
             android:src="@drawable/ic_add_24dp"
+            app:borderWidth="0dp"
             app:layout_anchor="@id/bottom_action_bar" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
