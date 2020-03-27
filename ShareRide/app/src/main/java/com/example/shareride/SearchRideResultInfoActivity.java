@@ -42,6 +42,9 @@ public class SearchRideResultInfoActivity extends FragmentActivity implements On
     private boolean requestFlag = false;
     private CardView cardView;
     String activity;
+    private String request_id;
+    private String position;
+    private String size;
 
     public void moreInformation(View view)
     {
@@ -49,6 +52,9 @@ public class SearchRideResultInfoActivity extends FragmentActivity implements On
         {
             Intent intent = new Intent(SearchRideResultInfoActivity.this, riderNotificationPassengerCompleteInfo.class);
             intent.putExtra("Passenger_details",riderDetails);
+            intent.putExtra("Request_id",request_id);
+            intent.putExtra("Position",position);
+            intent.putExtra("size",size);
             startActivity(intent);
         }
         else
@@ -111,6 +117,9 @@ public class SearchRideResultInfoActivity extends FragmentActivity implements On
             riderDetails = getIntent().getParcelableExtra("Rider_Details");
             requestFlag = getIntent().getBooleanExtra("Request_Flag",false);
             riderUID = getIntent().getStringExtra("Rider_UID");
+            request_id = getIntent().getStringExtra("Request_id");
+            position = getIntent().getStringExtra("Position");
+            size = getIntent().getStringExtra("size");
         }
         catch (Exception e)
         {

@@ -24,8 +24,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".riderNotificationPassengerCompleteInfo"></activity>
-        <activity android:name=".NotificationActivity" />
+        <activity android:name=".riderNotificationPassengerCompleteInfo"
+            android:launchMode="singleTask"></activity>
+        <activity android:name=".NotificationActivity"
+            android:launchMode="singleTask"/>
         <activity android:name=".SearchedRideCompleteInfoActivity" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
@@ -41,7 +43,8 @@
 
         <activity
             android:name=".SearchRideResultInfoActivity"
-            android:label="@string/title_activity_search_ride_result_info" />
+            android:label="@string/title_activity_search_ride_result_info"
+            android:launchMode="singleTask"/>
         <activity
             android:name=".SearchRideResultActivity"
             android:launchMode="singleTask" />

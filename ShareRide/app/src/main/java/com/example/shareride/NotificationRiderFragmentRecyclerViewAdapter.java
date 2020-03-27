@@ -34,7 +34,7 @@ public class NotificationRiderFragmentRecyclerViewAdapter extends RecyclerView.A
     private static final String TAG = "NotificationRiderFragme";
     private static ArrayList<SearchRideResultDetails> searchRideResultDetails;
     private static ArrayList<UserDetails> passengerDetails;
-    private static ArrayList<String> requestID;
+    public static ArrayList<String> requestID;
     public Context context;
     public FirebaseAuth mAuth;
 
@@ -109,8 +109,10 @@ public class NotificationRiderFragmentRecyclerViewAdapter extends RecyclerView.A
                     intent.putExtra("Activity","Rider_Notification");
                     intent.putExtra("Rider_Details",passengerDeatilsTem);
                     //remember to change the key value to passenger_details instead of rider_details..
-                    Log.d(TAG, "onClick: passenger Name: "+passengerDeatilsTem.getFirstName());
+                    intent.putExtra("Request_id",requestID.get(position));
                     intent.putExtra("Ride_details",searchRideResultDetailsTem);
+                    intent.putExtra("Position",Integer.toString(position));
+                    intent.putExtra("size",Integer.toString(searchRideResultDetails.size()));
                     context.startActivity(intent);
                 }
             });

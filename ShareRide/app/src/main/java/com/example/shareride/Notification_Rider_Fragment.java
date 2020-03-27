@@ -35,12 +35,12 @@ public class Notification_Rider_Fragment extends Fragment {
 
     private static final String TAG = "Notification_Rider_Frag";
     private Button myRidesBtn, rideProgressBtn;
-    private RecyclerView notificationRiderRecyclerView;
+    public static RecyclerView notificationRiderRecyclerView;
     private DatabaseReference databaseReference;
     private FirebaseAuth mAuth;
     private ArrayList<String> offeredRideID = new ArrayList<>();
     private ArrayList<String> passengerID = new ArrayList<>();
-    private ArrayList<String> requestID = new ArrayList<>();
+    public static ArrayList<String> requestID = new ArrayList<>();
     private ArrayList<SearchRideResultDetails> searchRideResultDetails = new ArrayList<>();
     private ArrayList<UserDetails> passengerDetails = new ArrayList<>();
     private ProgressBar progressBar;
@@ -119,6 +119,7 @@ public class Notification_Rider_Fragment extends Fragment {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if(dataSnapshot.exists())
                 {
+                    Log.d(TAG, "mainFunction: onDataChange: children count: "+dataSnapshot.getChildrenCount());
                     getRequestRideID((int) dataSnapshot.getChildrenCount());
                 }
                 else
@@ -143,9 +144,13 @@ public class Notification_Rider_Fragment extends Fragment {
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 if(dataSnapshot.exists())
                 {
+                    Log.d(TAG, "onChildAdded: request_id.size before: "+requestID.size());
                     requestID.add(dataSnapshot.getKey());
+                    Log.d(TAG, "onChildAdded: children count: "+childrenCount);
+                    Log.d(TAG, "onChildAdded: request_id.size: "+requestID.size());
                     if(requestID.size() == childrenCount)
                     {
+
                         getOfferedRideID(requestID,mChild);
                     }
                 }
@@ -189,8 +194,6 @@ public class Notification_Rider_Fragment extends Fragment {
             mChild.addChildEventListener(new ChildEventListener() {
                 @Override
                 public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                    Log.d(TAG, "getOfferedRideID: requestID: "+requestID.get(finalI));
-                    Log.d(TAG, "getOfferedRideID: onChildAdded: key: "+dataSnapshot.getKey());
                     offeredRideID.add(dataSnapshot.getKey());
                     if(offeredRideID.size() == requestID.size())
                     {

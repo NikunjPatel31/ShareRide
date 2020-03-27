@@ -15,11 +15,11 @@
             android:layout_width="match_parent"
             android:layout_height="250dp"
             app:layout_scrollFlags="scroll|exitUntilCollapsed|snap"
-            app:contentScrim="@color/colorPrimary"
+            app:contentScrim="@android:color/white"
             android:fitsSystemWindows="true"
             app:title="Passenger name..."
             app:expandedTitleTextAppearance="@style/CollapsedAppBar"
-            app:collapsedTitleTextAppearance="@style/CollapsedAppBar">
+            >
 
             <ImageView
                 android:id="@+id/passenger_imageView"
@@ -176,19 +176,21 @@
                 android:layout_marginBottom="30dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/city_textview"
-                app:layout_constraintBottom_toBottomOf="parent"/>
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:onClick="accept"/>
 
             <Button
                 android:layout_width="130dp"
                 android:layout_height="40dp"
-                android:text="Cancel"
+                android:text="Reject"
                 android:textSize="18dp"
                 android:textColor="@color/colorButtonCancelText"
                 android:background="@drawable/background_ripple_button_cancel"
                 android:layout_marginTop="40dp"
                 android:layout_marginEnd="32dp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/city_value_textview"/>
+                app:layout_constraintTop_toBottomOf="@+id/city_value_textview"
+                android:onClick="reject"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
