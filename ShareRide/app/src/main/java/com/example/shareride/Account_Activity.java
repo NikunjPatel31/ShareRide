@@ -3,6 +3,7 @@ package com.example.shareride;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -32,6 +33,7 @@ public class Account_Activity extends AppCompatActivity {
     private TabItem profileTI, accountTI;
     private TextView userNameTV;
     private CircleImageView profileImageIV;
+    private ImageView profileImageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,8 +54,9 @@ public class Account_Activity extends AppCompatActivity {
         tabLayout = (TabLayout) findViewById(R.id.tabLayout);
         profileTI = (TabItem) findViewById(R.id.profile_tab_item);
         accountTI = (TabItem) findViewById(R.id.account_tab_item);
-        userNameTV = (TextView) findViewById(R.id.user_name_textview);
-        profileImageIV = (CircleImageView) findViewById(R.id.profilePicImageView);
+//        userNameTV = (TextView) findViewById(R.id.user_name_textview);
+//        profileImageIV = (CircleImageView) findViewById(R.id.profilePicImageView);
+        profileImageView = findViewById(R.id.profile_image_view);
     }
 
     private void initializeFirebaseInstance()
@@ -108,9 +111,9 @@ public class Account_Activity extends AppCompatActivity {
                 {
                     Log.d(TAG, "onDataChange: image is there.");
                     Uri imageUri = Uri.parse(profilePicPath);
-                    Picasso.get().load(imageUri).into(profileImageIV);
+                    Picasso.get().load(imageUri).into(profileImageView);
                     //profileImageIV.setImageURI(imageUri);
-                    userNameTV.setText(userName);
+                    //userNameTV.setText(userName);
                 }
                 else
                 {

@@ -3,6 +3,7 @@ package com.example.shareride;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -40,8 +41,6 @@ public class SearchedRideCompleteInfoActivity extends AppCompatActivity {
     private String carID;
     private DatabaseReference databaseReference;
     private FirebaseAuth mAuth;
-    private boolean requestFlag = false;
-
     private int requestIDCounter = 1;
     ArrayList<String> requestID = new ArrayList<>();
     int requestIDChildrenCount = 0;
@@ -50,9 +49,7 @@ public class SearchedRideCompleteInfoActivity extends AppCompatActivity {
     public void cancel(View view)
     {
         Intent intent = new Intent(SearchedRideCompleteInfoActivity.this, SearchRideResultActivity.class);
-        //intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
-        //finish();
     }
 
     @Override
@@ -86,7 +83,7 @@ public class SearchedRideCompleteInfoActivity extends AppCompatActivity {
                         Log.d(TAG, "onClick: request key: "+requestKey);
                         requestRide(searchRideResultDetails);
                         requestBtn.setText("Requested");
-                        requestFlag = true;
+//                        requestFlag = true;
                         SearchRideResultRecyclerViewAdapter.SearchRideResultDetailsViewHolder.requestViewValue = true;
                         Intent intent = new Intent(SearchedRideCompleteInfoActivity.this, SearchRideResultActivity.class);
                         startActivity(intent);
@@ -102,13 +99,13 @@ public class SearchedRideCompleteInfoActivity extends AppCompatActivity {
                                 {
                                     Log.d(TAG, "onComplete: request canceled.");
                                     requestBtn.setText("Request");
-                                    requestFlag = false;
+//                                    requestFlag = false;
                                     SearchRideResultRecyclerViewAdapter.SearchRideResultDetailsViewHolder.requestViewValue = false;
                                 }
                                 else
                                 {
                                     Log.d(TAG, "onComplete: request not canceled. Exception: "+task.getException());
-                                    requestFlag = true;
+//                                    requestFlag = true;
                                 }
                             }
                         });
@@ -124,7 +121,7 @@ public class SearchedRideCompleteInfoActivity extends AppCompatActivity {
                                     Log.d(TAG, "onComplete: request Canceled from the notification");
                                     requestBtn.setText("Request");
                                     SearchRideResultRecyclerViewAdapter.SearchRideResultDetailsViewHolder.requestViewValue = false;
-                                    requestFlag = false;
+//                                    requestFlag = false;
                                 }
                             }
                         });
@@ -151,8 +148,6 @@ public class SearchedRideCompleteInfoActivity extends AppCompatActivity {
         searchRideResultDetails = getIntent().getParcelableExtra("Ride_Details");
         riderDetails = getIntent().getParcelableExtra("Rider_Details");
         carID = searchRideResultDetails.getCar_id();
-        Log.d(TAG, "getIntentData: Ride_ID: "+searchRideResultDetails.getRideID());
-        requestFlag = getIntent().getBooleanExtra("Request_Flag",false);
     }
     private void initializeWidgets()
     {

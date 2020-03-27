@@ -14,6 +14,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
@@ -41,7 +43,8 @@ public class Notification_Rider_Fragment extends Fragment {
     private ArrayList<String> requestID = new ArrayList<>();
     private ArrayList<SearchRideResultDetails> searchRideResultDetails = new ArrayList<>();
     private ArrayList<UserDetails> passengerDetails = new ArrayList<>();
-    private int counter = 0;
+    private ProgressBar progressBar;
+    private TextView progressBarTextView;
 
     public Notification_Rider_Fragment() {
         // Required empty public constructor
@@ -82,6 +85,8 @@ public class Notification_Rider_Fragment extends Fragment {
         myRidesBtn = (Button) view.findViewById(R.id.my_ride_button);
         rideProgressBtn = (Button) view.findViewById(R.id.ride_progress_button);
         notificationRiderRecyclerView = (RecyclerView) view.findViewById(R.id.notification_rider_recyclerView);
+        progressBar = view.findViewById(R.id.rider_notification_progress_bar);
+        progressBarTextView = view.findViewById(R.id.progress_bar_textview);
     }
     private void initializeFirebaseInstances()
     {
@@ -116,6 +121,11 @@ public class Notification_Rider_Fragment extends Fragment {
                 {
                     getRequestRideID((int) dataSnapshot.getChildrenCount());
                 }
+                else
+                {
+                    progressBar.setVisibility(View.INVISIBLE);
+                    progressBarTextView.setText("Looks like you don't have any notification.");
+                }
             }
 
             @Override
@@ -138,6 +148,11 @@ public class Notification_Rider_Fragment extends Fragment {
                     {
                         getOfferedRideID(requestID,mChild);
                     }
+                }
+                else
+                {
+                    progressBar.setVisibility(View.INVISIBLE);
+                    progressBarTextView.setText("Looks like you don't have any notification.");
                 }
             }
 
@@ -236,11 +251,6 @@ public class Notification_Rider_Fragment extends Fragment {
 //                            getPassengerDetails();
                         }
                     }
-                    else
-                    {
-                        Log.d(TAG, "getPassengerID: onDataChange: there is no data");
-                        Log.d(TAG, "getPassengerID: onDataChange: passengerID: "+passengerID.size());
-                    }
                 }
 
                 @Override
@@ -314,7 +324,6 @@ public class Notification_Rider_Fragment extends Fragment {
                     if (dataSnapshot.exists())
                     {
                         Log.d(TAG, "getPassengerDetails onDataChange: we are fetching the details of the userDetails. ");
-                        counter++;
                         UserDetails tem = new UserDetails();
                         tem.setUserID(passengerID.get(finalI));
                         tem.setCity(dataSnapshot.child("City").getValue().toString());
@@ -339,11 +348,14 @@ public class Notification_Rider_Fragment extends Fragment {
                             {
                                 Log.d(TAG, "onDataChange: Exception: "+e.getLocalizedMessage());
                             }
+                            progressBar.setVisibility(View.INVISIBLE);
+                            progressBarTextView.setVisibility(View.INVISIBLE);
                         }
                     }
                     else
                     {
-                        Log.d(TAG, "getPassengerDetails onDataChange: there is no data in the database.");
+                        progressBar.setVisibility(View.INVISIBLE);
+                        progressBarTextView.setText("Looks like you don't have any notification.");
                     }
                 }
 

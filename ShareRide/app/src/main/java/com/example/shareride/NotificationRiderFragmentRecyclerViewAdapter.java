@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -82,11 +83,11 @@ public class NotificationRiderFragmentRecyclerViewAdapter extends RecyclerView.A
                     {
                         if(dataSnapshot.child("Status").getValue().equals("Accepted"))
                         {
-                            holder.requestBtn.setText("Accepted");
+                            holder.acceptBtn.setText("Accepted");
                         }
                         else
                         {
-                            holder.requestBtn.setText("Accept");
+                            holder.acceptBtn.setText("Accept");
                         }
                     }
                     catch (Exception e)
@@ -169,7 +170,7 @@ public class NotificationRiderFragmentRecyclerViewAdapter extends RecyclerView.A
                 }
             });
 
-            holder.requestBtn.setOnClickListener(new View.OnClickListener() {
+            holder.acceptBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     final String status = "Accepted";
@@ -185,7 +186,7 @@ public class NotificationRiderFragmentRecyclerViewAdapter extends RecyclerView.A
                             if(task.isSuccessful())
                             {
                                 Log.d(TAG, "onBindViewHolder: onComplete: status updated.");
-                                holder.requestBtn.setText(status);
+                                holder.acceptBtn.setText(status);
                             }
                             else
                             {
@@ -217,11 +218,11 @@ public class NotificationRiderFragmentRecyclerViewAdapter extends RecyclerView.A
     public static class RequestRideNotificationViewHolder extends RecyclerView.ViewHolder
     {
         View view;
-        Button requestBtn, rejectBtn, infoBtn;
+        Button acceptBtn, rejectBtn, infoBtn;
         public RequestRideNotificationViewHolder(@NonNull View itemView) {
             super(itemView);
             view = itemView;
-            requestBtn = (Button) view.findViewById(R.id.request_button);
+            acceptBtn = (Button) view.findViewById(R.id.accept_button);
             rejectBtn = (Button) view.findViewById(R.id.reject_button);
             infoBtn = (Button) view.findViewById(R.id.info_button);
         }

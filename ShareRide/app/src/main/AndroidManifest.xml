@@ -12,6 +12,7 @@
 
     <dist:module dist:instant="true" />
 
+    <uses-permission android:name="android.permission.CALL_PHONE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -23,7 +24,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".NotificationActivity"></activity>
+        <activity android:name=".riderNotificationPassengerCompleteInfo"></activity>
+        <activity android:name=".NotificationActivity" />
         <activity android:name=".SearchedRideCompleteInfoActivity" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
@@ -40,8 +42,12 @@
         <activity
             android:name=".SearchRideResultInfoActivity"
             android:label="@string/title_activity_search_ride_result_info" />
-        <activity android:name=".SearchRideResultActivity" android:launchMode="singleTask"/>
-        <activity android:name=".SearchActivity" android:launchMode="singleTask"/>
+        <activity
+            android:name=".SearchRideResultActivity"
+            android:launchMode="singleTask" />
+        <activity
+            android:name=".SearchActivity"
+            android:launchMode="singleTask" />
         <activity android:name=".Edit_Ride_Info_Activity" />
         <activity android:name=".Info_Offered_Ride" />
         <activity android:name=".Offered_Ride_Activity" />
@@ -53,8 +59,12 @@
         <activity
             android:name=".Source_Location_Activity"
             android:label="@string/title_activity_source__location_" />
-        <activity android:name=".View_My_Cars_Activity" android:launchMode="singleTask"/>
-        <activity android:name=".Account_Activity" android:launchMode="singleTask"/>
+        <activity
+            android:name=".View_My_Cars_Activity"
+            android:launchMode="singleTask" />
+        <activity
+            android:name=".Account_Activity"
+            android:launchMode="singleTask" />
         <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
             android:theme="@style/Base.Theme.AppCompat" />

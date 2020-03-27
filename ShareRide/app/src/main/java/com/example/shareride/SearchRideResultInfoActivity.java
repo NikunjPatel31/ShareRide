@@ -45,12 +45,20 @@ public class SearchRideResultInfoActivity extends FragmentActivity implements On
 
     public void moreInformation(View view)
     {
-        Intent intent = new Intent(SearchRideResultInfoActivity.this, SearchedRideCompleteInfoActivity.class);
-        intent.putExtra("Activity",activity);
-        intent.putExtra("Ride_Details",searchRideResultDetails);
-        intent.putExtra("Rider_Details",riderDetails);
-        intent.putExtra("Request_Flag",requestFlag);
-        startActivity(intent);
+        if(activity.equals("Rider_Notification"))
+        {
+            Intent intent = new Intent(SearchRideResultInfoActivity.this, riderNotificationPassengerCompleteInfo.class);
+            intent.putExtra("Passenger_details",riderDetails);
+            startActivity(intent);
+        }
+        else
+        {
+            Intent intent = new Intent(SearchRideResultInfoActivity.this, SearchedRideCompleteInfoActivity.class);
+            intent.putExtra("Ride_Details",searchRideResultDetails);
+            intent.putExtra("Rider_Details",riderDetails);
+            intent.putExtra("Request_Flag",requestFlag);
+            startActivity(intent);
+        }
     }
 
     @Override
