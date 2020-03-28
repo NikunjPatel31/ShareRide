@@ -119,7 +119,6 @@ public class Notification_Rider_Fragment extends Fragment {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if(dataSnapshot.exists())
                 {
-                    Log.d(TAG, "mainFunction: onDataChange: children count: "+dataSnapshot.getChildrenCount());
                     getRequestRideID((int) dataSnapshot.getChildrenCount());
                 }
                 else
@@ -144,10 +143,7 @@ public class Notification_Rider_Fragment extends Fragment {
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 if(dataSnapshot.exists())
                 {
-                    Log.d(TAG, "onChildAdded: request_id.size before: "+requestID.size());
                     requestID.add(dataSnapshot.getKey());
-                    Log.d(TAG, "onChildAdded: children count: "+childrenCount);
-                    Log.d(TAG, "onChildAdded: request_id.size: "+requestID.size());
                     if(requestID.size() == childrenCount)
                     {
 
