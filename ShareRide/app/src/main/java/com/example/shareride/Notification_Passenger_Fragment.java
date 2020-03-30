@@ -384,6 +384,9 @@ public class Notification_Passenger_Fragment extends Fragment {
                         if (finalI == (offeredRideRiderID.size() - 1))
                         {
                             Log.d(TAG, "onDataChange: now we have every thing that we want...");
+                            NotificationPassengerFragmentRecyclerViewAdapter adapter =
+                                    new NotificationPassengerFragmentRecyclerViewAdapter(searchRideResultDetails,offeredRideRiderDetails,getContext());
+                            notificationPassengerRecyclerView.setAdapter(adapter);
                         }
                     }
 
