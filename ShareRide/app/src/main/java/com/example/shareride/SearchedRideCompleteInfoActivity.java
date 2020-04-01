@@ -14,6 +14,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
@@ -36,7 +38,7 @@ public class SearchedRideCompleteInfoActivity extends AppCompatActivity {
     private TextView riderNameTV, riderGenderTV, riderAgeTV, riderCityTV;
     private TextView sourceLocationTV, destinationLocationTV, availabelSeatsTV, costPerSeatTV;
     private TextView carNameTV, carModelValueTV, carFuelTV, carAirConditionerTV, carVehicleNumberTV;
-    private Button requestBtn;
+    private Button requestBtn, cancelBtn, cancelRideBtn;
     private CircleImageView riderProfilePicture, riderCarPhoto;
     private String carID;
     private DatabaseReference databaseReference;
@@ -45,21 +47,65 @@ public class SearchedRideCompleteInfoActivity extends AppCompatActivity {
     ArrayList<String> requestID = new ArrayList<>();
     int requestIDChildrenCount = 0;
     String requestKey="";
+    String adapterPosition;
 
     public void cancel(View view)
     {
         Intent intent = new Intent(SearchedRideCompleteInfoActivity.this, SearchRideResultActivity.class);
         startActivity(intent);
     }
-
+    public void cancel_ride(View view)
+    {
+        Log.d(TAG, "onComplete: UID: "+mAuth.getUid());
+        String UID = mAuth.getUid();
+        Log.d(TAG, "onComplete: getRequestKey: "+getRequestKey());
+        Log.d(TAG, "onComplete: adapter position: "+adapterPosition);
+        DatabaseReference mChildDB = databaseReference.child("Registration").child(UID);
+        DatabaseReference tem = mChildDB.child(getRequestKey());
+        try {
+            tem.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    try {
+                        if(task.isSuccessful())
+                        {
+                            Log.d(TAG, "onComplete: node from the registration is also removed.");
+//                                Notification_Passenger_Fragment.notificationPassengerRecyclerView
+//                                        .getAdapter()
+//                                        .notifyItemRemoved(Integer.parseInt(adapterPosition));
+//
+//                                Notification_Passenger_Fragment.notificationPassengerRecyclerView
+//                                        .getAdapter()
+//                                        .notifyItemRangeRemoved(Integer.parseInt(adapterPosition),1);
+//
+//                                Notification_Passenger_Fragment.notificationPassengerRecyclerView
+//                                        .getAdapter()
+//                                        .notifyDataSetChanged();
+                        }
+                        else {
+                            Log.d(TAG, "onComplete: task Exception: "+task.getException());
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        Log.d(TAG, "onComplete: registration Task's Exception: "+e.getLocalizedMessage());
+                    }
+                }
+            });
+        }
+        catch (Exception e)
+        {
+            Log.d(TAG, "onComplete: registration Exception: "+e.getLocalizedMessage());
+        }
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_searched_ride_complete_info);
         getWindow().setBackgroundDrawableResource(R.drawable.background5);
-        getIntentData();
         initializeFirebaseInstance();
         initializeWidgets();
+        getIntentData();
         getCarDetails();
     }
 
@@ -70,70 +116,73 @@ public class SearchedRideCompleteInfoActivity extends AppCompatActivity {
         try
         {
             checkRequestRide();
-            requestBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    DatabaseReference mChildDB = databaseReference.child("Registration").child(mAuth.getUid());
-                    DatabaseReference notificationDB = FirebaseDatabase.getInstance().getReference().child("Notification").child("Rider");
-                    if(requestBtn.getText().equals("Request"))
-                    {
-                        DatabaseReference tem = mChildDB.push();
-                        requestKey = tem.getKey();
-                        setRequestKey(tem.getKey());
-                        Log.d(TAG, "onClick: request key: "+requestKey);
-                        requestRide(searchRideResultDetails);
-                        requestBtn.setText("Requested");
+            if(!(getIntent().getStringExtra("Activity").equals("Passenger_Notification")))
+            {
+                requestBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        DatabaseReference mChildDB = databaseReference.child("Registration").child(mAuth.getUid());
+                        DatabaseReference notificationDB = FirebaseDatabase.getInstance().getReference().child("Notification").child("Rider");
+                        if(requestBtn.getText().equals("Request"))
+                        {
+                            DatabaseReference tem = mChildDB.push();
+                            requestKey = tem.getKey();
+                            setRequestKey(tem.getKey());
+                            Log.d(TAG, "onClick: request key: "+requestKey);
+                            requestRide(searchRideResultDetails);
+                            requestBtn.setText("Requested");
 //                        requestFlag = true;
-                        SearchRideResultRecyclerViewAdapter.SearchRideResultDetailsViewHolder.requestViewValue = true;
-                        Intent intent = new Intent(SearchedRideCompleteInfoActivity.this, SearchRideResultActivity.class);
-                        startActivity(intent);
-                    }
-                    else if(requestBtn.getText().equals("Requested"))
-                    {
-                        Log.d(TAG, "onClick: requestID: "+getRequestKey());
-                        DatabaseReference tem = mChildDB.child(getRequestKey());
-                        tem.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                if(task.isSuccessful())
-                                {
-                                    Log.d(TAG, "onComplete: request canceled.");
-                                    requestBtn.setText("Request");
+                            SearchRideResultRecyclerViewAdapter.SearchRideResultDetailsViewHolder.requestViewValue = true;
+                            Intent intent = new Intent(SearchedRideCompleteInfoActivity.this, SearchRideResultActivity.class);
+                            startActivity(intent);
+                        }
+                        else if(requestBtn.getText().equals("Requested"))
+                        {
+                            Log.d(TAG, "onClick: requestID: "+getRequestKey());
+                            DatabaseReference tem = mChildDB.child(getRequestKey());
+                            tem.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if(task.isSuccessful())
+                                    {
+                                        Log.d(TAG, "onComplete: request canceled.");
+                                        requestBtn.setText("Request");
 //                                    requestFlag = false;
-                                    SearchRideResultRecyclerViewAdapter.SearchRideResultDetailsViewHolder.requestViewValue = false;
-                                }
-                                else
-                                {
-                                    Log.d(TAG, "onComplete: request not canceled. Exception: "+task.getException());
+                                        SearchRideResultRecyclerViewAdapter.SearchRideResultDetailsViewHolder.requestViewValue = false;
+                                    }
+                                    else
+                                    {
+                                        Log.d(TAG, "onComplete: request not canceled. Exception: "+task.getException());
 //                                    requestFlag = true;
+                                    }
                                 }
-                            }
-                        });
-                        SearchRideResultDetails details = searchRideResultDetails;
-                        Log.d(TAG, "onClick: rider_id: "+details.getUserID());
-                        Log.d(TAG, "onClick: ride_id: "+details.getRideID());
-                        DatabaseReference temNotification = notificationDB.child(details.getUserID()).child(details.getRideID());
-                        temNotification.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                if(task.isSuccessful())
-                                {
-                                    Log.d(TAG, "onComplete: request Canceled from the notification");
-                                    requestBtn.setText("Request");
-                                    SearchRideResultRecyclerViewAdapter.SearchRideResultDetailsViewHolder.requestViewValue = false;
+                            });
+                            SearchRideResultDetails details = searchRideResultDetails;
+                            Log.d(TAG, "onClick: rider_id: "+details.getUserID());
+                            Log.d(TAG, "onClick: ride_id: "+details.getRideID());
+                            DatabaseReference temNotification = notificationDB.child(details.getUserID()).child(details.getRideID());
+                            temNotification.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if(task.isSuccessful())
+                                    {
+                                        Log.d(TAG, "onComplete: request Canceled from the notification");
+                                        requestBtn.setText("Request");
+                                        SearchRideResultRecyclerViewAdapter.SearchRideResultDetailsViewHolder.requestViewValue = false;
 //                                    requestFlag = false;
+                                    }
                                 }
-                            }
-                        });
-                        Intent intent = new Intent(SearchedRideCompleteInfoActivity.this, SearchRideResultActivity.class);
-                        startActivity(intent);
+                            });
+                            Intent intent = new Intent(SearchedRideCompleteInfoActivity.this, SearchRideResultActivity.class);
+                            startActivity(intent);
+                        }
+                        else if(requestBtn.getText().equals("Accepted"))
+                        {
+                            Toast.makeText(SearchedRideCompleteInfoActivity.this, "Your ride is already requested.", Toast.LENGTH_SHORT).show();
+                        }
                     }
-                    else if(requestBtn.getText().equals("Accepted"))
-                    {
-                        Toast.makeText(SearchedRideCompleteInfoActivity.this, "Your ride is already requested.", Toast.LENGTH_SHORT).show();
-                    }
-                }
-            });
+                });
+            }
         }
         catch (Exception e)
         {
@@ -148,6 +197,19 @@ public class SearchedRideCompleteInfoActivity extends AppCompatActivity {
         searchRideResultDetails = getIntent().getParcelableExtra("Ride_Details");
         riderDetails = getIntent().getParcelableExtra("Rider_Details");
         carID = searchRideResultDetails.getCar_id();
+        try {
+            if(getIntent().getStringExtra("Activity").equals("Passenger_Notification"))
+            {
+                cancelRideBtn.setVisibility(View.VISIBLE);
+                requestBtn.setVisibility(View.INVISIBLE);
+                cancelBtn.setVisibility(View.INVISIBLE);
+                adapterPosition = getIntent().getStringExtra("Adapter_Position");
+            }
+        }
+        catch (Exception e)
+        {
+            Log.d(TAG, "getIntentData: Exception: "+e.getLocalizedMessage());
+        }
     }
     private void initializeWidgets()
     {
@@ -168,6 +230,8 @@ public class SearchedRideCompleteInfoActivity extends AppCompatActivity {
         riderProfilePicture = (CircleImageView) findViewById(R.id.rider_photo);
         riderCarPhoto = (CircleImageView) findViewById(R.id.rider_car_photo);
         requestBtn = (Button) findViewById(R.id.request_button);
+        cancelBtn = findViewById(R.id.cancel_button);
+        cancelRideBtn = findViewById(R.id.cancel_ride_button);
     }
     private void initializeFirebaseInstance()
     {
@@ -182,8 +246,8 @@ public class SearchedRideCompleteInfoActivity extends AppCompatActivity {
         try
         {
             Log.d(TAG, "getCarDetails: carID: "+carID);
-            Log.d(TAG, "getCarDetails: userID: "+searchRideResultDetails.getUserID());
-            DatabaseReference mChildDB = databaseReference.child("Cars").child(searchRideResultDetails.getUserID()).child(carID);
+            Log.d(TAG, "getCarDetails: userID: "+riderDetails.getUserID());
+            DatabaseReference mChildDB = databaseReference.child("Cars").child(riderDetails.getUserID()).child(carID);
             mChildDB.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -221,13 +285,13 @@ public class SearchedRideCompleteInfoActivity extends AppCompatActivity {
         String fullName = firstName + " " + lastName;
         riderNameTV.setText(fullName);
         riderCityTV.setText(riderDetails.getCity());
-        riderGenderTV.setText(riderDetails.getGender());
+        riderGenderTV.setText("( "+riderDetails.getGender()+" )");
         sourceLocationTV.setText(searchRideResultDetails.getSource_Location_Name());
         destinationLocationTV.setText(searchRideResultDetails.getDestination_Location_Name());
         Picasso.get().load(riderDetails.getProfilePicture()).into(riderProfilePicture);
         // this value will change on the basis of the passenger of the ride... so i will write the code for that later.
         availabelSeatsTV.setText(searchRideResultDetails.getNum_Seats());
-        costPerSeatTV.setText(searchRideResultDetails.getCost_Per_Seat());
+        costPerSeatTV.setText(searchRideResultDetails.getCost_Per_Seat()+" Rs");
     }
     private void requestRide(SearchRideResultDetails searchRideResultDetails)
     {
@@ -241,9 +305,6 @@ public class SearchedRideCompleteInfoActivity extends AppCompatActivity {
         mChildDB.child("Offer_Ride_ID").setValue(searchRideResultDetails.getRideID());
         mChildDB.child("Status").setValue("Not Accepted");
     }
-
-
-
 
     private void checkRequestRide()
     {
@@ -385,24 +446,4 @@ public class SearchedRideCompleteInfoActivity extends AppCompatActivity {
     {
         return requestKey;
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }

@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:dist="http://schemas.android.com/apk/distribution"
     package="com.example.shareride">
+
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
          Google Maps Android API v2, but you must specify either coarse or fine
@@ -24,11 +25,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".riderNotificationPassengerCompleteInfo"
-            android:launchMode="singleTask"></activity>
-        <activity android:name=".NotificationActivity"
-            android:launchMode="singleTask"/>
-        <activity android:name=".SearchedRideCompleteInfoActivity" />
+
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -42,9 +39,19 @@
             android:value="@string/google_maps_key" />
 
         <activity
+            android:name=".NotificationPassengerRouteActivity"
+            android:label="@string/title_activity_notification_passenger_route"></activity>
+        <activity
+            android:name=".riderNotificationPassengerCompleteInfo"
+            android:launchMode="singleTask" />
+        <activity
+            android:name=".NotificationActivity"
+            android:launchMode="singleTask" />
+        <activity android:name=".SearchedRideCompleteInfoActivity" />
+        <activity
             android:name=".SearchRideResultInfoActivity"
             android:label="@string/title_activity_search_ride_result_info"
-            android:launchMode="singleTask"/>
+            android:launchMode="singleTask" />
         <activity
             android:name=".SearchRideResultActivity"
             android:launchMode="singleTask" />

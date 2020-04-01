@@ -46,6 +46,9 @@ public class SearchRideResultInfoActivity extends FragmentActivity implements On
     private String position;
     private String size;
 
+    public void more_information(View view) {
+    }
+
     public void moreInformation(View view)
     {
         if(activity.equals("Rider_Notification"))
@@ -175,4 +178,6 @@ public class SearchRideResultInfoActivity extends FragmentActivity implements On
             Log.d(TAG, "populatingWidgets: Exception: "+e.getLocalizedMessage());
         }
     }
+
+
 }

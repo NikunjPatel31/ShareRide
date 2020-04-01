@@ -50,12 +50,14 @@
                     android:id="@+id/rider_name_textview"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginEnd="55dp"
+                    android:padding="5dp"
                     android:text="Rider Name"
                     android:textSize="22sp"
                     android:textStyle="bold"
-                    android:padding="5dp"
+                    app:layout_constraintEnd_toStartOf="@+id/rider_gender_textview"
                     app:layout_constraintStart_toEndOf="@id/rider_photo"
-                    app:layout_constraintTop_toTopOf="parent"/>
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
                     android:id="@+id/rider_gender_textview"
@@ -308,6 +310,7 @@
             app:layout_constraintTop_toBottomOf="@+id/ride_car_detials_cardview" />
 
         <Button
+            android:id="@+id/cancel_button"
             android:layout_width="110dp"
             android:layout_height="40dp"
             android:layout_marginEnd="32dp"
@@ -319,6 +322,21 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:onClick="cancel"/>
+
+        <Button
+            android:id="@+id/cancel_ride_button"
+            android:layout_width="110dp"
+            android:layout_height="40dp"
+            android:layout_marginBottom="50dp"
+            android:background="@drawable/background_ripple_button_cancel"
+            android:onClick="cancel_ride"
+            android:text="Cancel"
+            android:textColor="@color/colorButtonCancelText"
+            android:textSize="18sp"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
     

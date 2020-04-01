@@ -30,11 +30,12 @@ import java.util.ArrayList;
 public class Notification_Passenger_Fragment extends Fragment {
 
     private static final String TAG = "Notification_Passenger_";
-    private RecyclerView notificationPassengerRecyclerView;
+    public static RecyclerView notificationPassengerRecyclerView;
     private FirebaseAuth mAuth;
     private DatabaseReference databaseReference;
     private ArrayList<String> passengerID = new ArrayList<>();
     private ArrayList<String> requestID = new ArrayList<>();
+    private ArrayList<String> finalRequestID = new ArrayList<>();
     private ArrayList<String> offerRideID = new ArrayList<>();
     private ArrayList<String> riderID = new ArrayList<>();
     private ArrayList<String> offeredRideRiderID = new ArrayList<>();
@@ -117,7 +118,8 @@ public class Notification_Passenger_Fragment extends Fragment {
 
             @Override
             public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-
+                requestID.remove(dataSnapshot.getKey());
+                getOfferedRideID();
             }
 
             @Override
@@ -142,14 +144,22 @@ public class Notification_Passenger_Fragment extends Fragment {
             mChild.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    if(dataSnapshot.child("Status").getValue().equals("Accepted"))
+                    if(dataSnapshot.exists())
                     {
-//                        Log.d(TAG, "onDataChange: offered_ride_id: "+dataSnapshot.child("Offer_Ride_ID").getValue());
-                        offerRideID.add(dataSnapshot.child("Offer_Ride_ID").getValue().toString());
-                    }
-                    if(finalI == requestID.size() - 1)
-                    {
-                        getOfferedRideDetail();
+                       if(finalI < requestID.size())
+                       {
+                           if(dataSnapshot.child("Status").getValue().equals("Accepted"))
+                           {
+                               Log.d(TAG, "onDataChange: dataSnapshot: "+dataSnapshot.toString());
+                               Log.d(TAG, "onDataChange: offered_ride_id: "+dataSnapshot.child("Offer_Ride_ID").getValue());
+                               finalRequestID.add(requestID.get(finalI));
+                               offerRideID.add(dataSnapshot.child("Offer_Ride_ID").getValue().toString());
+                           }
+                           if(finalI == requestID.size() - 1)
+                           {
+                               getOfferedRideDetail();
+                           }
+                       }
                     }
                 }
 
@@ -165,39 +175,6 @@ public class Notification_Passenger_Fragment extends Fragment {
         Log.d(TAG, "getOfferedRideDetail: this function will get the details of the offered rides.");
         final int[] counter = {0};
         final DatabaseReference mChild = FirebaseDatabase.getInstance().getReference().child("Offer_Ride");
-//        mChild.addChildEventListener(new ChildEventListener() {
-//            @Override
-//            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-//                counter[0]++;
-//                riderID.add(dataSnapshot.getKey());
-//                Log.d(TAG, "onChildAdded: key: "+dataSnapshot.getKey());
-//                Log.d(TAG, "onChildAdded: children count: "+dataSnapshot.getChildrenCount());
-//                if(counter[0] == dataSnapshot.getChildrenCount())
-//                {
-//                    checkRide();
-//                }
-//            }
-//
-//            @Override
-//            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-//
-//            }
-//
-//            @Override
-//            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-//
-//            }
-//
-//            @Override
-//            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-//
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//            }
-//        });
         mChild.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -248,7 +225,6 @@ public class Notification_Passenger_Fragment extends Fragment {
     {
         Log.d(TAG, "checkRide: this function will check is the offered_ride_id is there in the rider_id node.");
         final int[] j = {0};
-        Log.d(TAG, "checkRide: offerRideID size: "+offerRideID.size());
         for (int i = 0; i < riderID.size(); i++)
         {
             try
@@ -256,19 +232,25 @@ public class Notification_Passenger_Fragment extends Fragment {
                 Log.d(TAG, "checkRide: riderID: "+i+" : "+riderID.get(i));
                 DatabaseReference mChild = FirebaseDatabase.getInstance().getReference().child("Offer_Ride").child(riderID.get(i));
                 final int finalI = i;
+                final int finalI1 = i;
                 mChild.addChildEventListener(new ChildEventListener() {
                     @Override
                     public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                         try {
-                            if (dataSnapshot.getKey().equals(offerRideID.get(j[0])))
+                            if(j[0] <= offerRideID.size())
                             {
-                                Log.d(TAG, "onChildAdded: match found: "+riderID.get(finalI));
-                                offeredRideRiderID.add(riderID.get(finalI));
-                                j[0]++;
+                                if (dataSnapshot.getKey().equals(offerRideID.get(j[0])))
+                                {
+                                    Log.d(TAG, "onChildAdded: match found: "+riderID.get(finalI));
+                                    offeredRideRiderID.add(riderID.get(finalI));
+                                    j[0]++;
+                                }
                             }
                         }
                         catch (Exception e)
                         {
+                            Log.d(TAG, "onChildAdded: value of I: "+ finalI1);
+                            Log.d(TAG, "onChildAdded: size of riderID: "+riderID.size());
                             Log.d(TAG, "onChildAdded: Exception in if else: "+e.getLocalizedMessage());
                         }
 
@@ -309,6 +291,7 @@ public class Notification_Passenger_Fragment extends Fragment {
     private void getRiderDetails()
     {
         Log.d(TAG, "getRiderDetails: this function will get the details of the offered_Ride Rider");
+        Log.d(TAG, "getRiderDetails: offeredRideID size: "+offeredRideRiderID.size());
         for (int i = 0;i < offeredRideRiderID.size();i++)
         {
             try {
@@ -332,10 +315,19 @@ public class Notification_Passenger_Fragment extends Fragment {
 
                             offeredRideRiderDetails.add(tem);
                         }
+                        else
+                        {
+                            Log.d(TAG, "onDataChange: there is no data");
+                        }
 
                         if(finalI == (offeredRideRiderID.size() - 1))
                         {
                             getRideDetails();
+                        }
+                        else
+                        {
+                            Log.d(TAG, "onDataChange: offeredRideRiderID size: "+offeredRideRiderID.size());
+                            Log.d(TAG, "onDataChange: finalI: "+finalI);
                         }
                     }
 
@@ -385,7 +377,7 @@ public class Notification_Passenger_Fragment extends Fragment {
                         {
                             Log.d(TAG, "onDataChange: now we have every thing that we want...");
                             NotificationPassengerFragmentRecyclerViewAdapter adapter =
-                                    new NotificationPassengerFragmentRecyclerViewAdapter(searchRideResultDetails,offeredRideRiderDetails,getContext());
+                                    new NotificationPassengerFragmentRecyclerViewAdapter(searchRideResultDetails,offeredRideRiderDetails,finalRequestID,getContext());
                             notificationPassengerRecyclerView.setAdapter(adapter);
                         }
                     }

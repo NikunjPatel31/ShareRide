@@ -1,14 +1,22 @@
 package com.example.shareride;
 
 import android.content.Context;
+import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -19,12 +27,18 @@ public class NotificationPassengerFragmentRecyclerViewAdapter extends RecyclerVi
     @NonNull
     ArrayList<SearchRideResultDetails> searchRideResultDetails;
     ArrayList<UserDetails> riderDetails;
+    ArrayList<String> requestID;
     Context context;
+    FirebaseAuth mAuth;
 
-    public NotificationPassengerFragmentRecyclerViewAdapter(@NonNull ArrayList<SearchRideResultDetails> searchRideResultDetails, ArrayList<UserDetails> riderDetails, Context context) {
+    private static final String TAG = "NotificationPassengerFr";
+
+    public NotificationPassengerFragmentRecyclerViewAdapter(@NonNull ArrayList<SearchRideResultDetails> searchRideResultDetails, ArrayList<UserDetails> riderDetails, ArrayList<String> requestID, Context context) {
         this.searchRideResultDetails = searchRideResultDetails;
         this.riderDetails = riderDetails;
+        this.requestID = requestID;
         this.context = context;
+        mAuth = FirebaseAuth.getInstance();
     }
 
     @Override
@@ -35,8 +49,7 @@ public class NotificationPassengerFragmentRecyclerViewAdapter extends RecyclerVi
     }
 
     @Override
-    public void onBindViewHolder(@NonNull AcceptRideNotificationViewHolder holder, int position) {
-
+    public void onBindViewHolder(@NonNull final AcceptRideNotificationViewHolder holder, final int position) {
         UserDetails temRiderDetails = riderDetails.get(position);
         SearchRideResultDetails temSearchRideResultDetails = searchRideResultDetails.get(position);
         holder.setRiderPhoto(temRiderDetails.getProfilePicture());
@@ -49,6 +62,85 @@ public class NotificationPassengerFragmentRecyclerViewAdapter extends RecyclerVi
         holder.setTime(temSearchRideResultDetails.getTime());
         holder.setCostPerSeat(temSearchRideResultDetails.getCost_Per_Seat());
         holder.setDate(temSearchRideResultDetails.getDate());
+
+        holder.cancelBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                UserDetails temRiderDetails = riderDetails.get(position);
+                SearchRideResultDetails temRideDetails = searchRideResultDetails.get(position);
+                final DatabaseReference notificationDB = FirebaseDatabase.getInstance().getReference().child("Notification").child("Rider");
+                try {
+                    DatabaseReference temNotification = notificationDB.child(temRiderDetails.getUserID()).child(requestID.get(position)).child(temRideDetails.getRideID());
+                    temNotification.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            try {
+                                if(task.isSuccessful())
+                                {
+                                    Log.d(TAG, "onComplete: request Canceled from the notification");
+                                }
+                                else
+                                {
+                                    Log.d(TAG, "onComplete: task Exception: "+task.getException());
+                                }
+                            }
+                            catch (Exception e)
+                            {
+                                Log.d(TAG, "onComplete: TASK Exception: "+e.getLocalizedMessage());
+                            }
+                        }
+                    });
+                    Log.d(TAG, "onComplete: UID: "+mAuth.getUid());
+                    String UID = mAuth.getUid();
+                    Log.d(TAG, "onComplete: getRequestKey: "+requestID.get(position));
+                    DatabaseReference mChildDB = FirebaseDatabase.getInstance().getReference().child("Registration").child(UID);
+                    DatabaseReference tem = mChildDB.child(requestID.get(position));
+                    try {
+                        tem.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                try {
+                                    if(task.isSuccessful())
+                                    {
+                                        Log.d(TAG, "onComplete: node from the registration is also removed.");
+                                        searchRideResultDetails.remove(position);
+                                        notifyItemChanged(position);
+                                        notifyItemRangeRemoved(position,1);
+                                    }
+                                    else {
+                                        Log.d(TAG, "onComplete: task Exception: "+task.getException());
+                                    }
+                                }
+                                catch (Exception e)
+                                {
+                                    Log.d(TAG, "onComplete: registration Task's Exception: "+e.getLocalizedMessage());
+                                }
+                            }
+                        });
+                    }
+                    catch (Exception e)
+                    {
+                        Log.d(TAG, "onComplete: registration Exception: "+e.getLocalizedMessage());
+                    }
+                }
+                catch (Exception e)
+                {
+                    Log.d(TAG, "cancel_ride: Exception: "+e.getLocalizedMessage());
+                }
+            }
+        });
+        holder.infoBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context,NotificationPassengerRouteActivity.class);
+                intent.putExtra("Ride_Details",searchRideResultDetails.get(position));
+                intent.putExtra("Rider_Details",riderDetails.get(position));
+                Log.d(TAG, "onClick: adapter position: "+holder.getAdapterPosition());
+                intent.putExtra("Adapter_Position",Integer.toString(holder.getAdapterPosition()));
+                context.startActivity(intent);
+            }
+        });
     }
 
     @Override
@@ -59,26 +151,29 @@ public class NotificationPassengerFragmentRecyclerViewAdapter extends RecyclerVi
     public static class AcceptRideNotificationViewHolder extends RecyclerView.ViewHolder
     {
         View view;
-        public AcceptRideNotificationViewHolder(@NonNull View itemView) {
+        Button cancelBtn, infoBtn;
+        AcceptRideNotificationViewHolder(@NonNull View itemView) {
             super(itemView);
             view = itemView;
+            cancelBtn = view.findViewById(R.id.cancel_button);
+            infoBtn = view.findViewById(R.id.info_button);
         }
-        public void setRiderPhoto(String image)
+        void setRiderPhoto(String image)
         {
             CircleImageView riderPhoto = view.findViewById(R.id.rider_photo);
             Picasso.get().load(image).placeholder(R.drawable.ic_account_circle_black_24dp).into(riderPhoto);
         }
-        public void setRiderName(String riderName)
+        void setRiderName(String riderName)
         {
             TextView riderNameTV = view.findViewById(R.id.rider_name_textview);
             riderNameTV.setText(riderName);
         }
-        public void setSourceLocationName(String sourceLocationName)
+        void setSourceLocationName(String sourceLocationName)
         {
             TextView sourceLocationNameTV = (TextView) view.findViewById(R.id.source_location_textview);
             sourceLocationNameTV.setText(sourceLocationName);
         }
-        public void setDestinationLocationName(String destinationLocationName)
+        void setDestinationLocationName(String destinationLocationName)
         {
             TextView destinationLocationNameTV = (TextView) view.findViewById(R.id.destination_location_textview);
             destinationLocationNameTV.setText(destinationLocationName);
@@ -88,7 +183,7 @@ public class NotificationPassengerFragmentRecyclerViewAdapter extends RecyclerVi
             TextView timeTV = (TextView) view.findViewById(R.id.time_value_textview);
             timeTV.setText(time);
         }
-        public void setCostPerSeat(String costPerSeat)
+        void setCostPerSeat(String costPerSeat)
         {
             TextView costPerSeatTV = (TextView) view.findViewById(R.id.cost_per_seat_textview);
             costPerSeatTV.setText(costPerSeat);
