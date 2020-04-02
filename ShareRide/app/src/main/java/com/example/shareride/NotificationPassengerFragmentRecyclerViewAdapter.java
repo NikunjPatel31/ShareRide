@@ -50,6 +50,7 @@ public class NotificationPassengerFragmentRecyclerViewAdapter extends RecyclerVi
 
     @Override
     public void onBindViewHolder(@NonNull final AcceptRideNotificationViewHolder holder, final int position) {
+        Log.d(TAG, "onBindViewHolder: position: "+position);
         UserDetails temRiderDetails = riderDetails.get(position);
         SearchRideResultDetails temSearchRideResultDetails = searchRideResultDetails.get(position);
         holder.setRiderPhoto(temRiderDetails.getProfilePicture());

@@ -12,6 +12,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
@@ -41,6 +43,8 @@ public class Notification_Passenger_Fragment extends Fragment {
     private ArrayList<String> offeredRideRiderID = new ArrayList<>();
     private ArrayList<UserDetails> offeredRideRiderDetails = new ArrayList<>();
     private ArrayList<SearchRideResultDetails> searchRideResultDetails = new ArrayList<>();
+    private ProgressBar progressBar;
+    private TextView progressBarTextView;
 
     public Notification_Passenger_Fragment() {
         // Required empty public constructor
@@ -74,6 +78,8 @@ public class Notification_Passenger_Fragment extends Fragment {
     {
         Log.d(TAG, "initializeWidgets: initializing widgets.");
         notificationPassengerRecyclerView = view.findViewById(R.id.notification_passenger_recyclerView);
+        progressBar = view.findViewById(R.id.passenger_notification_progress_bar);
+        progressBarTextView = view.findViewById(R.id.progress_bar_textview);
     }
     private void initializeFirebaseInstances()
     {
@@ -88,7 +94,15 @@ public class Notification_Passenger_Fragment extends Fragment {
         mChild.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                getRequestID((int) dataSnapshot.getChildrenCount());
+                if(dataSnapshot.getChildrenCount() == 0)
+                {
+                    progressBar.setVisibility(View.INVISIBLE);
+                    progressBarTextView.setText("Looks like you don't have any notification.");
+                }
+                else
+                {
+                    getRequestID((int) dataSnapshot.getChildrenCount());
+                }
             }
 
             @Override
@@ -160,6 +174,11 @@ public class Notification_Passenger_Fragment extends Fragment {
                                getOfferedRideDetail();
                            }
                        }
+                    }
+                    else
+                    {
+                        progressBar.setVisibility(View.INVISIBLE);
+                        progressBarTextView.setText("Looks like you don't have any notification.");
                     }
                 }
 
@@ -379,7 +398,10 @@ public class Notification_Passenger_Fragment extends Fragment {
                             NotificationPassengerFragmentRecyclerViewAdapter adapter =
                                     new NotificationPassengerFragmentRecyclerViewAdapter(searchRideResultDetails,offeredRideRiderDetails,finalRequestID,getContext());
                             notificationPassengerRecyclerView.setAdapter(adapter);
+                            adapter.notifyDataSetChanged();
                         }
+                        progressBar.setVisibility(View.INVISIBLE);
+                        progressBarTextView.setVisibility(View.INVISIBLE);
                     }
 
                     @Override

@@ -4,6 +4,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -27,6 +29,8 @@ import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -38,65 +42,29 @@ public class SearchedRideCompleteInfoActivity extends AppCompatActivity {
     private TextView riderNameTV, riderGenderTV, riderAgeTV, riderCityTV;
     private TextView sourceLocationTV, destinationLocationTV, availabelSeatsTV, costPerSeatTV;
     private TextView carNameTV, carModelValueTV, carFuelTV, carAirConditionerTV, carVehicleNumberTV;
-    private Button requestBtn, cancelBtn, cancelRideBtn;
+    private Button requestBtn, cancelBtn;
+    private RecyclerView passengerListRecyclerView;
     private CircleImageView riderProfilePicture, riderCarPhoto;
     private String carID;
     private DatabaseReference databaseReference;
     private FirebaseAuth mAuth;
     private int requestIDCounter = 1;
-    ArrayList<String> requestID = new ArrayList<>();
-    int requestIDChildrenCount = 0;
-    String requestKey="";
-    String adapterPosition;
+    private ArrayList<String> requestID = new ArrayList<>();
+    private int requestIDChildrenCount = 0;
+    private String requestKey="";
+    private String adapterPosition;
+    private Map<String, String> mapPassengerID = new HashMap<>();
+
+    private ArrayList<String> passengerID = new ArrayList<>();
+    private ArrayList<String> passengerRequestID = new ArrayList<>();
+    private ArrayList<Integer> passengerChildrenCount = new ArrayList<>();
+    private ArrayList<String> acceptedPassengerID = new ArrayList<>();
+    private ArrayList<UserDetails> passengerDetails = new ArrayList<>();
 
     public void cancel(View view)
     {
         Intent intent = new Intent(SearchedRideCompleteInfoActivity.this, SearchRideResultActivity.class);
         startActivity(intent);
-    }
-    public void cancel_ride(View view)
-    {
-        Log.d(TAG, "onComplete: UID: "+mAuth.getUid());
-        String UID = mAuth.getUid();
-        Log.d(TAG, "onComplete: getRequestKey: "+getRequestKey());
-        Log.d(TAG, "onComplete: adapter position: "+adapterPosition);
-        DatabaseReference mChildDB = databaseReference.child("Registration").child(UID);
-        DatabaseReference tem = mChildDB.child(getRequestKey());
-        try {
-            tem.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
-                @Override
-                public void onComplete(@NonNull Task<Void> task) {
-                    try {
-                        if(task.isSuccessful())
-                        {
-                            Log.d(TAG, "onComplete: node from the registration is also removed.");
-//                                Notification_Passenger_Fragment.notificationPassengerRecyclerView
-//                                        .getAdapter()
-//                                        .notifyItemRemoved(Integer.parseInt(adapterPosition));
-//
-//                                Notification_Passenger_Fragment.notificationPassengerRecyclerView
-//                                        .getAdapter()
-//                                        .notifyItemRangeRemoved(Integer.parseInt(adapterPosition),1);
-//
-//                                Notification_Passenger_Fragment.notificationPassengerRecyclerView
-//                                        .getAdapter()
-//                                        .notifyDataSetChanged();
-                        }
-                        else {
-                            Log.d(TAG, "onComplete: task Exception: "+task.getException());
-                        }
-                    }
-                    catch (Exception e)
-                    {
-                        Log.d(TAG, "onComplete: registration Task's Exception: "+e.getLocalizedMessage());
-                    }
-                }
-            });
-        }
-        catch (Exception e)
-        {
-            Log.d(TAG, "onComplete: registration Exception: "+e.getLocalizedMessage());
-        }
     }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,6 +75,8 @@ public class SearchedRideCompleteInfoActivity extends AppCompatActivity {
         initializeWidgets();
         getIntentData();
         getCarDetails();
+        passengerListRecyclerView.setHasFixedSize(true);
+        passengerListRecyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
 
     @Override
@@ -191,6 +161,12 @@ public class SearchedRideCompleteInfoActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        getPassengerList();
+    }
+
     private void getIntentData()
     {
         Log.d(TAG, "getIntentData: getting intent data.");
@@ -200,7 +176,6 @@ public class SearchedRideCompleteInfoActivity extends AppCompatActivity {
         try {
             if(getIntent().getStringExtra("Activity").equals("Passenger_Notification"))
             {
-                cancelRideBtn.setVisibility(View.VISIBLE);
                 requestBtn.setVisibility(View.INVISIBLE);
                 cancelBtn.setVisibility(View.INVISIBLE);
                 adapterPosition = getIntent().getStringExtra("Adapter_Position");
@@ -214,24 +189,24 @@ public class SearchedRideCompleteInfoActivity extends AppCompatActivity {
     private void initializeWidgets()
     {
         Log.d(TAG, "initializeWidgets: initializing Widgets.");
-        riderNameTV = (TextView) findViewById(R.id.rider_name_textview);
-        riderGenderTV = (TextView) findViewById(R.id.rider_gender_textview);
-        riderAgeTV = (TextView) findViewById(R.id.rider_age_textview);
-        riderCityTV = (TextView) findViewById(R.id.rider_city_value_textview);
-        sourceLocationTV = (TextView) findViewById(R.id.ride_source_location_textview);
-        destinationLocationTV = (TextView) findViewById(R.id.ride_destination_location_textview);
-        availabelSeatsTV = (TextView) findViewById(R.id.ride_available_seat_value_textview);
-        costPerSeatTV = (TextView) findViewById(R.id.ride_cost_per_seat_textview);
-        carNameTV = (TextView) findViewById(R.id.rider_car_name_textview);
-        carModelValueTV = (TextView) findViewById(R.id.rider_car_model_value_textview);
-        carFuelTV = (TextView) findViewById(R.id.rider_car_fuel_value_textview);
-        carAirConditionerTV = (TextView) findViewById(R.id.rider_car_air_conditioner_textview);
-        carVehicleNumberTV = (TextView) findViewById(R.id.rider_car_vehicle_number_value_textview);
-        riderProfilePicture = (CircleImageView) findViewById(R.id.rider_photo);
-        riderCarPhoto = (CircleImageView) findViewById(R.id.rider_car_photo);
-        requestBtn = (Button) findViewById(R.id.request_button);
+        riderNameTV = findViewById(R.id.rider_name_textview);
+        riderGenderTV = findViewById(R.id.rider_gender_textview);
+        riderAgeTV = findViewById(R.id.rider_age_textview);
+        riderCityTV = findViewById(R.id.rider_city_value_textview);
+        sourceLocationTV = findViewById(R.id.ride_source_location_textview);
+        destinationLocationTV = findViewById(R.id.ride_destination_location_textview);
+        availabelSeatsTV = findViewById(R.id.ride_available_seat_value_textview);
+        costPerSeatTV = findViewById(R.id.ride_cost_per_seat_textview);
+        carNameTV = findViewById(R.id.rider_car_name_textview);
+        carModelValueTV = findViewById(R.id.rider_car_model_value_textview);
+        carFuelTV = findViewById(R.id.rider_car_fuel_value_textview);
+        carAirConditionerTV = findViewById(R.id.rider_car_air_conditioner_textview);
+        carVehicleNumberTV = findViewById(R.id.rider_car_vehicle_number_value_textview);
+        riderProfilePicture = findViewById(R.id.rider_photo);
+        riderCarPhoto = findViewById(R.id.rider_car_photo);
+        requestBtn = findViewById(R.id.request_button);
         cancelBtn = findViewById(R.id.cancel_button);
-        cancelRideBtn = findViewById(R.id.cancel_ride_button);
+        passengerListRecyclerView = findViewById(R.id.passenger_list_recycler_view);
     }
     private void initializeFirebaseInstance()
     {
@@ -245,8 +220,6 @@ public class SearchedRideCompleteInfoActivity extends AppCompatActivity {
 
         try
         {
-            Log.d(TAG, "getCarDetails: carID: "+carID);
-            Log.d(TAG, "getCarDetails: userID: "+riderDetails.getUserID());
             DatabaseReference mChildDB = databaseReference.child("Cars").child(riderDetails.getUserID()).child(carID);
             mChildDB.addValueEventListener(new ValueEventListener() {
                 @Override
@@ -316,8 +289,6 @@ public class SearchedRideCompleteInfoActivity extends AppCompatActivity {
             databaseReference.addChildEventListener(new ChildEventListener() {
                 @Override
                 public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                    Log.d(TAG, "onChildAdded: All Passenger UID: "+dataSnapshot.getKey());
-                    Log.d(TAG, "onChildAdded: children count: "+dataSnapshot.getChildrenCount());
                     if(dataSnapshot.getKey().equals(firebaseAuth.getUid()))
                     {
                         requestIDChildrenCount = (int) dataSnapshot.getChildrenCount();
@@ -326,12 +297,9 @@ public class SearchedRideCompleteInfoActivity extends AppCompatActivity {
                         childDB.addChildEventListener(new ChildEventListener() {
                             @Override
                             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                                Log.d(TAG, "onChildAdded: this child listener will get the request id.");
-                                Log.d(TAG, "onChildAdded: all request ID: "+dataSnapshot.getKey());
                                 requestID.add(dataSnapshot.getKey());
                                 if(requestIDCounter == requestIDChildrenCount)
                                 {
-                                    Log.d(TAG, "onChildAdded: requestID size: "+requestID.size());
                                     getEachRequestIDDetails(childDB,requestID);
                                 }
                                 else
@@ -405,11 +373,7 @@ public class SearchedRideCompleteInfoActivity extends AppCompatActivity {
             mChildDB.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    Log.d(TAG, "onDataChange: offered_RideID: "+dataSnapshot.child("Offer_Ride_ID").getValue());
-                    Log.d(TAG, "onDataChange: status: "+dataSnapshot.child("Status").getValue());
                     SearchRideResultDetails tem = searchRideResultDetails;
-                    FirebaseAuth mAuth = FirebaseAuth.getInstance();
-                    Log.d(TAG, "onDataChange: ride ID: "+tem.getRideID());
                     if(tem.getRideID().equals(dataSnapshot.child("Offer_Ride_ID").getValue()))
                     {
                         Log.d(TAG, "onDataChange: user has requested the ride.");
@@ -445,5 +409,218 @@ public class SearchedRideCompleteInfoActivity extends AppCompatActivity {
     private String getRequestKey()
     {
         return requestKey;
+    }
+
+    private void getPassengerList()
+    {
+        Log.d(TAG, "getPassengerList: this function will get the passenger list of the ride.");
+        getPassengerID();
+
+    }
+    private void getPassengerID()
+    {
+        Log.d(TAG, "getPassengerID: this function will get the passengerID.");
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("Registration");
+        databaseReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                //here we will get the total number of children in the registration node.
+                // children count will be useful to call the getRequest( ) at the particular time.
+                final int childrenCount = (int) dataSnapshot.getChildrenCount();
+                DatabaseReference mChild = FirebaseDatabase.getInstance().getReference().child("Registration");
+                mChild.addChildEventListener(new ChildEventListener() {
+                    @Override
+                    public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                        //here will we store the passengerId in the arraylist.
+                        passengerID.add(dataSnapshot.getKey());
+                        if(passengerID.size() == childrenCount)
+                        {
+                            getRequestID();
+                        }
+                    }
+
+                    @Override
+                    public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                    }
+
+                    @Override
+                    public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+                    }
+
+                    @Override
+                    public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+    private void getRequestID()
+    {
+        Log.d(TAG, "getRequestID: this function will get the request Id of the particular passengerID.");
+        final int[] counter = {0};
+        for (int i = 0; i < passengerID.size(); i++)
+        {
+            DatabaseReference mChild = FirebaseDatabase.getInstance().getReference().child("Registration").child(passengerID.get(i));
+            mChild.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    counter[0] += (int) dataSnapshot.getChildrenCount();
+                    passengerChildrenCount.add((int) dataSnapshot.getChildrenCount());
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+            final int finalI = i;
+            final int[] localCounter = {0};
+            mChild.addChildEventListener(new ChildEventListener() {
+                @Override
+                public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                    localCounter[0]++;
+                    mapPassengerID.put(dataSnapshot.getKey(),passengerID.get(finalI));
+                    Log.d(TAG, "getRequestID: onChildAdded: map: "+mapPassengerID.toString());
+                    passengerRequestID.add(dataSnapshot.getKey());
+                    if (localCounter[0] == (counter[0] - 1))
+                    {
+                        //now we have the requestID of all passenger.;
+                        Log.d(TAG, "getRequestID: onChildAdded: finalI: "+finalI);
+                        getfinalPassengerList();
+                    }
+                }
+
+                @Override
+                public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                }
+
+                @Override
+                public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+                }
+
+                @Override
+                public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+        }
+    }
+    private void getfinalPassengerList()
+    {
+        Log.d(TAG, "getfinalPassengerList: this function will get the passenger details.");
+        final int[] j = {0};
+        int k = 0;
+        final int[] counter = {0};
+        for (final int[] i = {0}; i[0] < passengerID.size(); i[0]++,k++)
+        {
+            DatabaseReference mChild = FirebaseDatabase.getInstance().getReference().child("Registration")
+                    .child(passengerID.get(i[0])).child(passengerRequestID.get(k));
+
+            mChild.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.exists())
+                    {
+                        counter[0]++;
+                        if (dataSnapshot.child("Status").getValue().equals("Accepted"))
+                        {
+                            if(dataSnapshot.child("Offer_Ride_ID").getValue().equals(searchRideResultDetails.getRideID()))
+                            {
+                                acceptedPassengerID.add(mapPassengerID.get(dataSnapshot.getKey()));
+                            }
+                        }
+                    }
+                    if(counter[0] == passengerRequestID.size())
+                    {
+                        // we will have the passengerId list who are going in the ride...
+                        getPassengerDetails();
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+            try {
+                if (j[0] == (passengerChildrenCount.get(i[0]) - 1))
+                {
+                    j[0] = 0;
+                }
+                else {
+                    j[0]++;
+                    i[0]--;
+                }
+            }
+            catch (Exception e)
+            {
+                Log.d(TAG, "getPassengerDetails: onDataChange: Exception: "+e.getLocalizedMessage());
+            }
+        }
+    }
+    private void getPassengerDetails()
+    {
+        Log.d(TAG, "getPassengerDetails: this function will get the details of the passenger.");
+        for (int i = 0;i < acceptedPassengerID.size(); i++)
+        {
+            DatabaseReference mChild = FirebaseDatabase.getInstance().getReference().child("Users").child(acceptedPassengerID.get(i));
+            final int finalI = i;
+            mChild.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    UserDetails tem = new UserDetails();
+                    tem.setUserID(dataSnapshot.getKey());
+                    tem.setCity(dataSnapshot.child("City").getValue().toString());
+                    tem.setDOB(dataSnapshot.child("DOB").getValue().toString());
+                    tem.setFirstName(dataSnapshot.child("First Name").getValue().toString());
+                    tem.setLastName(dataSnapshot.child("Last Name").getValue().toString());
+                    tem.setGender(dataSnapshot.child("Gender").getValue().toString());
+                    tem.setPincode(dataSnapshot.child("Pincode").getValue().toString());
+                    tem.setProfilePicture(dataSnapshot.child("Profile Picture").getValue().toString());
+                    tem.setContact(dataSnapshot.child("Contact").getValue().toString());
+
+                    passengerDetails.add(tem);
+
+                    if(finalI == (acceptedPassengerID.size() - 1))
+                    {
+                        Log.d(TAG, "getPassengerDetails: onDataChange: passengerDetails.size: "+passengerDetails.size());
+                        try {
+                            PassengerListRecyclerViewAdapter adapter = new PassengerListRecyclerViewAdapter(passengerDetails);
+                            passengerListRecyclerView.setAdapter(adapter);
+                        }
+                        catch (Exception e)
+                        {
+                            Log.d(TAG, "getPassengerDetails: onDataChange: Exception: "+e.getLocalizedMessage());
+                        }
+//
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+        }
     }
 }
