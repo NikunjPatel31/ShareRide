@@ -6,14 +6,9 @@
     android:orientation="vertical"
     app:cardCornerRadius="10dp"
     android:layout_margin="10dp"
-    app:cardElevation="8dp"
+    app:cardElevation="2dp"
     android:background="@color/colorCardViewBackground">
 
-    <androidx.cardview.widget.CardView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:cardCornerRadius="10dp"
-        android:layout_margin="1.5dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -32,18 +27,20 @@
                 android:layout_width="0dp"
                 android:layout_height="40dp"
                 android:text="Passenger Name"
-                android:textSize="22dp"
+                android:textSize="22sp"
+                android:ellipsize="marquee"
+                android:singleLine="true"
                 android:textStyle="bold"
                 app:layout_constraintStart_toEndOf="@+id/passenger_photo"
                 app:layout_constraintEnd_toStartOf="@+id/passenger_gender_textview"
-                app:layout_constraintTop_toTopOf="parent"/>
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/passenger_gender_textview"
                 android:layout_width="wrap_content"
                 android:layout_height="40dp"
                 android:text="( Male )"
-                android:textSize="22dp"
+                android:textSize="22sp"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"/>
@@ -53,7 +50,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="40dp"
                 android:text="20 years"
-                android:textSize="22dp"
+                android:textSize="22sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toEndOf="@id/passenger_photo"
                 app:layout_constraintTop_toBottomOf="@+id/passenger_name_textview"/>
@@ -63,6 +60,7 @@
                 android:layout_width="110dp"
                 android:layout_height="40dp"
                 android:text="Chech In"
+                android:visibility="invisible"
                 android:textColor="@color/colorButtonSelect"
                 android:background="@drawable/background_ripple_button_select"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -73,13 +71,12 @@
                 android:layout_width="110dp"
                 android:layout_height="40dp"
                 android:text="Chech Out"
+                android:visibility="invisible"
                 android:textColor="@color/colorButtonCancelText"
                 android:background="@drawable/background_ripple_button_cancel"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/passenger_gender_textview"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-
-    </androidx.cardview.widget.CardView>
 
     </androidx.cardview.widget.CardView>

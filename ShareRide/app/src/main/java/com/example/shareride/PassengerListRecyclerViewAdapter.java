@@ -68,6 +68,7 @@ public class PassengerListRecyclerViewAdapter extends RecyclerView.Adapter<Passe
         private void setPassengerName(String passengerName)
         {
             TextView passengerNameTV = view.findViewById(R.id.passenger_name_textview);
+            passengerNameTV.setSelected(true);
             passengerNameTV.setText(passengerName);
         }
         private void setPassengerGender(String passengerGender)
@@ -81,7 +82,7 @@ public class PassengerListRecyclerViewAdapter extends RecyclerView.Adapter<Passe
             int year = calendar.get(Calendar.YEAR);
             int age = year - Integer.parseInt(passengerDOB);
             TextView passengerAgeTV = view.findViewById(R.id.passenger_age_textview);
-            passengerAgeTV.setText(Integer.toString(age));
+            passengerAgeTV.setText(Integer.toString(age)+" Years");
         }
     }
 }
