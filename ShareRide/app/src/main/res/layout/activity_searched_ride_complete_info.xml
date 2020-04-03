@@ -309,6 +309,17 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
+                <TextView
+                    android:id="@+id/passenger_list_textview"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Passenger List :"
+                    android:textSize="22sp"
+                    android:textStyle="bold"
+                    android:layout_margin="10dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"/>
+
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/passenger_list_recycler_view"
                     android:layout_width="match_parent"
@@ -316,7 +327,7 @@
                     android:layout_marginTop="10dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toBottomOf="@+id/passenger_list_textview" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

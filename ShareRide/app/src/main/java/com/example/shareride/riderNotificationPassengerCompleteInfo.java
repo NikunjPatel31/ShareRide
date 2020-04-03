@@ -44,6 +44,7 @@ public class riderNotificationPassengerCompleteInfo extends AppCompatActivity {
     private String request_id;
     private String position;
     private String size;
+    private SearchRideResultDetails searchRideResultDetailsTem;
 
     public void call(View view) {
         Intent intent = new Intent(Intent.ACTION_CALL);
@@ -82,6 +83,22 @@ public class riderNotificationPassengerCompleteInfo extends AppCompatActivity {
                     if(task.isSuccessful())
                     {
                         Log.d(TAG, "onBindViewHolder: onComplete: status updated.");
+                        final DatabaseReference mChild = FirebaseDatabase.getInstance().getReference().child("Offer_Ride")
+                                .child(mAuth.getUid())
+                                .child(searchRideResultDetailsTem.getRideID());
+                        mChild.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                int availableSeats = Integer.parseInt(dataSnapshot.child("Num_Seats").getValue().toString());
+                                availableSeats--;
+                                mChild.child("Num_Seats").setValue(availableSeats);
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
                         acceptBtn.setText(status);
                         startActivity(new Intent(getApplicationContext(), NotificationActivity.class));
                     }
@@ -143,6 +160,22 @@ public class riderNotificationPassengerCompleteInfo extends AppCompatActivity {
                                         {
                                             Log.d(TAG, "onComplete: first line Exception: "+e.getLocalizedMessage());
                                         }
+                                        final DatabaseReference mChild = FirebaseDatabase.getInstance().getReference().child("Offer_Ride")
+                                                .child(mAuth.getUid())
+                                                .child(searchRideResultDetailsTem.getRideID());
+                                        mChild.addListenerForSingleValueEvent(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                                int availableSeats = Integer.parseInt(dataSnapshot.child("Num_Seats").getValue().toString());
+                                                availableSeats++;
+                                                mChild.child("Num_Seats").setValue(availableSeats);
+                                            }
+
+                                            @Override
+                                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                            }
+                                        });
                                         Notification_Rider_Fragment.notificationRiderRecyclerView.getAdapter().notifyItemRangeChanged(Integer.parseInt(position), Integer.parseInt(size) - 1);
                                         Notification_Rider_Fragment.notificationRiderRecyclerView.getAdapter().notifyItemRangeRemoved(Integer.parseInt(position),1);
                                         Notification_Rider_Fragment.notificationRiderRecyclerView.getAdapter().notifyDataSetChanged();
@@ -215,7 +248,7 @@ public class riderNotificationPassengerCompleteInfo extends AppCompatActivity {
         request_id = getIntent().getStringExtra("Request_id");
         position = getIntent().getStringExtra("Position");
         size = getIntent().getStringExtra("size");
-        Log.d(TAG, "getIntentData: position: "+position);
+        searchRideResultDetailsTem = getIntent().getParcelableExtra("Ride_Details");
     }
     private void populateWidgets()
     {

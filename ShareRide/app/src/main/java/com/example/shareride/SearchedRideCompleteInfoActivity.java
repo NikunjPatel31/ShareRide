@@ -220,6 +220,8 @@ public class SearchedRideCompleteInfoActivity extends AppCompatActivity {
 
         try
         {
+            Log.d(TAG, "getCarDetails: uid: "+riderDetails.getUserID());
+            Log.d(TAG, "getCarDetails: carID: "+carID);
             DatabaseReference mChildDB = databaseReference.child("Cars").child(riderDetails.getUserID()).child(carID);
             mChildDB.addValueEventListener(new ValueEventListener() {
                 @Override
@@ -231,7 +233,7 @@ public class SearchedRideCompleteInfoActivity extends AppCompatActivity {
                         carFuelTV.setText(dataSnapshot.child("Fuel").getValue().toString());
                         carModelValueTV.setText(dataSnapshot.child("Model_Year").getValue().toString());
                         carVehicleNumberTV.setText(dataSnapshot.child("Vehicle_Number").getValue().toString());
-                        Picasso.get().load(dataSnapshot.child("Car_Image").getValue().toString()).into(riderCarPhoto);
+                        Picasso.get().load(dataSnapshot.child("Car_Image").getValue().toString()).placeholder(R.drawable.ic_car_black_24dp).into(riderCarPhoto);
                     }
                     catch (Exception e)
                     {
@@ -261,7 +263,7 @@ public class SearchedRideCompleteInfoActivity extends AppCompatActivity {
         riderGenderTV.setText("( "+riderDetails.getGender()+" )");
         sourceLocationTV.setText(searchRideResultDetails.getSource_Location_Name());
         destinationLocationTV.setText(searchRideResultDetails.getDestination_Location_Name());
-        Picasso.get().load(riderDetails.getProfilePicture()).into(riderProfilePicture);
+        Picasso.get().load(riderDetails.getProfilePicture()).placeholder(R.drawable.ic_account_circle_black_24dp).into(riderProfilePicture);
         // this value will change on the basis of the passenger of the ride... so i will write the code for that later.
         availabelSeatsTV.setText(searchRideResultDetails.getNum_Seats());
         costPerSeatTV.setText(searchRideResultDetails.getCost_Per_Seat()+" Rs");

@@ -263,7 +263,7 @@ public class SearchRideResultRecyclerViewAdapter extends RecyclerView.Adapter<Se
                     userDetails.setLastName(dataSnapshot.child("Last Name").getValue().toString());
                     userDetails.setPincode(dataSnapshot.child("Pincode").getValue().toString());
                     userDetails.setProfilePicture(dataSnapshot.child("Profile Picture").getValue().toString());
-                    //userDetails.setUserID(dataSnapshot.getKey());
+                    userDetails.setUserID(dataSnapshot.getKey());
                     riderUID = dataSnapshot.getKey();
                     temSearchRideResultDetails.riderDetails = userDetails;
 

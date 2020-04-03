@@ -57,6 +57,7 @@ public class SearchRideResultInfoActivity extends FragmentActivity implements On
             intent.putExtra("Passenger_details",riderDetails);
             intent.putExtra("Request_id",request_id);
             intent.putExtra("Position",position);
+            intent.putExtra("Ride_Details",searchRideResultDetails);
             intent.putExtra("size",size);
             startActivity(intent);
         }

@@ -24,13 +24,13 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.0.2'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
     //firebase dependency.
-    implementation 'com.google.firebase:firebase-auth:19.2.0'
-    implementation 'com.google.firebase:firebase-database:19.2.0'
-    implementation 'com.google.firebase:firebase-storage:19.1.0'
+    implementation 'com.google.firebase:firebase-auth:19.3.0'
+    implementation 'com.google.firebase:firebase-database:19.2.1'
+    implementation 'com.google.firebase:firebase-storage:19.1.1'
     implementation 'com.android.support:appcompat-v7:29.+'
     implementation 'com.android.support.constraint:constraint-layout:1.1.3'
     implementation 'com.android.support:support-v4:29.+'
-    implementation 'com.google.android.gms:play-services-maps:16.1.0'
+    implementation 'com.google.android.gms:play-services-maps:17.0.0'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.0'
@@ -42,7 +42,7 @@ dependencies {
     //Lottie animation dependency
     implementation 'com.airbnb.android:lottie:3.3.1'
     //dependency for firebase
-    implementation 'com.google.firebase:firebase-analytics:17.2.1'
+    implementation 'com.google.firebase:firebase-analytics:17.2.3'
     //dependency for image crop
     api 'com.theartofdev.edmodo:android-image-cropper:2.8.0'
     //dependency for picaso
@@ -52,7 +52,7 @@ dependencies {
     //recyclerview dependency
     implementation 'com.android.support:recyclerview-v7:28.0.0'
     //location service dependency.
-    implementation "com.google.android.gms:play-services-location:15.0.1"
+    implementation "com.google.android.gms:play-services-location:17.0.0"
 
 }
 apply plugin: 'com.android.application'

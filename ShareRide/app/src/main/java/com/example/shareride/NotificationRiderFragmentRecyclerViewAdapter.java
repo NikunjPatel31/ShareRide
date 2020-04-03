@@ -7,7 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,7 +33,7 @@ public class NotificationRiderFragmentRecyclerViewAdapter extends RecyclerView.A
     private static final String TAG = "NotificationRiderFragme";
     private static ArrayList<SearchRideResultDetails> searchRideResultDetails;
     private static ArrayList<UserDetails> passengerDetails;
-    public static ArrayList<String> requestID;
+    private static ArrayList<String> requestID;
     public Context context;
     public FirebaseAuth mAuth;
 
@@ -113,6 +112,7 @@ public class NotificationRiderFragmentRecyclerViewAdapter extends RecyclerView.A
                     intent.putExtra("Ride_details",searchRideResultDetailsTem);
                     intent.putExtra("Position",Integer.toString(position));
                     intent.putExtra("size",Integer.toString(searchRideResultDetails.size()));
+
                     context.startActivity(intent);
                 }
             });
@@ -135,6 +135,22 @@ public class NotificationRiderFragmentRecyclerViewAdapter extends RecyclerView.A
                                 }
                                 else
                                 {
+                                    final DatabaseReference mChild = FirebaseDatabase.getInstance().getReference().child("Offer_Ride")
+                                            .child(mAuth.getUid())
+                                            .child(searchRideResultDetailsTem.getRideID());
+                                    mChild.addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                            int availableSeats = Integer.parseInt(dataSnapshot.child("Num_Seats").getValue().toString());
+                                            availableSeats++;
+                                            mChild.child("Num_Seats").setValue(availableSeats);
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                        }
+                                    });
                                     searchRideResultDetails.remove(position);
                                     notifyItemChanged(position);
                                     notifyItemRangeRemoved(position,1);
@@ -175,32 +191,51 @@ public class NotificationRiderFragmentRecyclerViewAdapter extends RecyclerView.A
             holder.acceptBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    final String status = "Accepted";
-                    Log.d(TAG, "onBindViewHolder: onClick: passenger_id: "+passengerDeatilsTem.getUserID());
-                    Log.d(TAG, "onBindViewHolder: onClick: request_id: "+NotificationRiderFragmentRecyclerViewAdapter.requestID.get(position));
-                    Log.d(TAG, "onBindViewHolder: onClick: offer_Ride_id: "+searchRideResultDetailsTem.getRideID());
-                    DatabaseReference mChild = FirebaseDatabase.getInstance().getReference().child("Registration")
-                            .child(passengerDeatilsTem.getUserID())
-                            .child(NotificationRiderFragmentRecyclerViewAdapter.requestID.get(position));
-                    mChild.child("Status").setValue(status).addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            if(task.isSuccessful())
-                            {
-                                Log.d(TAG, "onBindViewHolder: onComplete: status updated.");
-                                holder.acceptBtn.setText(status);
+                    if(holder.acceptBtn.getText().equals("Not Accepted"))
+                    {
+                        final String status = "Accepted";
+                        DatabaseReference mChild = FirebaseDatabase.getInstance().getReference().child("Registration")
+                                .child(passengerDeatilsTem.getUserID())
+                                .child(NotificationRiderFragmentRecyclerViewAdapter.requestID.get(position));
+                        mChild.child("Status").setValue(status).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if(task.isSuccessful())
+                                {
+                                    Log.d(TAG, "onBindViewHolder: onComplete: status updated.");
+                                    holder.acceptBtn.setText(status);
+                                    // we will decrement available seat by 1...
+
+                                    final DatabaseReference mChild = FirebaseDatabase.getInstance().getReference().child("Offer_Ride")
+                                            .child(mAuth.getUid())
+                                            .child(searchRideResultDetailsTem.getRideID());
+                                    mChild.addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                            int availableSeats = Integer.parseInt(dataSnapshot.child("Num_Seats").getValue().toString());
+                                            availableSeats--;
+                                            mChild.child("Num_Seats").setValue(availableSeats);
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                        }
+                                    });
+
+                                }
+                                else
+                                {
+                                    Log.d(TAG, "onBindViewHolder: onComplete: status not updated: Exception: "+task.getException());
+                                }
                             }
-                            else
-                            {
-                                Log.d(TAG, "onBindViewHolder: onComplete: status not updated: Exception: "+task.getException());
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.d(TAG, "onBindViewHolder: onFailure: Exception: "+e.getLocalizedMessage());
                             }
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Log.d(TAG, "onBindViewHolder: onFailure: Exception: "+e.getLocalizedMessage());
-                        }
-                    });
+                        });
+                    }
                 }
             });
         }
@@ -221,49 +256,46 @@ public class NotificationRiderFragmentRecyclerViewAdapter extends RecyclerView.A
     {
         View view;
         Button acceptBtn, rejectBtn, infoBtn;
-        public RequestRideNotificationViewHolder(@NonNull View itemView) {
+        RequestRideNotificationViewHolder(@NonNull View itemView) {
             super(itemView);
             view = itemView;
-            acceptBtn = (Button) view.findViewById(R.id.accept_button);
-            rejectBtn = (Button) view.findViewById(R.id.reject_button);
-            infoBtn = (Button) view.findViewById(R.id.info_button);
+            acceptBtn = view.findViewById(R.id.accept_button);
+            rejectBtn = view.findViewById(R.id.reject_button);
+            infoBtn = view.findViewById(R.id.info_button);
         }
-        public void setPassengerName(String passengerName)
+        void setPassengerName(String passengerName)
         {
-            TextView passengerNameTV = (TextView) view.findViewById(R.id.passenger_name_textview);
+            TextView passengerNameTV = view.findViewById(R.id.passenger_name_textview);
             passengerNameTV.setText(passengerName);
         }
-        public void setPassengerPhoto(String image)
+        void setPassengerPhoto(String image)
         {
-            CircleImageView passengerCircleImageView = (CircleImageView) view.findViewById(R.id.passenger_photo);
-            if(image != null)
-            {
-                Picasso.get().load(image).into(passengerCircleImageView);
-            }
+            CircleImageView passengerCircleImageView = view.findViewById(R.id.passenger_photo);
+            Picasso.get().load(image).placeholder(R.drawable.ic_account_circle_black_24dp).into(passengerCircleImageView);
         }
-        public void setSourceLocationName(String sourceLocationName)
+        void setSourceLocationName(String sourceLocationName)
         {
-            TextView sourceLocationNameTV = (TextView) view.findViewById(R.id.source_location_textview);
+            TextView sourceLocationNameTV = view.findViewById(R.id.source_location_textview);
             sourceLocationNameTV.setText(sourceLocationName);
         }
-        public void setDestinationLocationName(String destinationLocationName)
+        void setDestinationLocationName(String destinationLocationName)
         {
-            TextView destinationLocationNameTV = (TextView) view.findViewById(R.id.destination_location_textview);
+            TextView destinationLocationNameTV = view.findViewById(R.id.destination_location_textview);
             destinationLocationNameTV.setText(destinationLocationName);
         }
         public void setTime(String time)
         {
-            TextView timeTV = (TextView) view.findViewById(R.id.time_value_textview);
+            TextView timeTV = view.findViewById(R.id.time_value_textview);
             timeTV.setText(time);
         }
-        public void setCostPerSeat(String costPerSeat)
+        void setCostPerSeat(String costPerSeat)
         {
-            TextView costPerSeatTV = (TextView) view.findViewById(R.id.cost_per_seat_textview);
+            TextView costPerSeatTV = view.findViewById(R.id.cost_per_seat_textview);
             costPerSeatTV.setText(costPerSeat);
         }
         public void setDate(String date)
         {
-            TextView dateTV = (TextView) view.findViewById(R.id.date_value_textview);
+            TextView dateTV = view.findViewById(R.id.date_value_textview);
             dateTV.setText(date);
         }
     }
