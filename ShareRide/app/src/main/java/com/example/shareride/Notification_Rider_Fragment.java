@@ -35,16 +35,17 @@ public class Notification_Rider_Fragment extends Fragment {
 
     private static final String TAG = "Notification_Rider_Frag";
     private Button myRidesBtn, rideProgressBtn;
-    public static RecyclerView notificationRiderRecyclerView;
+    static RecyclerView notificationRiderRecyclerView;
     private DatabaseReference databaseReference;
     private FirebaseAuth mAuth;
     private ArrayList<String> offeredRideID = new ArrayList<>();
     private ArrayList<String> passengerID = new ArrayList<>();
-    public static ArrayList<String> requestID = new ArrayList<>();
+    static ArrayList<String> requestID = new ArrayList<>();
     private ArrayList<SearchRideResultDetails> searchRideResultDetails = new ArrayList<>();
     private ArrayList<UserDetails> passengerDetails = new ArrayList<>();
     private ProgressBar progressBar;
     private TextView progressBarTextView;
+    private boolean lockRecyclerView = false;
 
     public Notification_Rider_Fragment() {
         // Required empty public constructor
@@ -76,6 +77,11 @@ public class Notification_Rider_Fragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        requestID.clear();
+        offeredRideID.clear();
+        passengerID.clear();
+        searchRideResultDetails.clear();
+        passengerDetails.clear();
         mainFunction();
     }
 
@@ -143,10 +149,12 @@ public class Notification_Rider_Fragment extends Fragment {
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 if(dataSnapshot.exists())
                 {
+                    Log.d(TAG, "getRequestRideID: onChildAdded: Children count: "+childrenCount);
+                    Log.d(TAG, "getRequestRideID: onChildAdded: requestID: "+dataSnapshot.getKey());
+                    Log.d(TAG, "onChildAdded: requestID.size: "+requestID.size());
                     requestID.add(dataSnapshot.getKey());
                     if(requestID.size() == childrenCount)
                     {
-
                         getOfferedRideID(requestID,mChild);
                     }
                 }
@@ -261,8 +269,11 @@ public class Notification_Rider_Fragment extends Fragment {
     }
     private void getRideDetails()
     {
+        searchRideResultDetails.clear();
         Log.d(TAG, "getRideDetails: getting ride details.");
         int i = 0;
+        Log.d(TAG, "getRideDetails: Ride: "+searchRideResultDetails.size());
+
         for (i = 0;i < offeredRideID.size();i++)
         {
             DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference()
@@ -274,27 +285,30 @@ public class Notification_Rider_Fragment extends Fragment {
             databaseReference.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    if (dataSnapshot.exists())
+                    if(!lockRecyclerView)
                     {
-                        Log.d(TAG, "getRideDetails onDataChange: we are fetching details of the searchRideDetails.");
-                       SearchRideResultDetails tem = new SearchRideResultDetails();
-                       tem.setCar_id(dataSnapshot.child("Car_id").getValue().toString());
-                       tem.setCost_Per_Seat(dataSnapshot.child("Cost_Per_Seat").getValue().toString());
-                       tem.setDate(dataSnapshot.child("Date").getValue().toString());
-                       tem.setDestination_Location(dataSnapshot.child("Destination_Location").getValue().toString());
-                       tem.setDestination_Location_Name(dataSnapshot.child("Destination_Location_Name").getValue().toString());
-                       tem.setNum_Seats(dataSnapshot.child("Num_Seats").getValue().toString());
-                       tem.setSource_Location(dataSnapshot.child("Source_Location").getValue().toString());
-                       tem.setSource_Location_Name(dataSnapshot.child("Source_Location_Name").getValue().toString());
-                       tem.setTime(dataSnapshot.child("Time").getValue().toString());
-                       tem.setRideID(offeredRideID.get(finalI1));
+                        if (dataSnapshot.exists())
+                        {
+                            Log.d(TAG, "getRideDetails onDataChange: we are fetching details of the searchRideDetails.");
+                            SearchRideResultDetails tem = new SearchRideResultDetails();
+                            tem.setCar_id(dataSnapshot.child("Car_id").getValue().toString());
+                            tem.setCost_Per_Seat(dataSnapshot.child("Cost_Per_Seat").getValue().toString());
+                            tem.setDate(dataSnapshot.child("Date").getValue().toString());
+                            tem.setDestination_Location(dataSnapshot.child("Destination_Location").getValue().toString());
+                            tem.setDestination_Location_Name(dataSnapshot.child("Destination_Location_Name").getValue().toString());
+                            tem.setNum_Seats(dataSnapshot.child("Num_Seats").getValue().toString());
+                            tem.setSource_Location(dataSnapshot.child("Source_Location").getValue().toString());
+                            tem.setSource_Location_Name(dataSnapshot.child("Source_Location_Name").getValue().toString());
+                            tem.setTime(dataSnapshot.child("Time").getValue().toString());
+                            tem.setRideID(offeredRideID.get(finalI1));
 
-                       searchRideResultDetails.add(tem);
+                            searchRideResultDetails.add(tem);
 
-                       if(finalI == (offeredRideID.size() - 1))
-                       {
-                           getPassengerDetails();
-                       }
+                            if(finalI == (offeredRideID.size() - 1))
+                            {
+                                getPassengerDetails();
+                            }
+                        }
                     }
                 }
 
@@ -307,9 +321,11 @@ public class Notification_Rider_Fragment extends Fragment {
     }
     private void getPassengerDetails()
     {
+        passengerDetails.clear();
         int i = 0;
         Log.d(TAG, "getPassengerDetails: getting passenger details.");
         Log.d(TAG, "getPassengerDetails: passengerSize: "+passengerID.size());
+
         for (i = 0;i < passengerID.size();i++)
         {
             DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference()
@@ -320,41 +336,45 @@ public class Notification_Rider_Fragment extends Fragment {
             databaseReference.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    if (dataSnapshot.exists())
+                    if(!lockRecyclerView)
                     {
-                        Log.d(TAG, "getPassengerDetails onDataChange: we are fetching the details of the userDetails. ");
-                        UserDetails tem = new UserDetails();
-                        tem.setUserID(passengerID.get(finalI));
-                        tem.setCity(dataSnapshot.child("City").getValue().toString());
-                        tem.setContact(dataSnapshot.child("Contact").getValue().toString());
-                        tem.setDOB(dataSnapshot.child("DOB").getValue().toString());
-                        tem.setFirstName(dataSnapshot.child("First Name").getValue().toString());
-                        tem.setGender(dataSnapshot.child("Gender").getValue().toString());
-                        tem.setLastName(dataSnapshot.child("Last Name").getValue().toString());
-                        tem.setPincode(dataSnapshot.child("Pincode").getValue().toString());
-                        tem.setProfilePicture(dataSnapshot.child("Profile Picture").getValue().toString());
-                        passengerDetails.add(tem);
-
-                        if(finalI1 == (passengerID.size() - 1))
+                        if (dataSnapshot.exists())
                         {
-                            try {
-                                NotificationRiderFragmentRecyclerViewAdapter adapter = new NotificationRiderFragmentRecyclerViewAdapter(
-                                        searchRideResultDetails,passengerDetails,requestID,getContext());
-                                notificationRiderRecyclerView.setAdapter(adapter);
-                                adapter.notifyDataSetChanged();
-                            }
-                            catch (Exception e)
+                            Log.d(TAG, "getPassengerDetails onDataChange: we are fetching the details of the userDetails. ");
+                            UserDetails tem = new UserDetails();
+                            tem.setUserID(passengerID.get(finalI));
+                            tem.setCity(dataSnapshot.child("City").getValue().toString());
+                            tem.setContact(dataSnapshot.child("Contact").getValue().toString());
+                            tem.setDOB(dataSnapshot.child("DOB").getValue().toString());
+                            tem.setFirstName(dataSnapshot.child("First Name").getValue().toString());
+                            tem.setGender(dataSnapshot.child("Gender").getValue().toString());
+                            tem.setLastName(dataSnapshot.child("Last Name").getValue().toString());
+                            tem.setPincode(dataSnapshot.child("Pincode").getValue().toString());
+                            tem.setProfilePicture(dataSnapshot.child("Profile Picture").getValue().toString());
+                            passengerDetails.add(tem);
+
+                            if(finalI1 == (passengerID.size() - 1))
                             {
-                                Log.d(TAG, "onDataChange: Exception: "+e.getLocalizedMessage());
+                                try {
+                                    NotificationRiderFragmentRecyclerViewAdapter adapter = new NotificationRiderFragmentRecyclerViewAdapter(
+                                            searchRideResultDetails,passengerDetails,requestID,getContext());
+                                    notificationRiderRecyclerView.setAdapter(adapter);
+                                    adapter.notifyDataSetChanged();
+                                    lockRecyclerView = true;
+                                }
+                                catch (Exception e)
+                                {
+                                    Log.d(TAG, "onDataChange: Exception: "+e.getLocalizedMessage());
+                                }
+                                progressBar.setVisibility(View.INVISIBLE);
+                                progressBarTextView.setVisibility(View.INVISIBLE);
                             }
-                            progressBar.setVisibility(View.INVISIBLE);
-                            progressBarTextView.setVisibility(View.INVISIBLE);
                         }
-                    }
-                    else
-                    {
-                        progressBar.setVisibility(View.INVISIBLE);
-                        progressBarTextView.setText("Looks like you don't have any notification.");
+                        else
+                        {
+                            progressBar.setVisibility(View.INVISIBLE);
+                            progressBarTextView.setText("Looks like you don't have any notification.");
+                        }
                     }
                 }
 

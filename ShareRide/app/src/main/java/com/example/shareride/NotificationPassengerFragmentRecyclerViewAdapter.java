@@ -15,8 +15,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -68,8 +71,8 @@ public class NotificationPassengerFragmentRecyclerViewAdapter extends RecyclerVi
             @Override
             public void onClick(View v) {
 
-                UserDetails temRiderDetails = riderDetails.get(position);
-                SearchRideResultDetails temRideDetails = searchRideResultDetails.get(position);
+                final UserDetails temRiderDetails = riderDetails.get(position);
+                final SearchRideResultDetails temRideDetails = searchRideResultDetails.get(position);
                 final DatabaseReference notificationDB = FirebaseDatabase.getInstance().getReference().child("Notification").child("Rider");
                 try {
                     DatabaseReference temNotification = notificationDB.child(temRiderDetails.getUserID()).child(requestID.get(position)).child(temRideDetails.getRideID());
@@ -80,6 +83,22 @@ public class NotificationPassengerFragmentRecyclerViewAdapter extends RecyclerVi
                                 if(task.isSuccessful())
                                 {
                                     Log.d(TAG, "onComplete: request Canceled from the notification");
+                                    final DatabaseReference mChild = FirebaseDatabase.getInstance().getReference().child("Offer_Ride")
+                                            .child(temRiderDetails.getUserID())
+                                            .child(temRideDetails.getRideID());
+                                    mChild.addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                            int availableSeats = Integer.parseInt(dataSnapshot.child("Num_Seats").getValue().toString());
+                                            availableSeats++;
+                                            mChild.child("Num_Seats").setValue(availableSeats);
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                        }
+                                    });
                                 }
                                 else
                                 {

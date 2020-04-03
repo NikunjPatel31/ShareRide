@@ -45,6 +45,9 @@ public class riderNotificationPassengerCompleteInfo extends AppCompatActivity {
     private String position;
     private String size;
     private SearchRideResultDetails searchRideResultDetailsTem;
+    private int availableSeats;
+    private boolean lockReject = false;
+    private boolean lockAccept = false;
 
     public void call(View view) {
         Intent intent = new Intent(Intent.ACTION_CALL);
@@ -73,44 +76,56 @@ public class riderNotificationPassengerCompleteInfo extends AppCompatActivity {
     {
         if(acceptBtn.getText().toString().equals("Accept"))
         {
-            final String status = "Accepted";
-            DatabaseReference mChild = FirebaseDatabase.getInstance().getReference().child("Registration")
-                    .child(passengerDetails.getUserID())
-                    .child(request_id);
-            mChild.child("Status").setValue(status).addOnCompleteListener(new OnCompleteListener<Void>() {
+            final DatabaseReference availableSeatsDB = FirebaseDatabase.getInstance().getReference().child("Offer_Ride")
+                    .child(mAuth.getUid())
+                    .child(searchRideResultDetailsTem.getRideID());
+            availableSeatsDB.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
-                public void onComplete(@NonNull Task<Void> task) {
-                    if(task.isSuccessful())
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    availableSeats = Integer.parseInt(dataSnapshot.child("Num_Seats").getValue().toString());
+
+                    if(availableSeats > 0)
                     {
-                        Log.d(TAG, "onBindViewHolder: onComplete: status updated.");
-                        final DatabaseReference mChild = FirebaseDatabase.getInstance().getReference().child("Offer_Ride")
-                                .child(mAuth.getUid())
-                                .child(searchRideResultDetailsTem.getRideID());
-                        mChild.addListenerForSingleValueEvent(new ValueEventListener() {
+                        final String status = "Accepted";
+                        DatabaseReference mChild = FirebaseDatabase.getInstance().getReference().child("Registration")
+                                .child(passengerDetails.getUserID())
+                                .child(request_id);
+                        mChild.child("Status").setValue(status).addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
-                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                int availableSeats = Integer.parseInt(dataSnapshot.child("Num_Seats").getValue().toString());
-                                availableSeats--;
-                                mChild.child("Num_Seats").setValue(availableSeats);
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if(task.isSuccessful())
+                                {
+                                    Log.d(TAG, "onBindViewHolder: onComplete: status updated.");
+                                    if (!lockAccept)
+                                    {
+                                        availableSeats--;
+                                        availableSeatsDB.child("Num_Seats").setValue(availableSeats);
+                                        lockAccept = true;
+                                    }
+                                    acceptBtn.setText(status);
+                                    startActivity(new Intent(getApplicationContext(), NotificationActivity.class));
+                                }
+                                else
+                                {
+                                    Log.d(TAG, "onBindViewHolder: onComplete: status not updated: Exception: "+task.getException());
+                                }
                             }
-
+                        }).addOnFailureListener(new OnFailureListener() {
                             @Override
-                            public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                            public void onFailure(@NonNull Exception e) {
+                                Log.d(TAG, "onBindViewHolder: onFailure: Exception: "+e.getLocalizedMessage());
                             }
                         });
-                        acceptBtn.setText(status);
-                        startActivity(new Intent(getApplicationContext(), NotificationActivity.class));
                     }
                     else
                     {
-                        Log.d(TAG, "onBindViewHolder: onComplete: status not updated: Exception: "+task.getException());
+                        Toast.makeText(riderNotificationPassengerCompleteInfo.this, "There is no available seats.", Toast.LENGTH_SHORT).show();
                     }
                 }
-            }).addOnFailureListener(new OnFailureListener() {
+
                 @Override
-                public void onFailure(@NonNull Exception e) {
-                    Log.d(TAG, "onBindViewHolder: onFailure: Exception: "+e.getLocalizedMessage());
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
                 }
             });
         }
@@ -176,6 +191,31 @@ public class riderNotificationPassengerCompleteInfo extends AppCompatActivity {
 
                                             }
                                         });
+
+                                        if(acceptBtn.getText().equals("Accepted"))
+                                        {
+                                            if(!lockReject)
+                                            {
+                                                final DatabaseReference availableSeatsDB = FirebaseDatabase.getInstance().getReference().child("Offer_Ride")
+                                                        .child(mAuth.getUid())
+                                                        .child(searchRideResultDetailsTem.getRideID());
+                                                availableSeatsDB.addListenerForSingleValueEvent(new ValueEventListener() {
+                                                    @Override
+                                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                                        lockReject = true;
+                                                        int availableSeats = Integer.parseInt(dataSnapshot.child("Num_Seats").getValue().toString());
+                                                        availableSeats++;
+                                                        availableSeatsDB.child("Num_Seats").setValue(availableSeats);
+                                                    }
+
+                                                    @Override
+                                                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                                    }
+                                                });
+                                            }
+                                        }
+
                                         Notification_Rider_Fragment.notificationRiderRecyclerView.getAdapter().notifyItemRangeChanged(Integer.parseInt(position), Integer.parseInt(size) - 1);
                                         Notification_Rider_Fragment.notificationRiderRecyclerView.getAdapter().notifyItemRangeRemoved(Integer.parseInt(position),1);
                                         Notification_Rider_Fragment.notificationRiderRecyclerView.getAdapter().notifyDataSetChanged();
