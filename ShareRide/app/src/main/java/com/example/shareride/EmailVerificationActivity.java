@@ -20,6 +20,9 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.FirebaseAuthInvalidUserException;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 
 public class EmailVerificationActivity extends AppCompatActivity {
 
@@ -116,9 +119,36 @@ public class EmailVerificationActivity extends AppCompatActivity {
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Log.d(TAG, "onFailure: failed to create user. Exception: "+e.getLocalizedMessage());
-                Toast.makeText(EmailVerificationActivity.this, "Failed to create user.", Toast.LENGTH_SHORT).show();
                 progressDialog.dismiss();
+                if (e instanceof FirebaseAuthInvalidUserException) {
+                    String errorCode = ((FirebaseAuthInvalidUserException) e).getErrorCode();
+
+                    if(errorCode.equals("ERROR_EMAIL_ALREADY_IN_USE"))
+                    {
+                        Toast.makeText(EmailVerificationActivity.this, "Email is already in use.", Toast.LENGTH_SHORT).show();
+                    }
+                    else
+                    {
+                        Log.d(TAG, "onFailure: error code: "+((FirebaseAuthInvalidUserException) e).getErrorCode());
+                    }
+                }
+                else if (e instanceof FirebaseAuthInvalidCredentialsException)
+                {
+                    String errorCode = ((FirebaseAuthInvalidCredentialsException) e).getErrorCode();
+
+                    if(errorCode.equals("ERROR_INVALID_EMAIL"))
+                    {
+                        Toast.makeText(EmailVerificationActivity.this, "Incorrect email.", Toast.LENGTH_SHORT).show();
+                    }
+                }
+                else if (e instanceof FirebaseAuthUserCollisionException)
+                {
+                    String errorCode = ((FirebaseAuthUserCollisionException) e).getErrorCode();
+                    if (errorCode.equals("ERROR_EMAIL_ALREADY_IN_USE"))
+                    {
+                        Toast.makeText(EmailVerificationActivity.this, "Email address is already in use.", Toast.LENGTH_SHORT).show();
+                    }
+                }
             }
         });
     }

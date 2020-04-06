@@ -19,6 +19,8 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.FirebaseAuthInvalidUserException;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -126,6 +128,19 @@ public class LoginActivity extends AppCompatActivity {
                 progressBar.setVisibility(View.INVISIBLE);
                 loginBtn.setVisibility(View.VISIBLE);
                 Log.d(TAG, "onFailure: error in signing user. Exception: "+e.getLocalizedMessage());
+                if(e instanceof FirebaseAuthInvalidCredentialsException)
+                {
+                    Toast.makeText(LoginActivity.this, "Entered Password is incorrect.", Toast.LENGTH_SHORT).show();
+                }
+                else if (e instanceof FirebaseAuthInvalidUserException)
+                {
+                    String errorCode = ((FirebaseAuthInvalidUserException) e).getErrorCode();
+
+                    if (errorCode.equals("ERROR_USER_NOT_FOUND"))
+                    {
+                        Toast.makeText(LoginActivity.this, "No Account found.", Toast.LENGTH_SHORT).show();
+                    }
+                }
             }
         });
     }
