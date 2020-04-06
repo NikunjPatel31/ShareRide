@@ -9,4 +9,20 @@
     <string name="title_activity_notification_passenger_route">Map</string>
 
     <!-- TODO: Remove or change this placeholder text -->
+
+    <string name="FirstIntroScreenDescription">
+        Share Ride provides you the easy way to offer the ride by simply providing the source and destination location.
+    </string>
+
+    <string name="SecondIntroScreenDescription">
+        Share Ride provides you the easy way to Search the ride for your journery by providing the source and destiantion locaiton.
+    </string>
+
+    <string name="ThirdIntroScreenDescription">
+        Share Ride allows you to add your car details and saves your time by not providing car details every time you share the ride.
+    </string>
+
+    <string name="forgotPasswordDescription">
+        Please enter the email you signed up with. We will send you a link to change password.
+    </string>
 </resources>

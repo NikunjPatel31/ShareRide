@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -27,6 +28,7 @@ public class LoginActivity extends AppCompatActivity {
     private FirebaseAuth mAtuh;
     private Button loginBtn;
     private ProgressBar progressBar;
+    private TextView forgotPasswordTV;
 
     private String email, password;
 
@@ -57,6 +59,12 @@ public class LoginActivity extends AppCompatActivity {
 
         initializeWidgets();
         initializeFirebaseInstance();
+        forgotPasswordTV.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getApplicationContext(), ForgotPasswordActivity.class));
+            }
+        });
     }
 
     private void initializeFirebaseInstance()
@@ -71,6 +79,7 @@ public class LoginActivity extends AppCompatActivity {
         loginBtn = (Button) findViewById(R.id.button);
         progressBar = (ProgressBar) findViewById(R.id.login_progress_bar);
         progressBar.setVisibility(View.INVISIBLE);
+        forgotPasswordTV = findViewById(R.id.forgot_password_textView);
     }
 
     private boolean fieldsValidation()

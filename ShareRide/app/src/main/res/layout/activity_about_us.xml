@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".AboutUsActivity">
+
+   <androidx.constraintlayout.widget.ConstraintLayout
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content">
+
+       <com.google.android.material.appbar.AppBarLayout
+           android:id="@+id/app_bar_layout"
+           android:layout_width="match_parent"
+           android:layout_height="?attr/actionBarSize"
+           android:background="@android:color/white"
+           app:layout_constraintStart_toStartOf="parent"
+           app:layout_constraintTop_toTopOf="parent">
+
+           <androidx.appcompat.widget.Toolbar
+               android:id="@+id/toolbar"
+               android:layout_width="match_parent"
+               android:layout_height="?attr/actionBarSize"
+               app:title="About this app"
+               android:fadingEdgeLength="10dp"
+               app:navigationIcon="?attr/homeAsUpIndicator" />
+
+       </com.google.android.material.appbar.AppBarLayout>
+
+       <TextView
+           android:id="@+id/textview1"
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:text="Travel doing carpooling with Share Ride"
+           android:textSize="18sp"
+           android:layout_marginStart="10dp"
+           app:layout_constraintStart_toStartOf="parent"
+           app:layout_constraintTop_toBottomOf="@id/app_bar_layout"/>
+
+       <TextView
+           android:id="@+id/textview2"
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:text="Share rides with someone going your way. Get away for the weekend by doing carpooling."
+           android:textSize="18sp"
+           android:layout_marginStart="10dp"
+           android:layout_marginTop="20dp"
+           app:layout_constraintStart_toStartOf="parent"
+           app:layout_constraintTop_toBottomOf="@id/textview1"/>
+
+       <TextView
+           android:id="@+id/carpooling_textview"
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:text="Carpooling"
+           android:textSize="18sp"
+           android:textStyle="bold"
+           android:layout_marginTop="20dp"
+           android:layout_marginStart="10dp"
+           app:layout_constraintStart_toStartOf="parent"
+           app:layout_constraintTop_toBottomOf="@id/textview2"/>
+
+       <TextView
+           android:id="@+id/carpooling_textview1"
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:text="Going somewhere ?"
+           android:textSize="18sp"
+           android:layout_marginStart="10dp"
+           android:layout_marginTop="5dp"
+           app:layout_constraintStart_toStartOf="parent"
+           app:layout_constraintTop_toBottomOf="@id/carpooling_textview"/>
+
+       <TextView
+           android:id="@+id/carpooling_textview2"
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:text="Share...Drive...Save..."
+           android:textSize="18sp"
+           android:layout_marginStart="10dp"
+           android:layout_marginTop="5dp"
+           app:layout_constraintStart_toStartOf="parent"
+           app:layout_constraintTop_toBottomOf="@id/carpooling_textview1"/>
+
+       <TextView
+           android:id="@+id/carpooling_textview3"
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:text="- Publish your ride."
+           android:textSize="18sp"
+
+           android:layout_marginStart="10dp"
+           android:layout_marginTop="5dp"
+           app:layout_constraintStart_toStartOf="parent"
+           app:layout_constraintTop_toBottomOf="@id/carpooling_textview2"/>
+
+       <TextView
+           android:id="@+id/carpooling_textview4"
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:text="- Decide who goes with you."
+           android:textSize="18sp"
+           android:layout_marginStart="10dp"
+           android:layout_marginTop="5dp"
+           app:layout_constraintStart_toStartOf="parent"
+           app:layout_constraintTop_toBottomOf="@id/carpooling_textview3"/>
+
+       <TextView
+           android:id="@+id/carpooling_textview11"
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:text="Want to go somewhere ?"
+           android:textSize="18sp"
+           android:layout_marginStart="10dp"
+           android:layout_marginTop="20dp"
+           app:layout_constraintStart_toStartOf="parent"
+           app:layout_constraintTop_toBottomOf="@id/carpooling_textview4"/>
+
+       <TextView
+           android:id="@+id/carpooling_textview12"
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:text="Book...Meet...Go..."
+           android:textSize="18sp"
+           android:layout_marginStart="10dp"
+           android:layout_marginTop="5dp"
+           app:layout_constraintStart_toStartOf="parent"
+           app:layout_constraintTop_toBottomOf="@id/carpooling_textview11"/>
+
+       <TextView
+           android:id="@+id/carpooling_textview13"
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:text="- Search for a ride going anywhere you want to go."
+           android:textSize="18sp"
+           android:layout_marginStart="10dp"
+           android:layout_marginTop="5dp"
+           app:layout_constraintStart_toStartOf="parent"
+           app:layout_constraintTop_toBottomOf="@id/carpooling_textview12"/>
+
+       <TextView
+           android:id="@+id/carpooling_textview14"
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:text="- Book a seat instantly by requesting it."
+           android:textSize="18sp"
+           android:layout_marginStart="10dp"
+           android:layout_marginTop="5dp"
+           app:layout_constraintStart_toStartOf="parent"
+           app:layout_constraintTop_toBottomOf="@id/carpooling_textview13"/>
+
+   </androidx.constraintlayout.widget.ConstraintLayout>
+
+</ScrollView>

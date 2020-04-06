@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
@@ -23,6 +24,7 @@ public class Account_Fragment extends Fragment {
     private static final String TAG = "Account_Fragment";
 
     private Button logoutbtn;
+    private TextView helpTV;
     private FirebaseAuth mAtuh;
 
     public Account_Fragment() {
@@ -45,6 +47,7 @@ public class Account_Fragment extends Fragment {
     {
         Log.d(TAG, "initializeWidgets: initializing widgets.");
         logoutbtn = (Button) view.findViewById(R.id.logoutButton);
+        helpTV = view.findViewById(R.id.help_textview);
     }
 
     private void initializeFirebaseInstance()
@@ -66,6 +69,13 @@ public class Account_Fragment extends Fragment {
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
                 getActivity().finish();
+            }
+        });
+
+        helpTV.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getContext(),AboutUsActivity.class));
             }
         });
     }

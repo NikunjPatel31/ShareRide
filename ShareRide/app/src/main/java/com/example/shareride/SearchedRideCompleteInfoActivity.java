@@ -99,7 +99,7 @@ public class SearchedRideCompleteInfoActivity extends AppCompatActivity {
                             requestKey = tem.getKey();
                             setRequestKey(tem.getKey());
                             Log.d(TAG, "onClick: request key: "+requestKey);
-                            requestRide(searchRideResultDetails);
+                            requestRide(searchRideResultDetails, tem);
                             requestBtn.setText("Requested");
 //                        requestFlag = true;
                             SearchRideResultRecyclerViewAdapter.SearchRideResultDetailsViewHolder.requestViewValue = true;
@@ -153,6 +153,9 @@ public class SearchedRideCompleteInfoActivity extends AppCompatActivity {
                     }
                 });
             }
+            else {
+                Log.d(TAG, "onStart: we are here");
+            }
         }
         catch (Exception e)
         {
@@ -179,6 +182,7 @@ public class SearchedRideCompleteInfoActivity extends AppCompatActivity {
                 requestBtn.setVisibility(View.INVISIBLE);
                 cancelBtn.setVisibility(View.INVISIBLE);
                 adapterPosition = getIntent().getStringExtra("Adapter_Position");
+                Log.d(TAG, "getIntentData: we are here");
             }
         }
         catch (Exception e)
@@ -268,12 +272,13 @@ public class SearchedRideCompleteInfoActivity extends AppCompatActivity {
         availabelSeatsTV.setText(searchRideResultDetails.getNum_Seats());
         costPerSeatTV.setText(searchRideResultDetails.getCost_Per_Seat()+" Rs");
     }
-    private void requestRide(SearchRideResultDetails searchRideResultDetails)
+    private void requestRide(SearchRideResultDetails searchRideResultDetails, DatabaseReference databaseReference)
     {
         Log.d(TAG, "requestRide: requesting ride.");
         DatabaseReference databaseReference1 = FirebaseDatabase.getInstance().getReference().child("Notification")
                 .child("Rider")
                 .child(searchRideResultDetails.getUserID())
+                .child(databaseReference.getKey())
                 .child(searchRideResultDetails.getRideID());
         databaseReference1.child("Passenger_ID").setValue(mAuth.getUid());
         DatabaseReference mChildDB = databaseReference.child("Registration").child(mAuth.getUid()).push();

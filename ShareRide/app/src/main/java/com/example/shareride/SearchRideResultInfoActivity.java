@@ -18,12 +18,17 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.maps.DirectionsApiRequest;
+import com.google.maps.GeoApiContext;
+import com.google.maps.PendingResult;
+import com.google.maps.model.DirectionsResult;
 
 import java.time.Year;
 import java.util.Calendar;
@@ -41,18 +46,21 @@ public class SearchRideResultInfoActivity extends FragmentActivity implements On
     private UserDetails riderDetails=null;
     private boolean requestFlag = false;
     private CardView cardView;
-    String activity;
+    private String activity;
     private String request_id;
     private String position;
     private String size;
 
-    public void more_information(View view) {
-    }
+    private String source_location = null;
+    private String destination_location = null;
+
+    private GeoApiContext geoApiContext = null;
 
     public void moreInformation(View view)
     {
         if(activity.equals("Rider_Notification"))
         {
+            Log.d(TAG, "moreInformation: if block");
             Intent intent = new Intent(SearchRideResultInfoActivity.this, riderNotificationPassengerCompleteInfo.class);
             intent.putExtra("Passenger_details",riderDetails);
             intent.putExtra("Request_id",request_id);
@@ -63,9 +71,11 @@ public class SearchRideResultInfoActivity extends FragmentActivity implements On
         }
         else
         {
+            Log.d(TAG, "moreInformation: else block");
             Intent intent = new Intent(SearchRideResultInfoActivity.this, SearchedRideCompleteInfoActivity.class);
             intent.putExtra("Ride_Details",searchRideResultDetails);
             intent.putExtra("Rider_Details",riderDetails);
+            intent.putExtra("Activity","search");
             intent.putExtra("Request_Flag",requestFlag);
             startActivity(intent);
         }
@@ -81,6 +91,10 @@ public class SearchRideResultInfoActivity extends FragmentActivity implements On
         mapFragment.getMapAsync(this);
 
         initializeWidgets();
+        if(geoApiContext == null)
+        {
+            geoApiContext = new GeoApiContext.Builder().apiKey(getString(R.string.google_api_key)).build();
+        }
         cardView.setAnimation(AnimationUtils.loadAnimation(this,R.anim.recycler_view_animation));
 
         if(getIntent().getStringExtra("Activity").equals("Rider_Notification"))
@@ -110,6 +124,8 @@ public class SearchRideResultInfoActivity extends FragmentActivity implements On
         LatLng sydney = new LatLng(-34, 151);
         mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+
+        calculateDirections();
     }
 
     private void getIntentData()
@@ -124,6 +140,10 @@ public class SearchRideResultInfoActivity extends FragmentActivity implements On
             request_id = getIntent().getStringExtra("Request_id");
             position = getIntent().getStringExtra("Position");
             size = getIntent().getStringExtra("size");
+
+            source_location = searchRideResultDetails.getSource_Location();
+            destination_location = searchRideResultDetails.getDestination_Location();
+            //Log.d(TAG, "getIntentData: source_location: "+source_location);
         }
         catch (Exception e)
         {
@@ -181,4 +201,40 @@ public class SearchRideResultInfoActivity extends FragmentActivity implements On
     }
 
 
+
+
+    private void calculateDirections(){
+        Log.d(TAG, "calculateDirections: calculating directions.");
+
+        String[] source_loc = source_location.split(",");
+        String[] destination_loc = destination_location.split(",");
+
+        com.google.maps.model.LatLng destination = new com.google.maps.model.LatLng(
+                Double.parseDouble(source_loc[0]),
+                Double.parseDouble(source_loc[1])
+        );
+        DirectionsApiRequest directions = new DirectionsApiRequest(geoApiContext);
+
+        directions.alternatives(true);
+        directions.origin(
+                new com.google.maps.model.LatLng(
+                        Double.parseDouble(destination_loc[0]),
+                        Double.parseDouble(destination_loc[1])
+                )
+        );
+        Log.d(TAG, "calculateDirections: destination: " + destination.toString());
+        directions.destination(destination).setCallback(new PendingResult.Callback<DirectionsResult>() {
+            @Override
+            public void onResult(DirectionsResult result) {
+                Log.d(TAG, "onResult: routes: " + result.routes[0].toString());
+                Log.d(TAG, "onResult: geocodedWayPoints: " + result.geocodedWaypoints[0].toString());
+            }
+
+            @Override
+            public void onFailure(Throwable e) {
+                Log.e(TAG, "onFailure: " + e.getMessage() );
+
+            }
+        });
+    }
 }

@@ -46,7 +46,7 @@ public class StartingActivity extends AppCompatActivity {
                 else
                 {
                     Log.d(TAG, "run: user is null");
-                    Intent intent = new Intent(StartingActivity.this, EmailVerificationActivity.class);
+                    Intent intent = new Intent(StartingActivity.this, IntroScreen.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     startActivity(intent);
                     finish();

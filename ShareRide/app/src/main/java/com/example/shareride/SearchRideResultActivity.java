@@ -407,6 +407,8 @@ public class SearchRideResultActivity extends AppCompatActivity {
             rideDetails.setUserID(userID);
             rideDetails.setCar_id(dataSnapshot.child("Car_id").getValue().toString());
             rideDetails.setRideID(dataSnapshot.getKey());
+            rideDetails.setSource_Location(dataSnapshot.child("Source_Location").getValue().toString());
+            rideDetails.setDestination_Location(dataSnapshot.child("Destination_Location").getValue().toString());
             searchRideResultDetails.add(rideDetails);
         }
     }

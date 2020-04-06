@@ -119,7 +119,7 @@ public class SearchRideResultRecyclerViewAdapter extends RecyclerView.Adapter<Se
                 }
                 else if(holder.requestBtn.getText().equals("Requested"))
                 {
-                    Log.d(TAG, "onClick: requestID: "+holder.getRequestKey());
+                    Log.d(TAG, "POSITION: onClick: "+position);
                     DatabaseReference tem = mChildDB.child(holder.getRequestKey());
                     tem.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
@@ -128,7 +128,6 @@ public class SearchRideResultRecyclerViewAdapter extends RecyclerView.Adapter<Se
                             {
                                 Log.d(TAG, "onComplete: request canceled from the registration.");
                                 SearchRideResultDetails details = searchRideResultDetails.get(position);
-                                Log.d(TAG, "onComplete: rider_id: "+details.getUserID());
                                 DatabaseReference temNotification = notificationDB.child(details.getUserID()).child(holder.getRequestKey());
                                 temNotification.removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override
@@ -289,8 +288,6 @@ public class SearchRideResultRecyclerViewAdapter extends RecyclerView.Adapter<Se
             databaseReference.addChildEventListener(new ChildEventListener() {
                 @Override
                 public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                    Log.d(TAG, "onChildAdded: All Passenger UID: "+dataSnapshot.getKey());
-                    Log.d(TAG, "onChildAdded: children count: "+dataSnapshot.getChildrenCount());
                     if(dataSnapshot.getKey().equals(firebaseAuth.getUid()))
                     {
                         requestIDChildrenCount = (int) dataSnapshot.getChildrenCount();
@@ -299,9 +296,6 @@ public class SearchRideResultRecyclerViewAdapter extends RecyclerView.Adapter<Se
                         childDB.addChildEventListener(new ChildEventListener() {
                             @Override
                             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                                Log.d(TAG, "onChildAdded: this child listener will get the request id.");
-                                Log.d(TAG, "onChildAdded: all request ID: "+dataSnapshot.getKey());
-                                Log.d(TAG, "onChildAdded: request_ID Children Count: "+dataSnapshot.getChildrenCount());
                                 requestID.add(dataSnapshot.getKey());
                                 if(requestIDCounter == requestIDChildrenCount)
                                 {
@@ -346,13 +340,11 @@ public class SearchRideResultRecyclerViewAdapter extends RecyclerView.Adapter<Se
 
                 @Override
                 public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                    Log.d(TAG, "onChildChanged: inner dataSnapshot children: "+dataSnapshot.toString());
-                    requestBtn.setText("Requested");
+
                 }
 
                 @Override
                 public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-                    Log.d(TAG, "onChildRemoved: inner dataSnapshot children: "+dataSnapshot.toString());
                     requestBtn.setText("Request");
                 }
 
@@ -377,17 +369,10 @@ public class SearchRideResultRecyclerViewAdapter extends RecyclerView.Adapter<Se
                 mChildDB.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        Log.d(TAG, " 384 onDataChange: offered_RideID: "+dataSnapshot.child("Offer_Ride_ID").getValue());
-                        Log.d(TAG, " 384 onDataChange: status: "+dataSnapshot.child("Status").getValue());
                         SearchRideResultDetails tem = searchRideResultDetails.get(position);
                         FirebaseAuth mAuth = FirebaseAuth.getInstance();
-                        Log.d(TAG, " 384 onDataChange: ride ID: "+tem.getRideID());
                         if(tem.getRideID().equals(dataSnapshot.child("Offer_Ride_ID").getValue()))
                         {
-                            Log.d(TAG, " 384 onDataChange: user has requested the ride.");
-                            Log.d(TAG, " 384 onDataChange: user has database Ride_ID: "+dataSnapshot.child("Offer_Ride_ID").getValue());
-                            Log.d(TAG, " 384 onDataChange: user has Ride_ID: "+tem.getRideID());
-                            Log.d(TAG, "onDataChange: passenger id: "+dataSnapshot.getKey());
                             setRequestKey(dataSnapshot.getKey());
                             if(dataSnapshot.child("Status").getValue().equals("Accepted"))
                             {
@@ -408,10 +393,6 @@ public class SearchRideResultRecyclerViewAdapter extends RecyclerView.Adapter<Se
                                 if(!flag)
                                 {
                                     requestBtn.setText("Request");
-                                    Log.d(TAG, " 384 onDataChange: user has not requested the ride");
-                                    Log.d(TAG, " 384 onDataChange: user has database Ride_ID: "+dataSnapshot.child("Offer_Ride_ID").getValue());
-                                    Log.d(TAG, " 384 onDataChange: user has Ride_ID: "+tem.getRideID());
-                                    Log.d(TAG, "onDataChange: passenger id: "+dataSnapshot.getKey());
                                 }
                             }
                         }
