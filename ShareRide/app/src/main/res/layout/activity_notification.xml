@@ -2,6 +2,7 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".NotificationActivity">
@@ -23,33 +24,33 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
                 android:text="Notification"
                 android:textAlignment="center"
-                android:layout_marginTop="30dp"
                 android:textColor="@color/colorText"
                 android:textSize="36sp"
-                android:textStyle="bold"/>
+                android:textStyle="bold" />
 
             <com.google.android.material.tabs.TabLayout
                 android:id="@+id/tabLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
-                app:tabTextAppearance="@style/TabItemTextSize"
                 app:tabSelectedTextColor="@color/colorText"
+                app:tabTextAppearance="@style/TabItemTextSize"
                 app:tabTextColor="@color/colorGrey">
 
                 <com.google.android.material.tabs.TabItem
                     android:id="@+id/rider_tabItem"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Rider"/>
+                    android:text="Rider" />
 
                 <com.google.android.material.tabs.TabItem
                     android:id="@+id/passenger_tabItem"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Passenger"/>
+                    android:text="Passenger" />
 
             </com.google.android.material.tabs.TabLayout>
 
@@ -67,7 +68,7 @@
             android:id="@+id/viewPager"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
     </androidx.core.widget.NestedScrollView>
 

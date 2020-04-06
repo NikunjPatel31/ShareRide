@@ -77,12 +77,20 @@ public class Notification_Rider_Fragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        requestID.clear();
-        offeredRideID.clear();
-        passengerID.clear();
-        searchRideResultDetails.clear();
-        passengerDetails.clear();
-        mainFunction();
+        if (CommanClass.isNetworkAvailable(getContext()))
+        {
+            requestID.clear();
+            offeredRideID.clear();
+            passengerID.clear();
+            searchRideResultDetails.clear();
+            passengerDetails.clear();
+            mainFunction();
+        }
+        else
+        {
+            progressBar.setVisibility(View.INVISIBLE);
+            progressBarTextView.setVisibility(View.INVISIBLE);
+        }
     }
 
     private void initializeWidgets(View view)

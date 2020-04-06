@@ -1,6 +1,7 @@
 package com.example.shareride;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
@@ -35,6 +36,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,6 +51,7 @@ public class Source_Location_Activity extends FragmentActivity implements OnMapR
     private EditText searchSourceET;
     private FloatingActionButton nextFAB;
     private GoogleMap mMap;
+    private ConstraintLayout rootLayout;
 
     private FusedLocationProviderClient mfusedLocationProviderClient;
     private LatLng centerScreenLatlng;
@@ -64,25 +67,33 @@ public class Source_Location_Activity extends FragmentActivity implements OnMapR
 
     public void next(View view)
     {
-        nextFAB.startAnimation(AnimationUtils.loadAnimation(this, R.anim.fab_click_animation));
-        centerScreenLatlng = mMap.getCameraPosition().target;
-        Log.d(TAG, "next: lat: "+centerScreenLatlng.latitude+" long: "+centerScreenLatlng.longitude);
-        if(location_permission)
+        if(CommanClass.isNetworkAvailable(this))
         {
-            if(sourceActivity)
+            centerScreenLatlng = mMap.getCameraPosition().target;
+            Log.d(TAG, "next: lat: "+centerScreenLatlng.latitude+" long: "+centerScreenLatlng.longitude);
+            if(location_permission)
             {
-                Log.d(TAG, "next: location set...");
-                Intent intent = new Intent(Source_Location_Activity.this, Edit_Ride_Info_Activity.class);
-                intent.putExtra("Activity","Edit_Source_Location");
-                intent.putExtra("SourceLocationFinal",centerScreenLatlng);
-                startActivity(intent);
+                if(sourceActivity)
+                {
+                    Log.d(TAG, "next: location set...");
+                    Intent intent = new Intent(Source_Location_Activity.this, Edit_Ride_Info_Activity.class);
+                    intent.putExtra("Activity","Edit_Source_Location");
+                    intent.putExtra("SourceLocationFinal",centerScreenLatlng);
+                    startActivity(intent);
+                }
+                else
+                {
+                    Intent intent = new Intent(Source_Location_Activity.this, Destination_Location_Activity.class);
+                    intent.putExtra("Source Location",centerScreenLatlng);
+                    startActivity(intent);
+                }
             }
-            else
-            {
-                Intent intent = new Intent(Source_Location_Activity.this, Destination_Location_Activity.class);
-                intent.putExtra("Source Location",centerScreenLatlng);
-                startActivity(intent);
-            }
+        }
+        else
+        {
+            Snackbar snackbar = Snackbar
+                    .make(rootLayout, "No internet is available", Snackbar.LENGTH_LONG);
+            snackbar.show();
         }
     }
 
@@ -112,6 +123,7 @@ public class Source_Location_Activity extends FragmentActivity implements OnMapR
         Log.d(TAG, "initializingWidgets: initializing widgets.");
         searchSourceET = (EditText) findViewById(R.id.search_source_location_edittext);
         nextFAB = (FloatingActionButton) findViewById(R.id.next_FAB);
+        rootLayout = findViewById(R.id.root_layout);
     }
     private void animateWidgets()
     {

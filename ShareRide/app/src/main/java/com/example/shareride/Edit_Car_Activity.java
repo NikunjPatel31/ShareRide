@@ -17,6 +17,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,6 +25,7 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -49,6 +51,7 @@ public class Edit_Car_Activity extends AppCompatActivity {
     private Spinner airConditionerSpinner, fuelSpinner;
     private TextView airConditionerTV, fuelTV, editCarTitleTV;
     private CircleImageView carIV;
+    private ScrollView scrollViewRoot;
 
     private FirebaseAuth mAuth;
     private DatabaseReference databaseReference;
@@ -65,13 +68,22 @@ public class Edit_Car_Activity extends AppCompatActivity {
 
     public void apply(View view)
     {
-        if(fieldsValidation())
+        if(CommanClass.isNetworkAvailable(this))
         {
-            sendCarData();
-            Intent intent = new Intent(Edit_Car_Activity.this, View_My_Cars_Activity.class);
-            //intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
-            //finish();
+            if(fieldsValidation())
+            {
+                sendCarData();
+                Intent intent = new Intent(Edit_Car_Activity.this, View_My_Cars_Activity.class);
+                //intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+                //finish();
+            }
+        }
+        else
+        {
+            Snackbar snackbar = Snackbar
+                    .make(scrollViewRoot, "No internet is available", Snackbar.LENGTH_LONG);
+            snackbar.show();
         }
     }
 
@@ -109,6 +121,7 @@ public class Edit_Car_Activity extends AppCompatActivity {
         modelYearET = (EditText) findViewById(R.id.model_year_edittext);
         vechileNumberET = (EditText) findViewById(R.id.vehicle_number_edittext);
         editCarTitleTV = (TextView) findViewById(R.id.edit_car_in_title_textview);
+        scrollViewRoot = findViewById(R.id.scroll_view_root);
     }
 
     private void animateWidgets()

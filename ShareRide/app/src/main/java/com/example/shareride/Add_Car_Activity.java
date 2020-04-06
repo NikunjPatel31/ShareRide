@@ -18,6 +18,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,6 +27,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -47,6 +49,7 @@ public class Add_Car_Activity extends AppCompatActivity {
     private Spinner airConditionerSpinner, fuelSpinner;
     private TextView airConditionerTV, fuelTV, addCarTitleTV, addCarDescriptionTV;
     private CircleImageView carIV;
+    private ScrollView scrollViewRoot;
 
     private FirebaseAuth mAuth;
     private DatabaseReference databaseReference;
@@ -62,23 +65,28 @@ public class Add_Car_Activity extends AppCompatActivity {
     private int GALLERY_REQUEST_CODE = 1, READ_EXTERNAL_STORAGE_REQUSET_CODE = 2;
     private boolean storagePermission = false;
     private String car_id="";
-    private LatLng sourceLocation, destinationLocation;
-    private String time, date;
 
     public void add(View view)
     {
-        if(fieldsValidation())
+        if (CommanClass.isNetworkAvailable(this))
         {
-            Log.d(TAG, "apply: fields validation returned true.");
-            sendCarData();
-            Intent intent = new Intent(Add_Car_Activity.this, Account_Activity.class);
-            //intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
-            //finish();
+            if(fieldsValidation())
+            {
+                Log.d(TAG, "apply: fields validation returned true.");
+                sendCarData();
+                Intent intent = new Intent(Add_Car_Activity.this, Account_Activity.class);
+                startActivity(intent);
+            }
+            else
+            {
+                Log.d(TAG, "apply: fields validation returned false.");
+            }
         }
         else
         {
-            Log.d(TAG, "apply: fields validation returned false.");
+            Snackbar snackbar = Snackbar
+                    .make(scrollViewRoot, "No internet is available", Snackbar.LENGTH_LONG);
+            snackbar.show();
         }
     }
 
@@ -86,9 +94,7 @@ public class Add_Car_Activity extends AppCompatActivity {
     public void cancel(View view)
     {
         Intent intent = new Intent(Add_Car_Activity.this, Account_Activity.class);
-        //intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
-        //finish();
     }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,6 +124,7 @@ public class Add_Car_Activity extends AppCompatActivity {
         vechileNumberET = (EditText) findViewById(R.id.vehicle_number_edittext);
         addCarTitleTV = (TextView) findViewById(R.id.add_car_title_textview);
         addCarDescriptionTV = (TextView) findViewById(R.id.add_car_description_textview);
+        scrollViewRoot = findViewById(R.id.scroll_view_root);
     }
 
     private void animateWidgets()

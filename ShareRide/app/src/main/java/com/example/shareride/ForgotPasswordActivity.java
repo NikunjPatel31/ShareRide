@@ -8,11 +8,13 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ScrollView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class ForgotPasswordActivity extends AppCompatActivity {
@@ -22,16 +24,26 @@ public class ForgotPasswordActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private EditText emailET;
     private String email;
+    private ScrollView scrollViewRoot;
 
     public void send(View view)
     {
-        if(validateFields())
+        if (CommanClass.isNetworkAvailable(this))
         {
-            sendEmail();
+            if(validateFields())
+            {
+                sendEmail();
+            }
+            else
+            {
+                Toast.makeText(this, "Required field is empty.", Toast.LENGTH_SHORT).show();
+            }
         }
         else
         {
-            Toast.makeText(this, "Required field is empty.", Toast.LENGTH_SHORT).show();
+            Snackbar snackbar = Snackbar
+                    .make(scrollViewRoot, "No internet is available", Snackbar.LENGTH_LONG);
+            snackbar.show();
         }
     }
 
@@ -48,6 +60,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
     {
         Log.d(TAG, "initializeWidgets: initializing widgets");
         emailET = findViewById(R.id.email_edittext);
+        scrollViewRoot = findViewById(R.id.scroll_view_root);
     }
     private void initializeFirebaseInstances()
     {

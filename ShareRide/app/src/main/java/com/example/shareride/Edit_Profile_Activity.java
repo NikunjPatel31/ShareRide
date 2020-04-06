@@ -19,6 +19,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,6 +27,7 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -53,6 +55,7 @@ public class Edit_Profile_Activity extends AppCompatActivity {
     private TextView genderTV, editProfileTV;
     private ArrayList<String> genderArrayList;
     private ArrayAdapter<String> genderArrayAdapter;
+    private ScrollView scrollViewRoot;
 
     private FirebaseAuth mAuth;
     private DatabaseReference databaseReference;
@@ -68,13 +71,20 @@ public class Edit_Profile_Activity extends AppCompatActivity {
 
     public void apply(View view)
     {
-        if(fieldsValidation())
+        if (CommanClass.isNetworkAvailable(this))
         {
-            sendUserData();
-            Intent intent = new Intent(Edit_Profile_Activity.this, Account_Activity.class);
-            //intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
-            //finish();
+            if(fieldsValidation())
+            {
+                sendUserData();
+                Intent intent = new Intent(Edit_Profile_Activity.this, Account_Activity.class);
+                startActivity(intent);
+            }
+        }
+        else
+        {
+            Snackbar snackbar = Snackbar
+                    .make(scrollViewRoot, "No internet is available", Snackbar.LENGTH_LONG);
+            snackbar.show();
         }
     }
 
@@ -115,6 +125,7 @@ public class Edit_Profile_Activity extends AppCompatActivity {
         genderSpinner = (Spinner) findViewById(R.id.gender_spinner);
         genderTV = (TextView) findViewById(R.id.gender_textview);
         editProfileTV = (TextView) findViewById(R.id.edit_profile_title_textview);
+        scrollViewRoot = findViewById(R.id.scroll_view_root);
     }
 
     private void animateWidgets()

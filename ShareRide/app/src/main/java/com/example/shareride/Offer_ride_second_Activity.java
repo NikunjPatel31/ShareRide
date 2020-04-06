@@ -1,6 +1,7 @@
 package com.example.shareride;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.content.Context;
 import android.content.Intent;
@@ -17,6 +18,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -32,6 +34,7 @@ public class Offer_ride_second_Activity extends AppCompatActivity {
     private TextView numOfSeats, seatTitleTV, offerRideTitleTV, offerRideDescTV;
     private EditText costPerSeatET;
     private FloatingActionButton decreaseFAB, increaseFAB;
+    private ConstraintLayout rootLayout;
 
     private int counter = 0;
     private LatLng sourceLocation, destinationLocation;
@@ -44,10 +47,19 @@ public class Offer_ride_second_Activity extends AppCompatActivity {
 
     public void offer(View view)
     {
-        if(validatingFields())
+        if(CommanClass.isNetworkAvailable(this))
         {
-            Log.d(TAG, "offer: fields are validated.");
-            sendingDataToDatabase();
+            if(validatingFields())
+            {
+                Log.d(TAG, "offer: fields are validated.");
+                sendingDataToDatabase();
+            }
+        }
+        else
+        {
+            Snackbar snackbar = Snackbar
+                    .make(rootLayout, "No internet is available", Snackbar.LENGTH_LONG);
+            snackbar.show();
         }
     }
 
@@ -99,6 +111,7 @@ public class Offer_ride_second_Activity extends AppCompatActivity {
         seatTitleTV = (TextView) findViewById(R.id.seat_title_textview);
         decreaseFAB = (FloatingActionButton) findViewById(R.id.decrease_number_FAB);
         increaseFAB = (FloatingActionButton) findViewById(R.id.increase_number_FAB);
+        rootLayout = findViewById(R.id.root_layout);
     }
 
     private void animateWidgets()

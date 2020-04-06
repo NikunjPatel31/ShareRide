@@ -2,10 +2,11 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Offer_ride_one_Activity"
-    android:background="@drawable/background5">
+    android:background="@drawable/background5"
+    tools:context=".Offer_ride_one_Activity">
 
     <TextView
         android:id="@+id/offer_ride_title_textview"
@@ -48,8 +49,8 @@
     <TextView
         android:id="@+id/time_textview"
         style="@style/EditTextStyle"
-        android:text="Time"
         android:paddingTop="11dp"
+        android:text="Time"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -62,16 +63,16 @@
         android:layout_marginEnd="20dp"
         android:layout_marginBottom="40dp"
         android:backgroundTint="@color/colorPrimary"
+        android:onClick="next"
         android:src="@drawable/ic_navigate_next_24dp"
+        app:borderWidth="0dp"
         app:fabCustomSize="64dp"
-        app:maxImageSize="40dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/time_textview"
-        app:borderWidth="0dp"
         app:layout_constraintVertical_bias="1.0"
-        android:onClick="next"/>
+        app:maxImageSize="40dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

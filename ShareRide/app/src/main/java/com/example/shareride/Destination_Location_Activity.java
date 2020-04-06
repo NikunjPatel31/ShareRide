@@ -1,6 +1,7 @@
 package com.example.shareride;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
@@ -34,6 +35,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,6 +46,7 @@ public class Destination_Location_Activity extends FragmentActivity implements O
 
     private EditText searchSourceET;
     private FloatingActionButton nextFAB;
+    private ConstraintLayout rootLayout;
 
     private LatLng centerScreenLatlng;
     private LatLng sourceLocation;
@@ -58,12 +61,21 @@ public class Destination_Location_Activity extends FragmentActivity implements O
 
     public void next(View view)
     {
-        centerScreenLatlng = mMap.getCameraPosition().target;
-        Log.d(TAG, "next: lat: "+centerScreenLatlng.latitude+" long: "+centerScreenLatlng.longitude);
-        Intent intent = new Intent(Destination_Location_Activity.this, Offer_ride_one_Activity.class);
-        intent.putExtra("Destination Location",centerScreenLatlng);
-        intent.putExtra("Source Location",sourceLocation);
-        startActivity(intent);
+        if (CommanClass.isNetworkAvailable(this))
+        {
+            centerScreenLatlng = mMap.getCameraPosition().target;
+            Log.d(TAG, "next: lat: "+centerScreenLatlng.latitude+" long: "+centerScreenLatlng.longitude);
+            Intent intent = new Intent(Destination_Location_Activity.this, Offer_ride_one_Activity.class);
+            intent.putExtra("Destination Location",centerScreenLatlng);
+            intent.putExtra("Source Location",sourceLocation);
+            startActivity(intent);
+        }
+        else
+        {
+            Snackbar snackbar = Snackbar
+                    .make(rootLayout, "No internet is available", Snackbar.LENGTH_LONG);
+            snackbar.show();
+        }
     }
 
     public void centerOnMyLocation(View view)
@@ -109,6 +121,7 @@ public class Destination_Location_Activity extends FragmentActivity implements O
         Log.d(TAG, "initializingWidgets: initializing widgets.");
         searchSourceET = (EditText) findViewById(R.id.search_source_location_edittext);
         nextFAB = (FloatingActionButton) findViewById(R.id.next_FAB);
+        rootLayout = findViewById(R.id.root_layout);
     }
     private void animateWidgets()
     {

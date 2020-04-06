@@ -3,10 +3,14 @@ package com.example.shareride;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -18,6 +22,7 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
@@ -32,6 +37,7 @@ public class EmailVerificationActivity extends AppCompatActivity {
     private AlertDialog.Builder builder;
     private AlertDialog alertDialog;
     private ProgressDialog progressDialog;
+    private ConstraintLayout rootLayout;
 
     private FirebaseAuth mAuth;
 
@@ -40,9 +46,18 @@ public class EmailVerificationActivity extends AppCompatActivity {
     public void goToSignInActivity(View view)
     {
         Log.d(TAG, "goToSignInActivity: ");
-        if(fieldsValidation())
+        if(!CommanClass.isNetworkAvailable(this))
         {
-            signInUser();
+            Snackbar snackbar = Snackbar
+                    .make(rootLayout, "No internet is available", Snackbar.LENGTH_LONG);
+            snackbar.show();
+        }
+        else
+        {
+            if(fieldsValidation())
+            {
+                signInUser();
+            }
         }
     }
 
@@ -67,6 +82,7 @@ public class EmailVerificationActivity extends AppCompatActivity {
         emailET = (EditText) findViewById(R.id.email_edittext);
         passwordET = (EditText) findViewById(R.id.password_edittext);
         confirmPasswordET = (EditText) findViewById(R.id.confirm_password_edittext);
+        rootLayout = findViewById(R.id.constraint_layout_root);
     }
 
     private boolean fieldsValidation()

@@ -21,6 +21,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,6 +31,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -51,6 +53,7 @@ public class SignInActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private DatabaseReference databaseReference;
     private StorageReference storageReference;
+    private ScrollView rootLayout;
 
     private Uri imageUri, uploadUri;
     private AlertDialog.Builder builder;
@@ -70,25 +73,34 @@ public class SignInActivity extends AppCompatActivity {
     public void apply(View view)
     {
         Log.d(TAG, "apply: button pressed.");
-        if(fieldsValidation())
+        if(CommanClass.isNetworkAvailable(this))
         {
-            if(EmailVerifed())
-            {
-                sendUserData();
-                Toast.makeText(SignInActivity.this, "Sending data.", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(SignInActivity.this, HomeScreenActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
-                userCreated = true;
-            }
-            else
-            {
-                dialog();
-            }
+            Snackbar snackbar = Snackbar
+                    .make(rootLayout, "No internet is available", Snackbar.LENGTH_LONG);
+            snackbar.show();
         }
         else
         {
-            Log.d(TAG, "apply: some fieled are missing.");
+            if(fieldsValidation())
+            {
+                if(EmailVerifed())
+                {
+                    sendUserData();
+                    Toast.makeText(SignInActivity.this, "Sending data.", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(SignInActivity.this, HomeScreenActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
+                    userCreated = true;
+                }
+                else
+                {
+                    dialog();
+                }
+            }
+            else
+            {
+                Log.d(TAG, "apply: some fieled are missing.");
+            }
         }
     }
 
@@ -127,6 +139,7 @@ public class SignInActivity extends AppCompatActivity {
         pincodeET = (EditText) findViewById(R.id.pincode_edittext);
         cityET = (EditText) findViewById(R.id.city_edittext);
         contactET = (EditText) findViewById(R.id.contact_edittext);
+        rootLayout = findViewById(R.id.scroll_view_root);
     }
 
     private void spinnerArrayAdapter()

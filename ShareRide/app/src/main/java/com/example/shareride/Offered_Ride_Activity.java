@@ -2,6 +2,7 @@ package com.example.shareride;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -29,6 +30,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -51,6 +53,7 @@ public class Offered_Ride_Activity extends AppCompatActivity {
     private ProgressDialog progressDialog;
     private AlertDialog.Builder builder;
     private AlertDialog alertDialog;
+    private CoordinatorLayout rootLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +67,12 @@ public class Offered_Ride_Activity extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         progressDialog = CommanClass.progressBar(this,new ProgressDialog(this),"Getting all your offered ride.");
+        if (!CommanClass.isNetworkAvailable(this))
+        {
+            Snackbar snackbar = Snackbar
+                    .make(rootLayout, "No internet is available", Snackbar.LENGTH_LONG);
+            snackbar.show();
+        }
     }
 
     @Override
@@ -76,6 +85,7 @@ public class Offered_Ride_Activity extends AppCompatActivity {
     {
         Log.d(TAG, "initializeWidgets: initializing widgets.");
         recyclerView = (RecyclerView) findViewById(R.id.recyclerView_offered_ride);
+        rootLayout = findViewById(R.id.root_layout);
     }
 
     private void intializeFirebaseInstances()

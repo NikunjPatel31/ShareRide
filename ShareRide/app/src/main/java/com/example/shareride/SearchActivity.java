@@ -1,6 +1,7 @@
 package com.example.shareride;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
@@ -18,6 +19,7 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.Calendar;
 
@@ -29,17 +31,26 @@ public class SearchActivity extends AppCompatActivity implements DatePickerDialo
     private String date, time, sourceLocation, destinationLocation = null;
     private FloatingActionButton floatingActionButton;
     private TextView searchRideTitleTV, searchRideTitleDescriptionTV;
+    private ConstraintLayout rootLayout;
     public void search(View view)
     {
-        Log.d(TAG, "search: search button pressed.");
-        if(validateFields())
+        if (CommanClass.isNetworkAvailable(this))
         {
-            Intent intent = new Intent(SearchActivity.this, SearchRideResultActivity.class);
-            intent.putExtra("Source_Location",sourceLocation);
-            intent.putExtra("Destination_Location",destinationLocation);
-            intent.putExtra("Date",date);
-            intent.putExtra("Time",time);
-            startActivity(intent);
+            if(validateFields())
+            {
+                Intent intent = new Intent(SearchActivity.this, SearchRideResultActivity.class);
+                intent.putExtra("Source_Location",sourceLocation);
+                intent.putExtra("Destination_Location",destinationLocation);
+                intent.putExtra("Date",date);
+                intent.putExtra("Time",time);
+                startActivity(intent);
+            }
+        }
+        else
+        {
+            Snackbar snackbar = Snackbar
+                    .make(rootLayout, "No internet is available", Snackbar.LENGTH_LONG);
+            snackbar.show();
         }
     }
 
@@ -61,6 +72,7 @@ public class SearchActivity extends AppCompatActivity implements DatePickerDialo
         floatingActionButton = (FloatingActionButton) findViewById(R.id.floating_button);
         searchRideTitleTV = (TextView) findViewById(R.id.search_ride_title_textview);
         searchRideTitleDescriptionTV = (TextView) findViewById(R.id.search_ride_description_textview);
+        rootLayout = findViewById(R.id.root_layout);
     }
     private void animateWidgets()
     {

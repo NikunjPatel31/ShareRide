@@ -1,6 +1,7 @@
 package com.example.shareride;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
@@ -16,6 +17,7 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.Calendar;
 
@@ -24,6 +26,7 @@ public class Offer_ride_one_Activity extends AppCompatActivity implements DatePi
     private static final String TAG = "Offer_ride_one_Activity";
 
     private TextView dateTV, timeTV, offeredRideTitleTV, offeredRideTitleDescTV;
+    private ConstraintLayout rootLayout;
     private String time = "";
     private String date = "";
 
@@ -31,22 +34,30 @@ public class Offer_ride_one_Activity extends AppCompatActivity implements DatePi
 
     public void next(View view)
     {
-        Log.d(TAG, "next: taking user to next screen.");
-        if(validateFields())
+        if(CommanClass.isNetworkAvailable(this))
         {
-            Log.d(TAG, "next: time: "+time);
-            Log.d(TAG, "next: Date: "+date);
-            Intent intent = new Intent(Offer_ride_one_Activity.this,View_My_Cars_Activity.class);
-            intent.putExtra("Source Location",sourceLocation);
-            intent.putExtra("Destination Location",destinationLocation);
-            intent.putExtra("Time",time);
-            intent.putExtra("Date",date);
-            intent.putExtra("Activity","select car");
-            startActivity(intent);
+            if(validateFields())
+            {
+                Log.d(TAG, "next: time: "+time);
+                Log.d(TAG, "next: Date: "+date);
+                Intent intent = new Intent(Offer_ride_one_Activity.this,View_My_Cars_Activity.class);
+                intent.putExtra("Source Location",sourceLocation);
+                intent.putExtra("Destination Location",destinationLocation);
+                intent.putExtra("Time",time);
+                intent.putExtra("Date",date);
+                intent.putExtra("Activity","select car");
+                startActivity(intent);
+            }
+            else
+            {
+                Toast.makeText(this, "Fields are empty.", Toast.LENGTH_SHORT).show();
+            }
         }
         else
         {
-            Toast.makeText(this, "Fields are empty.", Toast.LENGTH_SHORT).show();
+            Snackbar snackbar = Snackbar
+                    .make(rootLayout, "No internet is available", Snackbar.LENGTH_LONG);
+            snackbar.show();
         }
     }
 
@@ -70,6 +81,7 @@ public class Offer_ride_one_Activity extends AppCompatActivity implements DatePi
         timeTV = (TextView) findViewById(R.id.time_textview);
         offeredRideTitleTV = (TextView) findViewById(R.id.offer_ride_title_textview);
         offeredRideTitleDescTV = (TextView) findViewById(R.id.offer_ride_description_textview);
+        rootLayout = findViewById(R.id.root_layout);
     }
 
     private void animateWidgets()

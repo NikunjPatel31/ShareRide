@@ -35,7 +35,6 @@ public class Notification_Passenger_Fragment extends Fragment {
     public static RecyclerView notificationPassengerRecyclerView;
     private FirebaseAuth mAuth;
     private DatabaseReference databaseReference;
-    private ArrayList<String> passengerID = new ArrayList<>();
     private ArrayList<String> requestID = new ArrayList<>();
     private ArrayList<String> finalRequestID = new ArrayList<>();
     private ArrayList<String> offerRideID = new ArrayList<>();
@@ -71,7 +70,15 @@ public class Notification_Passenger_Fragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        getPassengerID();
+        if (CommanClass.isNetworkAvailable(getContext()))
+        {
+            getPassengerID();
+        }
+        else
+        {
+            progressBar.setVisibility(View.INVISIBLE);
+            progressBarTextView.setVisibility(View.INVISIBLE);
+        }
     }
 
     private void initializeWidgets(View view)

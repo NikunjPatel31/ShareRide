@@ -2,6 +2,7 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/scroll_view_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Add_Car_Activity">
@@ -33,7 +34,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/edit_car_in_title_textview"
-            app:layout_constraintVertical_bias="0.06"/>
+            app:layout_constraintVertical_bias="0.06" />
 
         <EditText
             android:id="@+id/car_name_edittext"
@@ -64,8 +65,8 @@
             android:layout_marginStart="20dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="20dp"
-            android:spinnerMode="dialog"
             android:background="@drawable/background_edit_text"
+            android:spinnerMode="dialog"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -89,8 +90,8 @@
             android:layout_marginStart="20dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="20dp"
-            android:spinnerMode="dialog"
             android:background="@drawable/background_edit_text"
+            android:spinnerMode="dialog"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -124,6 +125,7 @@
             android:layout_marginTop="32dp"
             android:layout_marginBottom="32dp"
             android:background="@drawable/background_ripple_button_apply"
+            android:onClick="apply"
             android:text="Apply"
             android:textSize="18sp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -131,8 +133,7 @@
             app:layout_constraintHorizontal_bias="0.22"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/vehicle_number_edittext"
-            app:layout_constraintVertical_bias="0.42000002"
-            android:onClick="apply"/>
+            app:layout_constraintVertical_bias="0.42000002" />
 
         <Button
             android:layout_width="100dp"
@@ -140,6 +141,7 @@
             android:layout_marginTop="32dp"
             android:layout_marginBottom="32dp"
             android:background="@drawable/background_ripple_button_cancel"
+            android:onClick="cancel"
             android:text="Cancel"
             android:textColor="@color/colorButtonCancelText"
             android:textSize="18sp"
@@ -148,8 +150,7 @@
             app:layout_constraintHorizontal_bias="0.72"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/vehicle_number_edittext"
-            app:layout_constraintVertical_bias="0.42000002"
-            android:onClick="cancel"/>
+            app:layout_constraintVertical_bias="0.42000002" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
