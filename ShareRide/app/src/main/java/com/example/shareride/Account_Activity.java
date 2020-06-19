@@ -54,8 +54,6 @@ public class Account_Activity extends AppCompatActivity {
         tabLayout = (TabLayout) findViewById(R.id.tabLayout);
         profileTI = (TabItem) findViewById(R.id.profile_tab_item);
         accountTI = (TabItem) findViewById(R.id.account_tab_item);
-//        userNameTV = (TextView) findViewById(R.id.user_name_textview);
-//        profileImageIV = (CircleImageView) findViewById(R.id.profilePicImageView);
         profileImageView = findViewById(R.id.profile_image_view);
     }
 

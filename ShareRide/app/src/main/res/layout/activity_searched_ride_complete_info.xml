@@ -82,15 +82,22 @@
                     app:layout_constraintStart_toEndOf="@+id/rider_photo"
                     app:layout_constraintTop_toBottomOf="@id/rider_name_textview"/>
 
-                <Button
-                    android:id="@+id/rider_contact_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="30dp"
-                    android:layout_marginEnd="10dp"
-                    android:background="@drawable/background_ripple_button_apply"
-                    android:text="contact"
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:src="@drawable/ic_call_black_24dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="20dp"
+                    app:maxImageSize="25dp"
+                    android:maxHeight="18dp"
+                    app:fabCustomSize="50dp"
+                    app:rippleColor="@color/colorCallButtonRipple"
+                    android:backgroundTint="@android:color/white"
+                    app:backgroundTint="@android:color/holo_green_dark"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/rider_gender_textview" />
+                    app:layout_constraintTop_toBottomOf="@id/rider_gender_textview"
+                    android:onClick="call"/>
 
                 <TextView
                     android:id="@+id/rider_city_textview"

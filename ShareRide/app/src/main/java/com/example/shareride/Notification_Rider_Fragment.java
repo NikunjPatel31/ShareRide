@@ -97,7 +97,6 @@ public class Notification_Rider_Fragment extends Fragment {
     {
         Log.d(TAG, "initializeWidgets: initializing widgets.");
         myRidesBtn = (Button) view.findViewById(R.id.my_ride_button);
-        rideProgressBtn = (Button) view.findViewById(R.id.ride_progress_button);
         notificationRiderRecyclerView = (RecyclerView) view.findViewById(R.id.notification_rider_recyclerView);
         progressBar = view.findViewById(R.id.rider_notification_progress_bar);
         progressBarTextView = view.findViewById(R.id.progress_bar_textview);
@@ -115,12 +114,6 @@ public class Notification_Rider_Fragment extends Fragment {
             public void onClick(View v) {
                 Intent intent = new Intent(getContext(),Offered_Ride_Activity.class);
                 startActivity(intent);
-            }
-        });
-        rideProgressBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //click event code....
             }
         });
     }

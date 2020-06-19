@@ -107,71 +107,78 @@ public class Offered_Ride_Activity extends AppCompatActivity {
 
     private void initalizingFirebaseRecyclerAdapter()
     {
-        progressDialog.show();
+        //progressDialog.show();
         Log.d(TAG, "initalizingFirebaseRecyclerAdapter: initializing firebase recycler adapter.");
-        firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<OfferedRideDetails, OfferedRideDetailsViewHolder>(options) {
-            @Override
-            protected void onBindViewHolder(@NonNull OfferedRideDetailsViewHolder holder, int position, @NonNull OfferedRideDetails model) {
-                progressDialog.dismiss();
-                Log.d(TAG, "onBindViewHolder: binding data into the recycler view.");
-                final String ride_id = getRef(position).getKey();
-                holder.setSourceLocation(getApplicationContext(),model.getSource_Location());
-                holder.setDestinationLocation(getApplicationContext(),model.getDestination_Location());
-                holder.setTime(model.getTime());
-                holder.setDate(model.getDate());
-                holder.setCost(model.getCost_Per_Seat());
-                holder.setSeats(model.getNum_Seats());
+        try {
+            firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<OfferedRideDetails, OfferedRideDetailsViewHolder>(options) {
+                @Override
+                protected void onBindViewHolder(@NonNull OfferedRideDetailsViewHolder holder, int position, @NonNull OfferedRideDetails model) {
+                    try {
+                        //progressDialog.dismiss();
+                        Log.d(TAG, "onBindViewHolder: binding data into the recycler view.");
+                        final String ride_id = getRef(position).getKey();
+                        holder.setSourceLocation(getApplicationContext(),model.getSource_Location());
+                        holder.setDestinationLocation(getApplicationContext(),model.getDestination_Location());
+                        holder.setTime(model.getTime());
+                        holder.setDate(model.getDate());
+                        holder.setCost(model.getCost_Per_Seat());
+                        holder.setSeats(model.getNum_Seats());
 
-                holder.infoBtn.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent intent = new Intent(Offered_Ride_Activity.this, Info_Offered_Ride.class);
-                        intent.putExtra("Ride_id",ride_id);
-                        startActivity(intent);
-                    }
-                });
-
-                holder.cancelBtn.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        mdatabaseReference.child(ride_id).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                        holder.infoBtn.setOnClickListener(new View.OnClickListener() {
                             @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                if(task.isSuccessful())
-                                {
-                                    Log.d(TAG, "onComplete: Ride_id:"+ride_id+" Removed successfully.");
-                                }
-                            }
-                        }).addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Log.d(TAG, "onFailure: Ride_id: "+ride_id+" Exception: "+e.getLocalizedMessage());
+                            public void onClick(View v) {
+                                Intent intent = new Intent(Offered_Ride_Activity.this, Info_Offered_Ride.class);
+                                intent.putExtra("Ride_id",ride_id);
+                                startActivity(intent);
                             }
                         });
+
+                        holder.cancelBtn.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                mdatabaseReference.child(ride_id).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        if(task.isSuccessful())
+                                        {
+                                            Log.d(TAG, "onComplete: Ride_id:"+ride_id+" Removed successfully.");
+                                        }
+                                    }
+                                }).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Log.d(TAG, "onFailure: Ride_id: "+ride_id+" Exception: "+e.getLocalizedMessage());
+                                    }
+                                });
+                            }
+                        });
+                    } catch (Exception e) {
+                        Log.d(TAG, "Exception onBindViewHolder: "+e.getLocalizedMessage());
                     }
-                });
-            }
-
-            @NonNull
-            @Override
-            public OfferedRideDetailsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                View view = LayoutInflater.from(parent.getContext())
-                        .inflate(R.layout.offered_ride_row,parent,false);
-                return new OfferedRideDetailsViewHolder(view);
-            }
-
-            @Override
-            public void onDataChanged() {
-                super.onDataChanged();
-                if(getItemCount() == 0)
-                {
-                    dialog();
                 }
-            }
-        };
 
-        recyclerView.setAdapter(firebaseRecyclerAdapter);
-        firebaseRecyclerAdapter.startListening();
+                @NonNull
+                @Override
+                public OfferedRideDetailsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+                    View view = LayoutInflater.from(parent.getContext())
+                            .inflate(R.layout.offered_ride_row,parent,false);
+                    return new OfferedRideDetailsViewHolder(view);
+                }
+
+                @Override
+                public void onDataChanged() {
+                    super.onDataChanged();
+                    if(getItemCount() == 0)
+                    {
+                        dialog();
+                    }
+                }
+            };
+            recyclerView.setAdapter(firebaseRecyclerAdapter);
+            firebaseRecyclerAdapter.startListening();
+        } catch (Exception e) {
+            Log.d(TAG, "Exception: "+e.getLocalizedMessage());
+        }
     }
 
     public static class OfferedRideDetailsViewHolder extends RecyclerView.ViewHolder

@@ -4,10 +4,15 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -52,7 +57,8 @@ public class SearchedRideCompleteInfoActivity extends AppCompatActivity {
     private ArrayList<String> requestID = new ArrayList<>();
     private int requestIDChildrenCount = 0;
     private String requestKey="";
-    private String adapterPosition;
+    private Boolean callPermission = false;
+    private final int CALL_PHONE_REQUEST_CODE = 4;
     private Map<String, String> mapPassengerID = new HashMap<>();
 
     private ArrayList<String> passengerID = new ArrayList<>();
@@ -66,6 +72,53 @@ public class SearchedRideCompleteInfoActivity extends AppCompatActivity {
         Intent intent = new Intent(SearchedRideCompleteInfoActivity.this, SearchRideResultActivity.class);
         startActivity(intent);
     }
+
+    public void call(View view) {
+        Intent intent = new Intent(Intent.ACTION_CALL);
+        intent.setData(Uri.parse("tel:" + riderDetails.getContact()));
+        if (callPermission) {
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                // TODO: Consider calling
+                //    ActivityCompat#requestPermissions
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for ActivityCompat#requestPermissions for more details.
+                return;
+            }
+            startActivity(intent);
+        }
+        else
+        {
+            Toast.makeText(this, "Call Permission is not given.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void getCallPermission()
+    {
+        if(ContextCompat.checkSelfPermission(this,Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED)
+        {
+            ActivityCompat.requestPermissions(this,new String[] {Manifest.permission.CALL_PHONE}, CALL_PHONE_REQUEST_CODE);
+        }
+        else
+        {
+            callPermission = true;
+        }
+    }
+
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
+        {
+            callPermission = true;
+        }
+        else
+        {
+            callPermission = false;
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,6 +130,7 @@ public class SearchedRideCompleteInfoActivity extends AppCompatActivity {
         getCarDetails();
         passengerListRecyclerView.setHasFixedSize(true);
         passengerListRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        getCallPermission();
     }
 
     @Override
@@ -173,22 +227,26 @@ public class SearchedRideCompleteInfoActivity extends AppCompatActivity {
     private void getIntentData()
     {
         Log.d(TAG, "getIntentData: getting intent data.");
-        searchRideResultDetails = getIntent().getParcelableExtra("Ride_Details");
-        riderDetails = getIntent().getParcelableExtra("Rider_Details");
-        carID = searchRideResultDetails.getCar_id();
         try {
-            if(getIntent().getStringExtra("Activity").equals("Passenger_Notification"))
-            {
-                requestBtn.setVisibility(View.INVISIBLE);
-                cancelBtn.setVisibility(View.INVISIBLE);
-                adapterPosition = getIntent().getStringExtra("Adapter_Position");
-                Log.d(TAG, "getIntentData: we are here");
+            searchRideResultDetails = getIntent().getParcelableExtra("Ride_details");
+            riderDetails = getIntent().getParcelableExtra("Rider_Details");
+            carID = searchRideResultDetails.getCar_id();
+            try {
+                if(getIntent().getStringExtra("Activity").equals("Passenger_Notification"))
+                {
+                    requestBtn.setVisibility(View.INVISIBLE);
+                    cancelBtn.setVisibility(View.INVISIBLE);
+                    Log.d(TAG, "getIntentData: we are here");
+                }
             }
+            catch (Exception e)
+            {
+                Log.d(TAG, "getIntentData: Exception: "+e.getLocalizedMessage());
+            }
+        } catch (Exception e) {
+            Log.d(TAG, "Exception: getIntentData: "+e.getLocalizedMessage());
         }
-        catch (Exception e)
-        {
-            Log.d(TAG, "getIntentData: Exception: "+e.getLocalizedMessage());
-        }
+
     }
     private void initializeWidgets()
     {
@@ -259,18 +317,23 @@ public class SearchedRideCompleteInfoActivity extends AppCompatActivity {
     private void populatingWidgets()
     {
         Log.d(TAG, "populatingWidgets: populating widgets.");
-        String firstName = riderDetails.getFirstName();
-        String lastName = riderDetails.getLastName();
-        String fullName = firstName + " " + lastName;
-        riderNameTV.setText(fullName);
-        riderCityTV.setText(riderDetails.getCity());
-        riderGenderTV.setText("( "+riderDetails.getGender()+" )");
-        sourceLocationTV.setText(searchRideResultDetails.getSource_Location_Name());
-        destinationLocationTV.setText(searchRideResultDetails.getDestination_Location_Name());
-        Picasso.get().load(riderDetails.getProfilePicture()).placeholder(R.drawable.ic_account_circle_black_24dp).into(riderProfilePicture);
-        // this value will change on the basis of the passenger of the ride... so i will write the code for that later.
-        availabelSeatsTV.setText(searchRideResultDetails.getNum_Seats());
-        costPerSeatTV.setText(searchRideResultDetails.getCost_Per_Seat()+" Rs");
+        try {
+            String firstName = riderDetails.getFirstName();
+            String lastName = riderDetails.getLastName();
+            String fullName = firstName + " " + lastName;
+            riderNameTV.setText(fullName);
+            riderCityTV.setText(riderDetails.getCity());
+            riderGenderTV.setText("( "+riderDetails.getGender()+" )");
+            Log.d(TAG, "populatingWidgets: Source: "+searchRideResultDetails.getSource_Location_Name());
+            sourceLocationTV.setText(searchRideResultDetails.getSource_Location_Name());
+            destinationLocationTV.setText(searchRideResultDetails.getDestination_Location_Name());
+            Picasso.get().load(riderDetails.getProfilePicture()).placeholder(R.drawable.ic_account_circle_black_24dp).into(riderProfilePicture);
+            // this value will change on the basis of the passenger of the ride... so i will write the code for that later.
+            availabelSeatsTV.setText(searchRideResultDetails.getNum_Seats());
+            costPerSeatTV.setText(searchRideResultDetails.getCost_Per_Seat()+" Rs");
+        } catch (Exception e) {
+            Log.d(TAG, "Exception: populatingWidgets: "+e.getLocalizedMessage());
+        }
     }
     private void requestRide(SearchRideResultDetails searchRideResultDetails, DatabaseReference databaseReference)
     {

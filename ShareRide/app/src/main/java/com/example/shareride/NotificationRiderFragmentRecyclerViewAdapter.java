@@ -107,9 +107,9 @@ public class NotificationRiderFragmentRecyclerViewAdapter extends RecyclerView.A
             holder.infoBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(context,SearchRideResultInfoActivity.class);
+                    Intent intent = new Intent(context,riderNotificationPassengerCompleteInfo.class);
                     intent.putExtra("Activity","Rider_Notification");
-                    intent.putExtra("Rider_Details",passengerDeatilsTem);
+                    intent.putExtra("Passenger_details",passengerDeatilsTem);
                     //remember to change the key value to passenger_details instead of rider_details..
                     intent.putExtra("Request_id",requestID.get(position));
                     intent.putExtra("Ride_details",searchRideResultDetailsTem);

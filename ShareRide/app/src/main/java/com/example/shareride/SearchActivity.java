@@ -129,7 +129,7 @@ public class SearchActivity extends AppCompatActivity implements DatePickerDialo
     }
     @Override
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-        date = dayOfMonth + "-" + month + "-" + year;
+        date = dayOfMonth + "-" + (month + 1) + "-" + year;
         dateTV.setText(date);
         Log.d(TAG, "onDateSet: date: "+month);
     }

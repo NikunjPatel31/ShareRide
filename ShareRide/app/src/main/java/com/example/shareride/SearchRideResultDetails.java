@@ -15,8 +15,6 @@ import com.google.firebase.database.ValueEventListener;
 
 public class SearchRideResultDetails implements Parcelable{
 
-    private static final String TAG = "SearchRideResultDetails";
-    
     String Destination_Location_Name, Source_Location_Name, Car_id, Cost_Per_Seat
             , Date, Destination_Location, Num_Seats, Source_Location
             , Time;

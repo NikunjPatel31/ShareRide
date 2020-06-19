@@ -83,7 +83,7 @@ public class SearchRideResultRecyclerViewAdapter extends RecyclerView.Adapter<Se
             @Override
             public void onClick(View v) {
 
-                Intent intent = new Intent(context,SearchRideResultInfoActivity.class);
+                Intent intent = new Intent(context,SearchedRideCompleteInfoActivity.class);
                 try {
                     SearchRideResultDetails tem = searchRideResultDetails.get(position);
                     userDetails = tem.riderDetails;
@@ -92,6 +92,7 @@ public class SearchRideResultRecyclerViewAdapter extends RecyclerView.Adapter<Se
                     intent.putExtra("Rider_Details",userDetails);
                     intent.putExtra("Request_Flag",requestFlag);
                     intent.putExtra("Rider_UID",riderUID);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     context.startActivity(intent);
                 }
                 catch (Exception e)

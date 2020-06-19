@@ -90,7 +90,6 @@ public class Add_Car_Activity extends AppCompatActivity {
         }
     }
 
-
     public void cancel(View view)
     {
         Intent intent = new Intent(Add_Car_Activity.this, Account_Activity.class);
@@ -387,8 +386,5 @@ public class Add_Car_Activity extends AppCompatActivity {
             mChildDB.child("Car_Image").setValue("null");
         }
 
-    }
-
-    public void apply(View view) {
     }
 }

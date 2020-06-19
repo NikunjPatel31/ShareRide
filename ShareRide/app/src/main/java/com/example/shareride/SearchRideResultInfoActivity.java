@@ -202,7 +202,6 @@ public class SearchRideResultInfoActivity extends FragmentActivity implements On
 
 
 
-
     private void calculateDirections(){
         Log.d(TAG, "calculateDirections: calculating directions.");
 
